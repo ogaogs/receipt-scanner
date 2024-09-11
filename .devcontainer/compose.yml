@@ -1,0 +1,18 @@
+services:
+  next_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+    tty: true
+    user: node
+    extra_hosts:
+    - host:docker.internal:host-gateway
+    networks:
+      - next_app_network
+
+networks:
+  next_app_network:
+    external: true
