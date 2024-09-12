@@ -9,7 +9,6 @@
 	"runServices": [
 		"postgres"
 	],
-	"postCreateCommand": "sudo chown -R root:docker /var/run/docker.sock",
 	"customizations": {
 		"vscode": {
 			"extensions": [
