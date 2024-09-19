@@ -1,0 +1,24 @@
+services:
+  app:
+    build: 
+      context: ../..
+      dockerfile: ./docker/product/Dockerfile
+    container_name: next-app
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+
+  db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+    ports:
+      - 5432:5432
+
+volumes:
+  postgres_volume: 
