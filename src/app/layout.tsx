@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Header } from '@/components/layouts/Header/Header';
+import { Header } from '@/_components/layouts/Header/Header';
+// NOTE: なんでSidebarはHeaderみたいにインポートできないの？
+import Sidebar from "@/_components/layouts/Sidebar/Sidebar"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,10 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Header />
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <Header/>
+        <Sidebar/>
         {children}
       </body>
     </html>
