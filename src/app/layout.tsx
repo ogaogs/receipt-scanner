@@ -30,6 +30,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Header/>
         <Sidebar/>
+        {/* NOTE: このようにレイアウトを組むとchildrenが増えるたびにそのページでHeaderとSidebarに被らないようにしなければならない。何かいい方法はないか？ */}
         {children}
       </body>
     </html>
