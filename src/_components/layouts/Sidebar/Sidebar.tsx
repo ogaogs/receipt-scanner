@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-const drawerWidth = 320;
+export const drawerWidth = 320;
 const date = "9月22日"
 const proverb = "時は金なり"
 
@@ -31,7 +31,7 @@ const card = (
     </React.Fragment>
   );
 
-export default function Sidebar() {
+export function Sidebar() {
   return (
     <Drawer
       variant="permanent"
