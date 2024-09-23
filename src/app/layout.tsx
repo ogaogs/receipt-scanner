@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Header } from '@/_components/layouts/Header/Header';
-import { Sidebar } from "@/_components/layouts/Sidebar/Sidebar"
+import { Header } from "@/_components/layouts/Header/Header";
+import { Sidebar } from "@/_components/layouts/Sidebar/Sidebar";
+import { Box, Toolbar } from "@mui/material";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,11 +28,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Header/>
-        <Sidebar/>
-        {/* NOTE: このようにレイアウトを組むとchildrenが増えるたびにそのページでHeaderとSidebarに被らないようにしなければならない。何かいい方法はないか？ */}
-        {children}
+      <body
+        className={`${geistSans.variable} ${geistMono.variable}`}
+        style={{ height: "100vh" }}
+      >
+        <Header />
+        <Toolbar />
+
+        <Box display="flex" flexDirection="row" height="100%">
+          <Box
+            component="main"
+            flexGrow={1}
+            sx={{
+              boxSizing: "border-box",
+            }}
+          >
+            {children}
+          </Box>
+          <Sidebar />
+        </Box>
       </body>
     </html>
   );
