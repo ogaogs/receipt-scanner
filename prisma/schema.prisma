@@ -14,12 +14,63 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid()) @db.Uuid
-  name          String   @map("name")
-  email         String   @unique @map("email")
-  passwordHash  String
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id             String    @id @default(uuid()) @db.Uuid
+  name           String
+  email          String    @unique
+  passwordDigest String    @map("password_digest")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  Expense        Expense[]
 
   @@map("users")
+}
+
+model Expense {
+  id        String   @id @default(uuid()) @db.Uuid
+  storeName String   @map("store_name")
+  amount    Int
+  date      DateTime
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  receipt    Receipt?
+  userId     String   @map("user_id") @db.Uuid
+  categoryId Int      @map("category_id")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categories Categories @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("expenses")
+}
+
+model Categories {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  expenses Expense[]
+  budgeds  Budged[]
+
+  @@map("categories")
+}
+
+model Receipt {
+  id        String  @id @default(uuid()) @db.Uuid
+  filePath  String  @map("file_path")
+  expenseId String  @unique @map("expense_id") @db.Uuid
+  expense   Expense @relation(fields: [expenseId], references: [id])
+
+  @@map("receipts")
+}
+
+model Budged {
+  id         String   @id @default(uuid()) @db.Uuid
+  year_month DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  categoryId Int @map("category_id")
+
+  categories Categories @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("budgeds")
 }
