@@ -42,14 +42,16 @@ CREATE TABLE "receipts" (
 );
 
 -- CreateTable
-CREATE TABLE "budgeds" (
+CREATE TABLE "budgets" (
     "id" UUID NOT NULL,
+    "amount" INTEGER NOT NULL,
     "year_month" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "user_id" UUID NOT NULL,
     "category_id" INTEGER NOT NULL,
 
-    CONSTRAINT "budgeds_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "budgets_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -71,4 +73,7 @@ ALTER TABLE "expenses" ADD CONSTRAINT "expenses_category_id_fkey" FOREIGN KEY ("
 ALTER TABLE "receipts" ADD CONSTRAINT "receipts_expense_id_fkey" FOREIGN KEY ("expense_id") REFERENCES "expenses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "budgeds" ADD CONSTRAINT "budgeds_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "budgets" ADD CONSTRAINT "budgets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "budgets" ADD CONSTRAINT "budgets_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
