@@ -32,6 +32,7 @@ async function main() {
         passwordDigest: faker.internet.password()
       },
     });
+    console.log(`Created user named ${newUser.name}`);
 
     for (let i = 0; i < 20; i++){
       // 出費の作成
@@ -44,7 +45,36 @@ async function main() {
           categoryId: Math.floor(Math.random() * 9) + 1
         },
       });
-    }}
+    }
+    console.log('Created Expenses');
+
+    // 予算の作成
+    // 8月分
+    for (let i = 1; i < 10; i++){
+      const newBudget = await prisma.budget.create({
+        data: {
+          amount: parseInt(faker.finance.amount({ min: 10000, max: 30000, dec: 0 })),
+          year_month: new Date(2024, 7, 15),
+          userId: newUser.id,
+          categoryId: i,
+        }
+      })
+      console.log(`Created newBudget ${newBudget.year_month}`);
+    }
+
+    // 9月分
+    for (let i = 1; i < 10; i++){
+      const newBudget = await prisma.budget.create({
+        data: {
+          amount: parseInt(faker.finance.amount({ min: 10000, max: 30000, dec: 0 })),
+          year_month: new Date(2024, 8, 15),
+          userId: newUser.id,
+          categoryId: i,
+        }
+      })
+      console.log(`Created newBudget ${newBudget.year_month}`);
+    }
+  }
 
 }
 main()
