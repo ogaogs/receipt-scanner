@@ -26,7 +26,7 @@ CREATE TABLE "expenses" (
 
 -- CreateTable
 CREATE TABLE "categories" (
-    "id" SERIAL NOT NULL,
+    "id" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
