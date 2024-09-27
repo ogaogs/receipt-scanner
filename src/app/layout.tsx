@@ -40,7 +40,8 @@ export default function RootLayout({
             component="main"
             flexGrow={1}
             sx={{
-              boxSizing: "border-box",
+              backgroundColor: "#DDDDDD",
+              paddingX: 8,
             }}
           >
             {children}

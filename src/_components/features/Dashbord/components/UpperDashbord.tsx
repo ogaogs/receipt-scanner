@@ -20,9 +20,18 @@ export const UperDashbord = async () => {
   const formattedDate = date.toLocaleDateString("ja-JP", {
     month: "long",
   });
-  
+
   return (
-    <Box display="flex" flexDirection="row" sx={{ textAlign: "center" }}>
+    <Box
+      display="flex"
+      flexDirection="row"
+      sx={{
+        textAlign: "center",
+        backgroundColor: "white",
+        marginTop: 4,
+        marginBottom: 8,
+      }}
+    >
       <Box flexGrow={1} sx={{ width: 100 }}>
         <Box>{formattedDate}</Box>
         <Box>
