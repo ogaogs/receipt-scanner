@@ -1,8 +1,7 @@
 import { Box } from "@mui/material";
-import { getToday, getStartAndEndOfMonth } from "@/utils/time";
-import { formatCurrency } from "@/utils/currency";
-import { getMonthExpenses } from "@/lib/db/expense";
-import { getMonthBudgets } from "@/lib/db/budget";
+import { getToday, getStartAndEndOfMonth} from "@/utils/time";
+import { formatCurrency, calculateTotalAmount, categoryTotals } from "@/utils/financial";
+import { getMonthExpenses, getMonthBudgets } from "@/lib/db";
 import { ChartWithLetter } from "@/_components/features/Dashbord/ChartWithLetter";
 
 export const UperDashbord = async () => {
@@ -13,28 +12,21 @@ export const UperDashbord = async () => {
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(date);
 
-  // 月の出費を全て取得する
+  // 月の出費・予算を全て取得する
   const monthExpenses = await getMonthExpenses(userId, firstDay, lastDay);
+  const monthBudgets = await getMonthBudgets(userId, firstDay, lastDay);
 
-  //  出費の合計
-  const totalExpensesAmount = monthExpenses.reduce(
-    (sum, current) => sum + current.amount,
-    0
-  );
+  //  出費・予算の合計
+  const totalExpensesAmount = calculateTotalAmount(monthExpenses)
+  const totalBudgetsAmount = calculateTotalAmount(monthBudgets)
+
+  // 出費・予算のカテゴリー毎の合計 NOTE: カテゴリー毎の予算も出費と同じ型にするために変換
+  const expenseCategoryTotals = categoryTotals(monthExpenses)
+  const budgetCategoryTotals = categoryTotals(monthBudgets)
+  
 
   // 日本円の表記にフォーマット
   const formattedTotalExpensesAmount = formatCurrency(totalExpensesAmount);
-
-  // 月の予算を取得する
-  const monthBudgets = await getMonthBudgets(userId, firstDay, lastDay);
-
-  // 予算の合計
-  const totalBudgetsAmount = monthBudgets.reduce(
-    (sum, current) => sum + current.amount,
-    0
-  );
-
-  // 日本円の表記にフォーマット
   const formattedTotalBudgetsAmount = formatCurrency(totalBudgetsAmount);
 
   const daysLeft = "後 5日";
