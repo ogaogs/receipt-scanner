@@ -1,7 +1,12 @@
+import { FC } from "react";
 import { Box } from "@mui/material";
 import { DoughnutPieChart } from "@/_components/common/PieChart/PieChart";
 
-export const ChartWithLetter = () => {
+type ChartWithLetterProps = {
+  letter: string;
+};
+
+export const ChartWithLetter: FC<ChartWithLetterProps> = ({ letter }) => {
   return (
     <Box
       sx={{ width: 200, height: 240, flexBasis: "40%", position: "relative" }}
@@ -32,7 +37,7 @@ export const ChartWithLetter = () => {
             fontWeight: "bold",
           }}
         >
-          ¥1,000
+          {letter}
         </Box>
       </Box>
     </Box>

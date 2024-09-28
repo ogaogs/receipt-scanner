@@ -36,6 +36,8 @@ export const UperDashbord = async () => {
   // 日本円の表記にフォーマット
   const formattedTotalBudgetsAmount = formatCurrency(totalBudgetsAmount);
 
+  const daysLeft = "後 5日";
+
   // formattedDateは関数化してutilsにおいてもいいかも　"ja-JP"で日本時間に変換
   const formattedDate = date.toLocaleDateString("ja-JP", {
     month: "long",
@@ -70,8 +72,8 @@ export const UperDashbord = async () => {
           <div>{formattedTotalBudgetsAmount}</div>
         </Box>
       </Box>
-      <ChartWithLetter />
-      <ChartWithLetter />
+      <ChartWithLetter letter={formattedTotalExpensesAmount} />
+      <ChartWithLetter letter={daysLeft} />
     </Box>
   );
 };
