@@ -20,12 +20,15 @@ export const UpperDashbord = async () => {
   const date = today; // NOTE: 今後変化する指定された日付
 
   // 色
-  const lightgreen = "#b9f6ca"
-  const green = "#00c853"
-  const blue = "#2196f3"
-  const red = "#d50000"
+  const lightgreen = "#b9f6ca";
+  const green = "#00c853";
+  const blue = "#2196f3";
+  const red = "#d50000";
 
-  function remainDaysStr(today: Date, lastDayOfMonth: Date): remainDaysReturn {
+  const remainDaysStr = (
+    today: Date,
+    lastDayOfMonth: Date
+  ): remainDaysReturn => {
     // 年と月を比較
     const sameYear = today.getFullYear() === lastDayOfMonth.getFullYear();
     const sameMonth = today.getMonth() === lastDayOfMonth.getMonth();
@@ -41,12 +44,10 @@ export const UpperDashbord = async () => {
       return { text: text, data: data };
     } else {
       const text = "過去の家計簿";
-      const data = [
-        { id: 0, value: 1, label: "過去の家計簿", color: red },
-      ];
+      const data = [{ id: 0, value: 1, label: "過去の家計簿", color: red }];
       return { text: text, data: data };
     }
-  }
+  };
 
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(date);
