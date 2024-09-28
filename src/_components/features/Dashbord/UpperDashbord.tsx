@@ -14,7 +14,7 @@ type remainDaysReturn = {
   data: PieChartData[];
 };
 
-export const UperDashbord = async () => {
+export const UpperDashbord = async () => {
   const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
   const today = getToday(); // 本日の時間を取得 UTC時間
   const date = today; // NOTE: 今後変化する指定された日付

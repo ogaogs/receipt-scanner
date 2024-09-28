@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
-import { UperDashbord } from "@/_components/features/dashbord/UpperDashbord";
+import { UpperDashbord } from "@/_components/features/dashbord/UpperDashbord";
 
 export default async function Page() {
   return (
     <>
-      <UperDashbord />
+      <UpperDashbord />
       <Box sx={{ color: "blue", height: 100 }}>下の段</Box>
     </>
   );
