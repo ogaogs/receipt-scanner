@@ -29,10 +29,16 @@ export const UperDashbord = async () => {
   const expenseCategoryTotals = categoryTotals(monthExpenses);
   const budgetCategoryTotals = categoryTotals(monthBudgets);
 
+  // 予算と出費の割合を表すグラフのデータ
+  const totalBudgetLeft = totalBudgetsAmount - totalExpensesAmount
+  const budgetExpenseData = [
+    {id: 0, value: totalExpensesAmount, label: "今月の出費", color: "#00c853"},
+    {id: 1, value: totalBudgetLeft, label: "残りの予算", color: "#b9f6ca"}
+  ]
+
   const data: PieChartData[] = [
-    { id: 0, value: 10, label: "series A" },
-    { id: 1, value: 15, label: "series B" },
-    { id: 2, value: 20, label: "series C" },
+    { id: 0, value: 10, label: "series A", color: "#00c853"},
+    { id: 1, value: 15, label: "series B", color: "#b9f6ca"},
   ];
 
   // 日本円の表記にフォーマット
@@ -75,7 +81,7 @@ export const UperDashbord = async () => {
           <div>{formattedTotalBudgetsAmount}</div>
         </Box>
       </Box>
-      <ChartWithLetter letter={formattedTotalExpensesAmount} data={data} />
+      <ChartWithLetter letter={formattedTotalExpensesAmount} data={budgetExpenseData} />
       <ChartWithLetter letter={daysLeft} data={data} />
     </Box>
   );
