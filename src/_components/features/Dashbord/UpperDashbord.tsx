@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { getStartAndEndOfMonth } from "@/utils/time";
+import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import { formatCurrency } from "@/utils/currency";
 import { getMonthExpenses } from "@/lib/db/expense";
 import { getMonthBudgets } from "@/lib/db/budget";
@@ -7,7 +7,8 @@ import { ChartWithLetter } from "@/_components/features/Dashbord/ChartWithLetter
 
 export const UperDashbord = async () => {
   const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
-  const date = new Date(); // 本日の時間を取得 UTC時間
+  const today = getToday(); // 本日の時間を取得 UTC時間
+  const date = today; // NOTE: 今後変化する指定された日付
 
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(date);

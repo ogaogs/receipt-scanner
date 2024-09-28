@@ -1,3 +1,8 @@
+// 本日の日付を取得(UTC)
+export const getToday = () => {
+  return new Date()
+} 
+
 // 月の初日と最終日を返す
 export const getStartAndEndOfMonth = (date: Date) => {
   // UTCで表示される
