@@ -34,8 +34,19 @@ export const UperDashbord = async () => {
       }}
     >
       <Box sx={{ width: 100, flexBasis: "20%" }}>
-        <Box>{formattedDate}</Box>
-        <Box>
+        <Box
+          height={48}
+          width={80}
+          sx={{
+            backgroundColor: "#2196f3",
+            fontSize: "32px",
+            fontWeight: "bold",
+            color: "white",
+          }}
+        >
+          {formattedDate}
+        </Box>
+        <Box sx={{ fontSize: "32px", fontWeight: "bold", marginTop: 4 }}>
           <div>予算</div>
           <div>{totalAmount}円</div>
         </Box>
