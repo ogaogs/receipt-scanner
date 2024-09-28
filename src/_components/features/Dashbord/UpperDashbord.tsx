@@ -1,18 +1,30 @@
 import { Box } from "@mui/material";
 import { getStartAndEndOfMonth } from "@/utils/time";
-import { getMonthExpenses } from "@/lib/db/budget";
+import { getMonthExpenses } from "@/lib/db/expense";
+import { getMonthBudgets } from "@/lib/db/budget";
 import { ChartWithLetter } from "@/_components/features/Dashbord/ChartWithLetter";
 
 export const UperDashbord = async () => {
   const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
-  const date = new Date(2024, 7, 10); // UTC時間
+  const date = new Date(); // 本日の時間を取得 UTC時間
 
-  // 指定された月の初日と最終日を取得し、その月の出費を全て取得する。
+  // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(date);
+
+  // 月の出費を全て取得する
   const monthExpenses = await getMonthExpenses(userId, firstDay, lastDay);
 
-  //  出費の合計を取得
-  const totalAmount = monthExpenses.reduce(
+  //  出費の合計
+  const totalExpensesAmount = monthExpenses.reduce(
+    (sum, current) => sum + current.amount,
+    0
+  );
+
+  // 月の予算を取得する
+  const monthBudgets = await getMonthBudgets(userId, firstDay, lastDay);
+
+  // 予算の合計
+  const totalBudgetsAmount = monthBudgets.reduce(
     (sum, current) => sum + current.amount,
     0
   );
@@ -48,7 +60,7 @@ export const UperDashbord = async () => {
         </Box>
         <Box sx={{ fontSize: "32px", fontWeight: "bold", marginTop: 4 }}>
           <div>予算</div>
-          <div>{totalAmount}円</div>
+          <div>{totalBudgetsAmount}円</div>
         </Box>
       </Box>
       <ChartWithLetter />

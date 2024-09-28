@@ -2,15 +2,15 @@
 
 import prisma from "@/lib/prisma";
 
-// 指定した月の予算を取得する
-export const getMonthBudgets = async (
+// 指定した月の出費を取得する
+export const getMonthExpenses = async (
   userId: string,
   firstDay: Date,
   lastDay: Date
 ) => {
-  return await prisma.budget.findMany({
+  return await prisma.expense.findMany({
     where: {
-      year_month: {
+      date: {
         gte: firstDay,
         lt: lastDay,
       },
