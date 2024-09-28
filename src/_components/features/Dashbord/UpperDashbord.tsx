@@ -6,8 +6,8 @@ import {
   categoryTotals,
 } from "@/utils/financial";
 import { getMonthExpenses, getMonthBudgets } from "@/lib/db";
-import { ChartWithLetter } from "@/_components/features/Dashbord/ChartWithLetter";
-import { PieChartData } from "@/_components/features/Dashbord/type";
+import { ChartWithLetter } from "@/_components/features/dashbord/ChartWithLetter";
+import { PieChartData } from "@/_components/features/dashbord/type";
 
 type remainDaysReturn = {
   text: string;

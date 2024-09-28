@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Box } from "@mui/material";
 import { DoughnutPieChart } from "@/_components/common/PieChart/PieChart";
-import { PieChartData } from "@/_components/features/Dashbord/type"
+import { PieChartData } from "@/_components/features/dashbord/type"
 
 export type ChartWithLetterProps = {
   letter: string;
