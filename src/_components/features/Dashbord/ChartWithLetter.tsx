@@ -1,12 +1,14 @@
 import { FC } from "react";
 import { Box } from "@mui/material";
 import { DoughnutPieChart } from "@/_components/common/PieChart/PieChart";
+import { PieChartData } from "@/_components/features/Dashbord/type"
 
-type ChartWithLetterProps = {
+export type ChartWithLetterProps = {
   letter: string;
+  data: PieChartData[];
 };
 
-export const ChartWithLetter: FC<ChartWithLetterProps> = ({ letter }) => {
+export const ChartWithLetter: FC<ChartWithLetterProps> = ({ letter, data }) => {
   return (
     <Box
       sx={{ width: 200, height: 240, flexBasis: "40%", position: "relative" }}
@@ -23,7 +25,7 @@ export const ChartWithLetter: FC<ChartWithLetterProps> = ({ letter }) => {
           display: "flex",
         }}
       >
-        <DoughnutPieChart />
+        <DoughnutPieChart data={data}/>
         <Box
           sx={{
             position: "absolute",

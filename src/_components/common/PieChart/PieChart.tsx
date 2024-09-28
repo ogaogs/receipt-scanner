@@ -1,14 +1,14 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { FC } from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { PieChartData } from "@/_components/features/Dashbord/type"
 
-export const DoughnutPieChart = () => {
-  const data = [
-    { id: 0, value: 10, label: "series A" },
-    { id: 1, value: 15, label: "series B" },
-    { id: 2, value: 20, label: "series C" },
-  ];
+type DoughnutPieChartProps = {
+  data: PieChartData[]
+}
+
+export const DoughnutPieChart: FC<DoughnutPieChartProps> = ({ data }) => {
   return (
     <>
       <PieChart
