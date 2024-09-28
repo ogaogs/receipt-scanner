@@ -9,10 +9,44 @@ import { getMonthExpenses, getMonthBudgets } from "@/lib/db";
 import { ChartWithLetter } from "@/_components/features/Dashbord/ChartWithLetter";
 import { PieChartData } from "@/_components/features/Dashbord/type";
 
+type remainDaysReturn = {
+  text: string;
+  data: PieChartData[];
+};
+
 export const UperDashbord = async () => {
   const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
   const today = getToday(); // 本日の時間を取得 UTC時間
   const date = today; // NOTE: 今後変化する指定された日付
+
+  // 色
+  const lightgreen = "#b9f6ca"
+  const green = "#00c853"
+  const blue = "#2196f3"
+  const red = "#d50000"
+
+  function remainDaysStr(today: Date, lastDayOfMonth: Date): remainDaysReturn {
+    // 年と月を比較
+    const sameYear = today.getFullYear() === lastDayOfMonth.getFullYear();
+    const sameMonth = today.getMonth() === lastDayOfMonth.getMonth();
+
+    if (sameYear && sameMonth) {
+      // 残り日数を計算
+      const remainingDays = lastDayOfMonth.getDate() - today.getDate();
+      const text = `後 ${remainingDays}日`;
+      const data = [
+        { id: 0, value: today.getDate(), label: "経過日数", color: green },
+        { id: 1, value: remainingDays, label: "残日数", color: lightgreen },
+      ];
+      return { text: text, data: data };
+    } else {
+      const text = "過去の家計簿";
+      const data = [
+        { id: 0, value: 1, label: "過去の家計簿", color: red },
+      ];
+      return { text: text, data: data };
+    }
+  }
 
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(date);
@@ -31,7 +65,7 @@ export const UperDashbord = async () => {
 
   // 予算と出費の割合を表すグラフのデータ
   const totalBudgetLeft = totalBudgetsAmount - totalExpensesAmount;
-  const expenseColor = totalBudgetLeft < 0 ? "#d50000" : "#00c853";
+  const expenseColor = totalBudgetLeft < 0 ? red : green;
   const budgetExpenseData = [
     {
       id: 0,
@@ -39,19 +73,14 @@ export const UperDashbord = async () => {
       label: "今月の出費",
       color: expenseColor,
     },
-    { id: 1, value: totalBudgetLeft, label: "残りの予算", color: "#b9f6ca" },
-  ];
-
-  const data: PieChartData[] = [
-    { id: 0, value: 10, label: "series A", color: "#00c853" },
-    { id: 1, value: 15, label: "series B", color: "#b9f6ca" },
+    { id: 1, value: totalBudgetLeft, label: "残りの予算", color: lightgreen },
   ];
 
   // 日本円の表記にフォーマット
   const formattedTotalExpensesAmount = formatCurrency(totalExpensesAmount);
   const formattedTotalBudgetsAmount = formatCurrency(totalBudgetsAmount);
 
-  const daysLeft = "後 5日";
+  const daysLeft = remainDaysStr(today, lastDay);
 
   // formattedDateは関数化してutilsにおいてもいいかも　"ja-JP"で日本時間に変換
   const formattedDate = date.toLocaleDateString("ja-JP", {
@@ -74,7 +103,7 @@ export const UperDashbord = async () => {
           height={48}
           width={80}
           sx={{
-            backgroundColor: "#2196f3",
+            backgroundColor: blue,
             fontSize: "32px",
             fontWeight: "bold",
             color: "white",
@@ -91,7 +120,7 @@ export const UperDashbord = async () => {
         letter={formattedTotalExpensesAmount}
         data={budgetExpenseData}
       />
-      <ChartWithLetter letter={daysLeft} data={data} />
+      <ChartWithLetter letter={daysLeft.text} data={daysLeft.data} />
     </Box>
   );
 };
