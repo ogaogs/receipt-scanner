@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Box } from "@mui/material";
-import { DoughnutPieChart } from "@/_components/common/PieChart/PieChart";
+import { DoughnutPieChart } from "@/_components/common/DoughnutPieChart/DoughnutPieChart";
 import { PieChartData } from "@/_components/features/dashbord/type"
 
 export type ChartWithLetterProps = {
