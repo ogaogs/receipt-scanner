@@ -1,9 +1,11 @@
-export default async function Dashboard() {
+import { Box } from "@mui/material";
+import { UperDashbord } from "@/_components/features/Dashbord/UpperDashbord";
+
+export default async function Page() {
   return (
     <>
-      <div>
-        ダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボードダッシュボード
-      </div>
+      <UperDashbord />
+      <Box sx={{ color: "blue", height: 100 }}>下の段</Box>
     </>
   );
 }

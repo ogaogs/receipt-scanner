@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-const drawerWidth = "30%";
+const drawerWidth = "20%";
 const date = "9月22日";
 const proverb = "時は金なり";
 
