@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { UperDashbord } from "@/_components/features/Dashbord/components/UpperDashbord";
+import { UperDashbord } from "@/_components/features/Dashbord/UpperDashbord";
 
 export default async function Page() {
   return (

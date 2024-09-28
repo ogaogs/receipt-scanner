@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { getStartAndEndOfMonth } from "@/utils/time";
 import { getMonthExpenses } from "@/lib/db/budget";
+import { ChartWithLetter } from "@/_components/features/Dashbord/ChartWithLetter";
 
 export const UperDashbord = async () => {
   const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
@@ -32,19 +33,15 @@ export const UperDashbord = async () => {
         marginBottom: 8,
       }}
     >
-      <Box flexGrow={1} sx={{ width: 100 }}>
+      <Box sx={{ width: 100, flexBasis: "20%" }}>
         <Box>{formattedDate}</Box>
         <Box>
           <div>予算</div>
           <div>{totalAmount}円</div>
         </Box>
       </Box>
-      <Box flexGrow={2} sx={{ width: 200 }}>
-        Graph1
-      </Box>
-      <Box flexGrow={2} sx={{ width: 200 }}>
-        Graph2
-      </Box>
+      <ChartWithLetter />
+      <ChartWithLetter />
     </Box>
   );
 };
