@@ -94,8 +94,8 @@ export const UpperDashbord = async () => {
       sx={{
         textAlign: "center",
         backgroundColor: "white",
-        marginTop: 4,
-        marginBottom: 8,
+        marginTop: 2,
+        marginBottom: 2,
       }}
     >
       <Box sx={{ width: 100, flexBasis: "20%" }}>
