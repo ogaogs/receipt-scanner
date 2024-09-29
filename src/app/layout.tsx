@@ -38,6 +38,7 @@ export default function RootLayout({
         <Box display="flex" flexDirection="row" height="100%">
           <Box
             component="main"
+            height="100%"
             flexGrow={1}
             sx={{
               backgroundColor: "#DDDDDD",

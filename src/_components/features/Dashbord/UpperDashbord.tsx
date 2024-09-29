@@ -1,31 +1,40 @@
 import { Box } from "@mui/material";
-import { getToday, getStartAndEndOfMonth } from "@/utils/time";
+import { formatCurrency } from "@/utils/financial";
+import { FC, Suspense } from "react";
+
+import { ChartWithLetter } from "@/_components/features/dashbord/ChartWithLetter";
+import { PieChartData } from "@/_components/features/dashbord/type";
 import {
-  formatCurrency,
-  calculateTotalAmount,
-  categoryTotals,
-} from "@/utils/financial";
-import { getMonthExpenses, getMonthBudgets } from "@/lib/db";
-import { ChartWithLetter } from "@/_components/features/Dashbord/ChartWithLetter";
-import { PieChartData } from "@/_components/features/Dashbord/type";
+  lightgreen,
+  green,
+  blue,
+  red,
+} from "@/_components/features/dashbord/style";
 
 type remainDaysReturn = {
   text: string;
   data: PieChartData[];
 };
 
-export const UperDashbord = async () => {
-  const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
-  const today = getToday(); // 本日の時間を取得 UTC時間
-  const date = today; // NOTE: 今後変化する指定された日付
+type UpperDashbordProps = {
+  date: {
+    today: Date;
+    targetDate: Date;
+    lastDay: Date;
+  };
+  totalBudgetsAmount: number;
+  totalExpensesAmount: number;
+};
 
-  // 色
-  const lightgreen = "#b9f6ca"
-  const green = "#00c853"
-  const blue = "#2196f3"
-  const red = "#d50000"
-
-  function remainDaysStr(today: Date, lastDayOfMonth: Date): remainDaysReturn {
+export const UpperDashbord: FC<UpperDashbordProps> = async ({
+  date,
+  totalBudgetsAmount,
+  totalExpensesAmount,
+}) => {
+  const remainDaysStr = (
+    today: Date,
+    lastDayOfMonth: Date
+  ): remainDaysReturn => {
     // 年と月を比較
     const sameYear = today.getFullYear() === lastDayOfMonth.getFullYear();
     const sameMonth = today.getMonth() === lastDayOfMonth.getMonth();
@@ -41,27 +50,10 @@ export const UperDashbord = async () => {
       return { text: text, data: data };
     } else {
       const text = "過去の家計簿";
-      const data = [
-        { id: 0, value: 1, label: "過去の家計簿", color: red },
-      ];
+      const data = [{ id: 0, value: 1, label: "過去の家計簿", color: red }];
       return { text: text, data: data };
     }
-  }
-
-  // 月の初日と最終日を取得する
-  const { firstDay, lastDay } = getStartAndEndOfMonth(date);
-
-  // 月の出費・予算を全て取得する
-  const monthExpenses = await getMonthExpenses(userId, firstDay, lastDay);
-  const monthBudgets = await getMonthBudgets(userId, firstDay, lastDay);
-
-  //  出費・予算の合計
-  const totalExpensesAmount = calculateTotalAmount(monthExpenses);
-  const totalBudgetsAmount = calculateTotalAmount(monthBudgets);
-
-  // 出費・予算のカテゴリー毎の合計 NOTE: カテゴリー毎の予算も出費と同じ型にするために変換
-  const expenseCategoryTotals = categoryTotals(monthExpenses);
-  const budgetCategoryTotals = categoryTotals(monthBudgets);
+  };
 
   // 予算と出費の割合を表すグラフのデータ
   const totalBudgetLeft = totalBudgetsAmount - totalExpensesAmount;
@@ -80,10 +72,10 @@ export const UperDashbord = async () => {
   const formattedTotalExpensesAmount = formatCurrency(totalExpensesAmount);
   const formattedTotalBudgetsAmount = formatCurrency(totalBudgetsAmount);
 
-  const daysLeft = remainDaysStr(today, lastDay);
+  const daysLeft = remainDaysStr(date.today, date.lastDay);
 
   // formattedDateは関数化してutilsにおいてもいいかも　"ja-JP"で日本時間に変換
-  const formattedDate = date.toLocaleDateString("ja-JP", {
+  const formattedDate = date.targetDate.toLocaleDateString("ja-JP", {
     month: "long",
   });
 
@@ -94,8 +86,7 @@ export const UperDashbord = async () => {
       sx={{
         textAlign: "center",
         backgroundColor: "white",
-        marginTop: 4,
-        marginBottom: 8,
+        marginBottom: 2,
       }}
     >
       <Box sx={{ width: 100, flexBasis: "20%" }}>
@@ -116,11 +107,15 @@ export const UperDashbord = async () => {
           <div>{formattedTotalBudgetsAmount}</div>
         </Box>
       </Box>
-      <ChartWithLetter
-        letter={formattedTotalExpensesAmount}
-        data={budgetExpenseData}
-      />
-      <ChartWithLetter letter={daysLeft.text} data={daysLeft.data} />
+      <Suspense fallback={"Loading"}>
+        <ChartWithLetter
+          letter={formattedTotalExpensesAmount}
+          data={budgetExpenseData}
+        />
+      </Suspense>
+      <Suspense fallback={"Loading"}>
+        <ChartWithLetter letter={daysLeft.text} data={daysLeft.data} />
+      </Suspense>
     </Box>
   );
 };

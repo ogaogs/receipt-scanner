@@ -4,3 +4,9 @@ export type PieChartData = {
   label: string;
   color: string;
 };
+
+export type BarsDatasetType = {
+  budget: number;
+  expense: number;
+  categoryName: string;
+};
