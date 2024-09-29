@@ -28,8 +28,12 @@ export default async function Page() {
   // カテゴリーを取得
   const categories = await getCategories();
   const dataset: BarsDatasetType[] = categories.map((category) => ({
-    budget: budgetCategoryTotals[category.id] ? budgetCategoryTotals[category.id] : 0,
-    expense: expenseCategoryTotals[category.id] ? expenseCategoryTotals[category.id] : 0,
+    budget: budgetCategoryTotals[category.id]
+      ? budgetCategoryTotals[category.id]
+      : 0,
+    expense: expenseCategoryTotals[category.id]
+      ? expenseCategoryTotals[category.id]
+      : 0,
     categoryName: category.name,
   }));
 

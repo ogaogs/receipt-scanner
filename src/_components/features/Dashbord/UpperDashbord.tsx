@@ -1,11 +1,10 @@
 import { Box } from "@mui/material";
-import {
-  formatCurrency,
-} from "@/utils/financial";
+import { formatCurrency } from "@/utils/financial";
 import { FC } from "react";
 
 import { ChartWithLetter } from "@/_components/features/dashbord/ChartWithLetter";
 import { PieChartData } from "@/_components/features/dashbord/type";
+import { lightgreen, green, blue, red } from "@/_components/features/dashbord/style"
 
 type remainDaysReturn = {
   text: string;
@@ -14,22 +13,19 @@ type remainDaysReturn = {
 
 type UpperDashbordProps = {
   date: {
-    today: Date
-    targetDate: Date
-    lastDay: Date
-  }
-  totalBudgetsAmount: number
-  totalExpensesAmount: number
-}
+    today: Date;
+    targetDate: Date;
+    lastDay: Date;
+  };
+  totalBudgetsAmount: number;
+  totalExpensesAmount: number;
+};
 
-export const UpperDashbord:FC<UpperDashbordProps> = async ({date, totalBudgetsAmount, totalExpensesAmount}) => {
-
-  // 色
-  const lightgreen = "#b9f6ca";
-  const green = "#00c853";
-  const blue = "#2196f3";
-  const red = "#d50000";
-
+export const UpperDashbord: FC<UpperDashbordProps> = async ({
+  date,
+  totalBudgetsAmount,
+  totalExpensesAmount,
+}) => {
   const remainDaysStr = (
     today: Date,
     lastDayOfMonth: Date
@@ -53,8 +49,6 @@ export const UpperDashbord:FC<UpperDashbordProps> = async ({date, totalBudgetsAm
       return { text: text, data: data };
     }
   };
-
-
 
   // 予算と出費の割合を表すグラフのデータ
   const totalBudgetLeft = totalBudgetsAmount - totalExpensesAmount;
