@@ -2,14 +2,11 @@
 
 import { BarChart } from "@mui/x-charts/BarChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
+import { BarsDatasetType } from "@/_components/features/dashbord/type";
 import { FC } from "react";
 
 type BarsDatasetProps = {
-  dataset: {
-    budget: number;
-    expense: number;
-    categoryName: string;
-  }[];
+  dataset: BarsDatasetType[];
   series: {
     dataKey: string;
     label: string;

@@ -1,23 +1,11 @@
+import { FC } from "react";
 import { Box } from "@mui/material";
 import { BarsDataset } from "@/_components/common/BarsDataset/BarsDataset";
+import { BarsDatasetType } from "@/_components/features/dashbord/type";
 
-const dataset = [
-  {
-    budget: 50000,
-    expense: 30000,
-    categoryName: "住宅",
-  },
-  {
-    budget: 10000,
-    expense: 40000,
-    categoryName: "光熱費",
-  },
-  {
-    budget: 40000,
-    expense: 30000,
-    categoryName: "日用品",
-  },
-];
+type LowerDashbordProps = {
+  dataset: BarsDatasetType[];
+};
 
 const xAxixsDataKey = "categoryName";
 
@@ -26,7 +14,7 @@ const series = [
   { dataKey: "expense", label: "出費" },
 ];
 
-export const LowerDashbord = async () => {
+export const LowerDashbord: FC<LowerDashbordProps> = async ({ dataset }) => {
   return (
     <Box
       sx={{
