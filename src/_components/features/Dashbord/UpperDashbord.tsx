@@ -1,11 +1,9 @@
 import { Box } from "@mui/material";
-import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import {
   formatCurrency,
-  calculateTotalAmount,
-  categoryTotals,
 } from "@/utils/financial";
-import { getMonthExpenses, getMonthBudgets } from "@/lib/db";
+import { FC } from "react";
+
 import { ChartWithLetter } from "@/_components/features/dashbord/ChartWithLetter";
 import { PieChartData } from "@/_components/features/dashbord/type";
 
@@ -14,10 +12,17 @@ type remainDaysReturn = {
   data: PieChartData[];
 };
 
-export const UpperDashbord = async () => {
-  const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
-  const today = getToday(); // 本日の時間を取得 UTC時間
-  const date = today; // NOTE: 今後変化する指定された日付
+type UpperDashbordProps = {
+  date: {
+    today: Date
+    targetDate: Date
+    lastDay: Date
+  }
+  totalBudgetsAmount: number
+  totalExpensesAmount: number
+}
+
+export const UpperDashbord:FC<UpperDashbordProps> = async ({date, totalBudgetsAmount, totalExpensesAmount}) => {
 
   // 色
   const lightgreen = "#b9f6ca";
@@ -49,20 +54,7 @@ export const UpperDashbord = async () => {
     }
   };
 
-  // 月の初日と最終日を取得する
-  const { firstDay, lastDay } = getStartAndEndOfMonth(date);
 
-  // 月の出費・予算を全て取得する
-  const monthExpenses = await getMonthExpenses(userId, firstDay, lastDay);
-  const monthBudgets = await getMonthBudgets(userId, firstDay, lastDay);
-
-  //  出費・予算の合計
-  const totalExpensesAmount = calculateTotalAmount(monthExpenses);
-  const totalBudgetsAmount = calculateTotalAmount(monthBudgets);
-
-  // 出費・予算のカテゴリー毎の合計 NOTE: カテゴリー毎の予算も出費と同じ型にするために変換
-  const expenseCategoryTotals = categoryTotals(monthExpenses);
-  const budgetCategoryTotals = categoryTotals(monthBudgets);
 
   // 予算と出費の割合を表すグラフのデータ
   const totalBudgetLeft = totalBudgetsAmount - totalExpensesAmount;
@@ -81,10 +73,10 @@ export const UpperDashbord = async () => {
   const formattedTotalExpensesAmount = formatCurrency(totalExpensesAmount);
   const formattedTotalBudgetsAmount = formatCurrency(totalBudgetsAmount);
 
-  const daysLeft = remainDaysStr(today, lastDay);
+  const daysLeft = remainDaysStr(date.today, date.lastDay);
 
   // formattedDateは関数化してutilsにおいてもいいかも　"ja-JP"で日本時間に変換
-  const formattedDate = date.toLocaleDateString("ja-JP", {
+  const formattedDate = date.targetDate.toLocaleDateString("ja-JP", {
     month: "long",
   });
 
