@@ -5,5 +5,9 @@ import { Category } from "@/types";
 
 // カテゴリを取得
 export const getCategories = async (): Promise<Category[]> => {
-  return await prisma.category.findMany()
+  return await prisma.category.findMany({
+    orderBy:{
+      id: 'asc'
+    }
+  })
 };
