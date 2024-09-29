@@ -3,6 +3,7 @@ import { getMonthExpenses, getMonthBudgets, getCategories } from "@/lib/db";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import { calculateTotalAmount, categoryTotals } from "@/utils/financial";
 import { BarsDatasetType } from "@/_components/features/dashbord/type";
+import { Box } from "@mui/material";
 
 export default async function Page() {
   const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
@@ -27,8 +28,8 @@ export default async function Page() {
   // カテゴリーを取得
   const categories = await getCategories();
   const dataset: BarsDatasetType[] = categories.map((category) => ({
-    budget: budgetCategoryTotals[category.id],
-    expense: expenseCategoryTotals[category.id],
+    budget: budgetCategoryTotals[category.id] ? budgetCategoryTotals[category.id] : 0,
+    expense: expenseCategoryTotals[category.id] ? expenseCategoryTotals[category.id] : 0,
     categoryName: category.name,
   }));
 
@@ -39,13 +40,14 @@ export default async function Page() {
   };
 
   return (
-    <>
+    <Box>
       <UpperDashbord
         date={date}
         totalBudgetsAmount={totalBudgetsAmount}
         totalExpensesAmount={totalExpensesAmount}
       />
+      {/* NOTE: Lowerのサイズを動的にしたい */}
       <LowerDashbord dataset={dataset} />
-    </>
+    </Box>
   );
 }

@@ -87,7 +87,6 @@ export const UpperDashbord:FC<UpperDashbordProps> = async ({date, totalBudgetsAm
       sx={{
         textAlign: "center",
         backgroundColor: "white",
-        marginTop: 2,
         marginBottom: 2,
       }}
     >

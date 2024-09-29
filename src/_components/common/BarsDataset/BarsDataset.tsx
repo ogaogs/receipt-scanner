@@ -15,7 +15,7 @@ type BarsDatasetProps = {
 };
 
 const chartSetting = {
-  height: 400,
+  height: 440,
   sx: {
     [`.${axisClasses.left} .${axisClasses.label}`]: {},
   },
