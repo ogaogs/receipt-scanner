@@ -1,10 +1,15 @@
 import { Box } from "@mui/material";
 import { formatCurrency } from "@/utils/financial";
-import { FC } from "react";
+import { FC, Suspense } from "react";
 
 import { ChartWithLetter } from "@/_components/features/dashbord/ChartWithLetter";
 import { PieChartData } from "@/_components/features/dashbord/type";
-import { lightgreen, green, blue, red } from "@/_components/features/dashbord/style"
+import {
+  lightgreen,
+  green,
+  blue,
+  red,
+} from "@/_components/features/dashbord/style";
 
 type remainDaysReturn = {
   text: string;
@@ -102,11 +107,15 @@ export const UpperDashbord: FC<UpperDashbordProps> = async ({
           <div>{formattedTotalBudgetsAmount}</div>
         </Box>
       </Box>
-      <ChartWithLetter
-        letter={formattedTotalExpensesAmount}
-        data={budgetExpenseData}
-      />
-      <ChartWithLetter letter={daysLeft.text} data={daysLeft.data} />
+      <Suspense fallback={"Loading"}>
+        <ChartWithLetter
+          letter={formattedTotalExpensesAmount}
+          data={budgetExpenseData}
+        />
+      </Suspense>
+      <Suspense fallback={"Loading"}>
+        <ChartWithLetter letter={daysLeft.text} data={daysLeft.data} />
+      </Suspense>
     </Box>
   );
 };
