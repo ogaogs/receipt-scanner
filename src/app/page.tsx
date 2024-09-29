@@ -1,7 +1,8 @@
 import { UpperDashbord, LowerDashbord } from "@/_components/features/dashbord";
-import { getMonthExpenses, getMonthBudgets } from "@/lib/db";
+import { getMonthExpenses, getMonthBudgets, getCategories } from "@/lib/db";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import { calculateTotalAmount, categoryTotals } from "@/utils/financial";
+import { BarsDatasetType } from "@/_components/features/dashbord/type";
 
 export default async function Page() {
   const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
@@ -23,29 +24,20 @@ export default async function Page() {
   const expenseCategoryTotals = categoryTotals(monthExpenses);
   const budgetCategoryTotals = categoryTotals(monthBudgets);
 
+  // カテゴリーを取得
+  const categories = await getCategories();
+  const dataset: BarsDatasetType[] = categories.map((category) => ({
+    budget: budgetCategoryTotals[category.id],
+    expense: expenseCategoryTotals[category.id],
+    categoryName: category.name,
+  }));
+
   const date = {
     today: today,
     targetDate: targetDate,
     lastDay: lastDay,
   };
 
-  const dataset = [
-    {
-      budget: 50000,
-      expense: 30000,
-      categoryName: "住宅",
-    },
-    {
-      budget: 10000,
-      expense: 40000,
-      categoryName: "光熱費",
-    },
-    {
-      budget: 40000,
-      expense: 30000,
-      categoryName: "日用品",
-    },
-  ];
   return (
     <>
       <UpperDashbord
