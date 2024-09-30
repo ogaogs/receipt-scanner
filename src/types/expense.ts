@@ -8,3 +8,8 @@ export type Expense = {
   userId: string;
   categoryId: number;
 };
+
+export type FirstAndLastExpenseDate = {
+  _min: { date: Date | null };
+  _max: { date: Date | null };
+};
