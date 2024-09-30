@@ -1,6 +1,5 @@
-"use client";
-
 import * as React from "react";
+import { getFirstAndLastExpense } from "@/lib/db/index";
 import {
   Box,
   Drawer,
@@ -16,23 +15,27 @@ import {
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const drawerWidth = "20%";
-const date = "9月22日";
-const proverb = "時は金なり";
 
-const card = (
-  <React.Fragment>
-    <CardContent>
-      <Typography gutterBottom sx={{ color: "text.secondary", fontSize: 14 }}>
-        {date}の一言
-      </Typography>
-      <Typography variant="h5" component="div">
-        {proverb}
-      </Typography>
-    </CardContent>
-  </React.Fragment>
-);
+export const Sidebar = async () => {
+  const date = "9月22日";
+  const proverb = "時は金なり";
+  const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
 
-export function Sidebar() {
+  const firstLastExpense = await getFirstAndLastExpense(userId);
+
+  const card = (
+    <React.Fragment>
+      <CardContent>
+        <Typography gutterBottom sx={{ color: "text.secondary", fontSize: 14 }}>
+          {date}の一言
+        </Typography>
+        <Typography variant="h5" component="div">
+          {proverb}
+        </Typography>
+      </CardContent>
+    </React.Fragment>
+  );
+
   return (
     <Drawer
       variant="permanent"
@@ -60,4 +63,4 @@ export function Sidebar() {
       </Box>
     </Drawer>
   );
-}
+};
