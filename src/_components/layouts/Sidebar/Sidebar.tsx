@@ -19,8 +19,8 @@ const drawerWidth = "20%";
 
 const getMonthsInRange = (
   firstAndLastExpenseDate: FirstAndLastExpenseDate
-): string[] => {
-  const monthsInRange: string[] = [];
+): Date[] => {
+  const monthsInRange: Date[] = [];
 
   if (firstAndLastExpenseDate._min.date && firstAndLastExpenseDate._max.date) {
     // minDateからmaxDateまでの月を取得
@@ -36,10 +36,10 @@ const getMonthsInRange = (
     );
 
     while (currentDate <= endDate) {
-      // 年と月を取得し、"YYYY-MM or M" の形式で格納
+      // 年と月を取得し、Data型でその年月の15日を保存
       const year = currentDate.getFullYear();
-      const month = (currentDate.getMonth() + 1).toString();
-      monthsInRange.push(`${year}-${month}`);
+      const month = currentDate.getMonth();
+      monthsInRange.push(new Date(year, month, 15)); // UTCでわかりづらいため、15日にし、年月は分かりやすいようにした
 
       // 次の月に移動
       currentDate.setMonth(currentDate.getMonth() + 1);
@@ -51,7 +51,7 @@ const getMonthsInRange = (
 export const Sidebar = async () => {
   const date = "9月22日";
   const proverb = "時は金なり";
-  const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
+  const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
 
   const firstLastExpense = await getFirstAndLastExpenseDate(userId);
 
