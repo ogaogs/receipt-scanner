@@ -1,4 +1,7 @@
-import { UpperDashboard, LowerDashboard } from "@/_components/features/dashboard";
+import {
+  UpperDashboard,
+  LowerDashboard,
+} from "@/_components/features/dashboard";
 import { getMonthExpenses, getMonthBudgets, getCategories } from "@/lib/db";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import { calculateTotalAmount, categoryTotals } from "@/utils/financial";
