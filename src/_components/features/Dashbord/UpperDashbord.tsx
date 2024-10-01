@@ -10,6 +10,7 @@ import {
   blue,
   red,
 } from "@/_components/features/dashbord/style";
+import { formatYearMonth } from "@/utils/time";
 
 type remainDaysReturn = {
   text: string;
@@ -74,10 +75,7 @@ export const UpperDashbord: FC<UpperDashbordProps> = async ({
 
   const daysLeft = remainDaysStr(date.today, date.lastDay);
 
-  // formattedDateは関数化してutilsにおいてもいいかも　"ja-JP"で日本時間に変換
-  const formattedDate = date.targetDate.toLocaleDateString("ja-JP", {
-    month: "long",
-  });
+  const formattedDate = formatYearMonth(date.targetDate);
 
   return (
     <Box
@@ -92,7 +90,7 @@ export const UpperDashbord: FC<UpperDashbordProps> = async ({
       <Box sx={{ width: 100, flexBasis: "20%" }}>
         <Box
           height={48}
-          width={80}
+          width={240}
           sx={{
             backgroundColor: blue,
             fontSize: "32px",

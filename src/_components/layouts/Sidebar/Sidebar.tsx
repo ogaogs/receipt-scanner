@@ -14,10 +14,11 @@ import {
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { FirstAndLastExpenseDate } from "@/types";
+import { formatYearMonth } from "@/utils/time";
 
 const drawerWidth = "20%";
 
-const getMonthsInRange = (
+const getDatesInRange = (
   firstAndLastExpenseDate: FirstAndLastExpenseDate
 ): Date[] => {
   const monthsInRange: Date[] = [];
@@ -55,8 +56,11 @@ export const Sidebar = async () => {
 
   const firstLastExpense = await getFirstAndLastExpenseDate(userId);
 
-  const monthsInRange = getMonthsInRange(firstLastExpense);
-  console.log(monthsInRange);
+  const datesInRange = getDatesInRange(firstLastExpense);
+  const dateDropdownElements = datesInRange.map((date) => {
+    return formatYearMonth(date);
+  });
+  console.log(dateDropdownElements);
 
   const card = (
     <React.Fragment>
