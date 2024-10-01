@@ -6,7 +6,7 @@ import { BarsDatasetType } from "@/_components/features/dashbord/type";
 import { Box } from "@mui/material";
 
 export default async function Page() {
-  const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
+  const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
   const today = getToday(); // 本日の時間を取得 UTC時間
   const targetDate = today; // NOTE: 今後変化する指定された日付
 
