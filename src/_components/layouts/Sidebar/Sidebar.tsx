@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { getFirstExpenseDate } from "@/lib/db/index";
 import {
   Box,
@@ -17,6 +17,11 @@ import { FirstExpenseDate } from "@/types";
 import { formatDate, getToday } from "@/utils/time";
 
 const drawerWidth = "20%";
+
+type dateDropdownElement = {
+  date: Date;
+  dateStr: string;
+};
 
 const getDatesInRange = (
   firstExpenseDate: FirstExpenseDate,
@@ -54,12 +59,12 @@ export const Sidebar = async () => {
   const firstExpense = await getFirstExpenseDate(userId);
 
   const datesInRange = getDatesInRange(firstExpense, today);
-  const dateDropdownElements = datesInRange.map((date) => {
-    return formatDate(date, { year: true, month: true });
+  const dateDropdownElements = datesInRange.map((date): dateDropdownElement => {
+    return {
+      date: date,
+      dateStr: formatDate(date, { year: true, month: true }),
+    };
   });
-  console.log(datesInRange);
-
-  console.log(dateDropdownElements);
 
   const card = (
     <React.Fragment>
@@ -85,7 +90,7 @@ export const Sidebar = async () => {
       }}
     >
       <Toolbar />
-      <FormControl sx={{ m: 1, minWidth: 80 }}>
+      <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
         <Select autoWidth defaultValue={"dashboard"}>
           <MenuItem value={"dashboard"}>ダッシュボード</MenuItem>
           <MenuItem value={"expenses"}>全ての出費</MenuItem>
@@ -95,6 +100,18 @@ export const Sidebar = async () => {
           <AddCircleOutlineIcon sx={{ m: 2 }} />
           出費を追加
         </Button>
+        <Select
+          // 最後の月をでファルとに選択 → 必然的に今月
+          defaultValue={dateDropdownElements[
+            dateDropdownElements.length - 1
+          ].date.toISOString()}
+        >
+          {dateDropdownElements.map((item, index) => (
+            <MenuItem key={index} value={item.date.toISOString()}>
+              {item.dateStr}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
       <Box sx={{ m: 1, minWidth: 80 }}>
         <Card variant="outlined">{card}</Card>
