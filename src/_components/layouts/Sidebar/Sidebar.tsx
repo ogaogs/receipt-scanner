@@ -1,5 +1,5 @@
 import * as React from "react";
-import { getFirstAndLastExpenseDate } from "@/lib/db/index";
+import { getFirstExpenseDate } from "@/lib/db/index";
 import {
   Box,
   Drawer,
@@ -13,30 +13,26 @@ import {
   Typography,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { FirstAndLastExpenseDate } from "@/types";
-import { formatYearMonth } from "@/utils/time";
+import { FirstExpenseDate } from "@/types";
+import { formatYearMonth, getToday } from "@/utils/time";
 
 const drawerWidth = "20%";
 
 const getDatesInRange = (
-  firstAndLastExpenseDate: FirstAndLastExpenseDate
+  firstExpenseDate: FirstExpenseDate,
+  today: Date
 ): Date[] => {
   const monthsInRange: Date[] = [];
 
-  if (firstAndLastExpenseDate._min.date && firstAndLastExpenseDate._max.date) {
+  if (firstExpenseDate._min.date) {
     // minDateからmaxDateまでの月を取得
     let currentDate = new Date(
-      firstAndLastExpenseDate._min.date.getFullYear(),
-      firstAndLastExpenseDate._min.date.getMonth(),
-      1
-    );
-    const endDate = new Date(
-      firstAndLastExpenseDate._max.date.getFullYear(),
-      firstAndLastExpenseDate._max.date.getMonth(),
+      firstExpenseDate._min.date.getFullYear(),
+      firstExpenseDate._min.date.getMonth(),
       1
     );
 
-    while (currentDate <= endDate) {
+    while (currentDate <= today) {
       // 年と月を取得し、Data型でその年月の15日を保存
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
@@ -50,16 +46,19 @@ const getDatesInRange = (
 };
 
 export const Sidebar = async () => {
+  const today = getToday();
   const date = "9月22日";
   const proverb = "時は金なり";
   const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
 
-  const firstLastExpense = await getFirstAndLastExpenseDate(userId);
+  const firstExpense = await getFirstExpenseDate(userId);
 
-  const datesInRange = getDatesInRange(firstLastExpense);
+  const datesInRange = getDatesInRange(firstExpense, today);
   const dateDropdownElements = datesInRange.map((date) => {
     return formatYearMonth(date);
   });
+  console.log(datesInRange);
+
   console.log(dateDropdownElements);
 
   const card = (

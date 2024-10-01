@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { cache } from "react";
-import { Expense, FirstAndLastExpenseDate } from "@/types";
+import { Expense, FirstExpenseDate } from "@/types";
 
 // 指定した月の出費を取得する
 export const getMonthExpenses = cache(
@@ -19,17 +19,14 @@ export const getMonthExpenses = cache(
   }
 );
 
-// 出費の最初のデータと最後のデータを取得する
-export const getFirstAndLastExpenseDate = cache(
-  async (userId: string): Promise<FirstAndLastExpenseDate> => {
+// 出費の最初のデータを取得する
+export const getFirstExpenseDate = cache(
+  async (userId: string): Promise<FirstExpenseDate> => {
     return await prisma.expense.aggregate({
       where: {
         userId: userId,
       },
       _min: {
-        date: true,
-      },
-      _max: {
         date: true,
       },
     });
