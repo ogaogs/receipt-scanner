@@ -17,10 +17,15 @@ export const getStartAndEndOfMonth = (date: Date): StartAndEndOfMonth => {
   return { firstDay, lastDay };
 };
 
-// 2024-10-14T15:00:00.000Z を"2024年10月"とする
-export const formatYearMonth = (date: Date): string => {
+// 2024-10-14T15:00:00.000Z を指定した形に変換する(*何も指定しないと 2024/10/15 がかえる)
+export const formatDate = (
+  date: Date,
+  formatOptions: { year?: boolean; month?: boolean; day?: boolean } = {}
+): string => {
+  const { year, month, day } = formatOptions;
   return date.toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
+    year: year ? "numeric" : undefined,
+    month: month ? "long" : undefined,
+    day: day ? "numeric" : undefined,
   });
 };

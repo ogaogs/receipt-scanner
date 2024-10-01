@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { FirstExpenseDate } from "@/types";
-import { formatYearMonth, getToday } from "@/utils/time";
+import { formatDate, getToday } from "@/utils/time";
 
 const drawerWidth = "20%";
 
@@ -47,7 +47,7 @@ const getDatesInRange = (
 
 export const Sidebar = async () => {
   const today = getToday();
-  const date = "9月22日";
+  const foramtedToday = formatDate(today, { month: true, day: true });
   const proverb = "時は金なり";
   const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
 
@@ -55,7 +55,7 @@ export const Sidebar = async () => {
 
   const datesInRange = getDatesInRange(firstExpense, today);
   const dateDropdownElements = datesInRange.map((date) => {
-    return formatYearMonth(date);
+    return formatDate(date, { year: true, month: true });
   });
   console.log(datesInRange);
 
@@ -65,7 +65,7 @@ export const Sidebar = async () => {
     <React.Fragment>
       <CardContent>
         <Typography gutterBottom sx={{ color: "text.secondary", fontSize: 14 }}>
-          {date}の一言
+          {foramtedToday}の一言
         </Typography>
         <Typography variant="h5" component="div">
           {proverb}
