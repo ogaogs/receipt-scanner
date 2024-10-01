@@ -2,14 +2,14 @@ import { Box } from "@mui/material";
 import { formatCurrency } from "@/utils/financial";
 import { FC, Suspense } from "react";
 
-import { ChartWithLetter } from "@/_components/features/dashbord/ChartWithLetter";
-import { PieChartData } from "@/_components/features/dashbord/type";
+import { ChartWithLetter } from "@/_components/features/dashboard/ChartWithLetter";
+import { PieChartData } from "@/_components/features/dashboard/type";
 import {
   lightgreen,
   green,
   blue,
   red,
-} from "@/_components/features/dashbord/style";
+} from "@/_components/features/dashboard/style";
 import { formatYearMonth } from "@/utils/time";
 
 type remainDaysReturn = {
@@ -17,7 +17,7 @@ type remainDaysReturn = {
   data: PieChartData[];
 };
 
-type UpperDashbordProps = {
+type UpperDashboardProps = {
   date: {
     today: Date;
     targetDate: Date;
@@ -27,7 +27,7 @@ type UpperDashbordProps = {
   totalExpensesAmount: number;
 };
 
-export const UpperDashbord: FC<UpperDashbordProps> = async ({
+export const UpperDashboard: FC<UpperDashboardProps> = async ({
   date,
   totalBudgetsAmount,
   totalExpensesAmount,
