@@ -2,11 +2,11 @@
 
 import { FC } from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { PieChartData } from "@/_components/features/dashbord/type"
+import { PieChartData } from "@/_components/features/dashboard/type";
 
 type DoughnutPieChartProps = {
-  data: PieChartData[]
-}
+  data: PieChartData[];
+};
 
 export const DoughnutPieChart: FC<DoughnutPieChartProps> = ({ data }) => {
   return (

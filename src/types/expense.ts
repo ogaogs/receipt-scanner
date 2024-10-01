@@ -9,7 +9,6 @@ export type Expense = {
   categoryId: number;
 };
 
-export type FirstAndLastExpenseDate = {
+export type FirstExpenseDate = {
   _min: { date: Date | null };
-  _max: { date: Date | null };
 };

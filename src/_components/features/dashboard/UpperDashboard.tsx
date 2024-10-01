@@ -2,21 +2,22 @@ import { Box } from "@mui/material";
 import { formatCurrency } from "@/utils/financial";
 import { FC, Suspense } from "react";
 
-import { ChartWithLetter } from "@/_components/features/dashbord/ChartWithLetter";
-import { PieChartData } from "@/_components/features/dashbord/type";
+import { ChartWithLetter } from "@/_components/features/dashboard/ChartWithLetter";
+import { PieChartData } from "@/_components/features/dashboard/type";
 import {
   lightgreen,
   green,
   blue,
   red,
-} from "@/_components/features/dashbord/style";
+} from "@/_components/features/dashboard/style";
+import { formatDate } from "@/utils/time";
 
 type remainDaysReturn = {
   text: string;
   data: PieChartData[];
 };
 
-type UpperDashbordProps = {
+type UpperDashboardProps = {
   date: {
     today: Date;
     targetDate: Date;
@@ -26,7 +27,7 @@ type UpperDashbordProps = {
   totalExpensesAmount: number;
 };
 
-export const UpperDashbord: FC<UpperDashbordProps> = async ({
+export const UpperDashboard: FC<UpperDashboardProps> = async ({
   date,
   totalBudgetsAmount,
   totalExpensesAmount,
@@ -74,9 +75,9 @@ export const UpperDashbord: FC<UpperDashbordProps> = async ({
 
   const daysLeft = remainDaysStr(date.today, date.lastDay);
 
-  // formattedDateは関数化してutilsにおいてもいいかも　"ja-JP"で日本時間に変換
-  const formattedDate = date.targetDate.toLocaleDateString("ja-JP", {
-    month: "long",
+  const formattedDate = formatDate(date.targetDate, {
+    year: true,
+    month: true,
   });
 
   return (
@@ -92,7 +93,7 @@ export const UpperDashbord: FC<UpperDashbordProps> = async ({
       <Box sx={{ width: 100, flexBasis: "20%" }}>
         <Box
           height={48}
-          width={80}
+          width={240}
           sx={{
             backgroundColor: blue,
             fontSize: "32px",

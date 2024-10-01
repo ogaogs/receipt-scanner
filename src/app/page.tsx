@@ -1,8 +1,11 @@
-import { UpperDashbord, LowerDashbord } from "@/_components/features/dashbord";
+import {
+  UpperDashboard,
+  LowerDashboard,
+} from "@/_components/features/dashboard";
 import { getMonthExpenses, getMonthBudgets, getCategories } from "@/lib/db";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import { calculateTotalAmount, categoryTotals } from "@/utils/financial";
-import { BarsDatasetType } from "@/_components/features/dashbord/type";
+import { BarsDatasetType } from "@/_components/features/dashboard/type";
 import { Box } from "@mui/material";
 
 export default async function Page() {
@@ -45,13 +48,13 @@ export default async function Page() {
 
   return (
     <Box>
-      <UpperDashbord
+      <UpperDashboard
         date={date}
         totalBudgetsAmount={totalBudgetsAmount}
         totalExpensesAmount={totalExpensesAmount}
       />
       {/* NOTE: Lowerのサイズを動的にしたい */}
-      <LowerDashbord dataset={dataset} />
+      <LowerDashboard dataset={dataset} />
     </Box>
   );
 }

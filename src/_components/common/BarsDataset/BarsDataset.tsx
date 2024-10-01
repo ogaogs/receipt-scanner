@@ -2,7 +2,7 @@
 
 import { BarChart } from "@mui/x-charts/BarChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
-import { BarsDatasetType } from "@/_components/features/dashbord/type";
+import { BarsDatasetType } from "@/_components/features/dashboard/type";
 import { FC } from "react";
 
 type BarsDatasetProps = {

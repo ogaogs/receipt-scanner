@@ -1,16 +1,16 @@
 import { FC, Suspense } from "react";
 import { Box } from "@mui/material";
 import { BarsDataset } from "@/_components/common/BarsDataset/BarsDataset";
-import { BarsDatasetType } from "@/_components/features/dashbord/type";
-import { green, blue, red } from "@/_components/features/dashbord/style";
+import { BarsDatasetType } from "@/_components/features/dashboard/type";
+import { green, blue, red } from "@/_components/features/dashboard/style";
 
-type LowerDashbordProps = {
+type LowerDashboardProps = {
   dataset: BarsDatasetType[];
 };
 
 const xAxixsDataKey = "categoryName";
 
-export const LowerDashbord: FC<LowerDashbordProps> = async ({ dataset }) => {
+export const LowerDashboard: FC<LowerDashboardProps> = async ({ dataset }) => {
   // NOTE: 出費の色が expense > budget = red, expense <= budget = blue にしたい
   const series = [
     { dataKey: "budget", label: "予算", color: green },

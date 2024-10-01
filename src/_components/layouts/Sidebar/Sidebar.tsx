@@ -1,5 +1,5 @@
-import * as React from "react";
-import { getFirstAndLastExpenseDate } from "@/lib/db/index";
+import React, { useState } from "react";
+import { getFirstExpenseDate } from "@/lib/db/index";
 import {
   Box,
   Drawer,
@@ -13,33 +13,35 @@ import {
   Typography,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { FirstAndLastExpenseDate } from "@/types";
+import { FirstExpenseDate } from "@/types";
+import { formatDate, getToday } from "@/utils/time";
 
 const drawerWidth = "20%";
 
-const getMonthsInRange = (
-  firstAndLastExpenseDate: FirstAndLastExpenseDate
-): string[] => {
-  const monthsInRange: string[] = [];
+type dateDropdownElement = {
+  date: Date;
+  dateStr: string;
+};
 
-  if (firstAndLastExpenseDate._min.date && firstAndLastExpenseDate._max.date) {
+const getDatesInRange = (
+  firstExpenseDate: FirstExpenseDate,
+  today: Date
+): Date[] => {
+  const monthsInRange: Date[] = [];
+
+  if (firstExpenseDate._min.date) {
     // minDateからmaxDateまでの月を取得
     let currentDate = new Date(
-      firstAndLastExpenseDate._min.date.getFullYear(),
-      firstAndLastExpenseDate._min.date.getMonth(),
-      1
-    );
-    const endDate = new Date(
-      firstAndLastExpenseDate._max.date.getFullYear(),
-      firstAndLastExpenseDate._max.date.getMonth(),
+      firstExpenseDate._min.date.getFullYear(),
+      firstExpenseDate._min.date.getMonth(),
       1
     );
 
-    while (currentDate <= endDate) {
-      // 年と月を取得し、"YYYY-MM or M" の形式で格納
+    while (currentDate <= today) {
+      // 年と月を取得し、Data型でその年月の15日を保存
       const year = currentDate.getFullYear();
-      const month = (currentDate.getMonth() + 1).toString();
-      monthsInRange.push(`${year}-${month}`);
+      const month = currentDate.getMonth();
+      monthsInRange.push(new Date(year, month, 15)); // UTCでわかりづらいため、15日にし、年月は分かりやすいようにした
 
       // 次の月に移動
       currentDate.setMonth(currentDate.getMonth() + 1);
@@ -49,20 +51,26 @@ const getMonthsInRange = (
 };
 
 export const Sidebar = async () => {
-  const date = "9月22日";
+  const today = getToday();
+  const foramtedToday = formatDate(today, { month: true, day: true });
   const proverb = "時は金なり";
-  const userId = "30d06a0b-dcb9-4060-911e-d15b50e2b7e0";
+  const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
 
-  const firstLastExpense = await getFirstAndLastExpenseDate(userId);
+  const firstExpense = await getFirstExpenseDate(userId);
 
-  const monthsInRange = getMonthsInRange(firstLastExpense);
-  console.log(monthsInRange);
+  const datesInRange = getDatesInRange(firstExpense, today);
+  const dateDropdownElements = datesInRange.map((date): dateDropdownElement => {
+    return {
+      date: date,
+      dateStr: formatDate(date, { year: true, month: true }),
+    };
+  });
 
   const card = (
     <React.Fragment>
       <CardContent>
         <Typography gutterBottom sx={{ color: "text.secondary", fontSize: 14 }}>
-          {date}の一言
+          {foramtedToday}の一言
         </Typography>
         <Typography variant="h5" component="div">
           {proverb}
@@ -82,7 +90,7 @@ export const Sidebar = async () => {
       }}
     >
       <Toolbar />
-      <FormControl sx={{ m: 1, minWidth: 80 }}>
+      <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
         <Select autoWidth defaultValue={"dashboard"}>
           <MenuItem value={"dashboard"}>ダッシュボード</MenuItem>
           <MenuItem value={"expenses"}>全ての出費</MenuItem>
@@ -92,6 +100,18 @@ export const Sidebar = async () => {
           <AddCircleOutlineIcon sx={{ m: 2 }} />
           出費を追加
         </Button>
+        <Select
+          // 最後の月をでファルとに選択 → 必然的に今月
+          defaultValue={dateDropdownElements[
+            dateDropdownElements.length - 1
+          ].date.toISOString()}
+        >
+          {dateDropdownElements.map((item, index) => (
+            <MenuItem key={index} value={item.date.toISOString()}>
+              {item.dateStr}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
       <Box sx={{ m: 1, minWidth: 80 }}>
         <Card variant="outlined">{card}</Card>

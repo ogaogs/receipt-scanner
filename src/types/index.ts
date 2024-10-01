@@ -1,5 +1,5 @@
 import { Budget } from "@/types/budget";
-import { Expense, FirstAndLastExpenseDate } from "@/types/expense";
+import { Expense, FirstExpenseDate } from "@/types/expense";
 import { Category } from "@/types/category";
 
-export type { Budget, Expense, FirstAndLastExpenseDate, Category };
+export type { Budget, Expense, FirstExpenseDate, Category };
