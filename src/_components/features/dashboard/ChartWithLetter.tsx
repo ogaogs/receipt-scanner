@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Box } from "@mui/material";
 import { DoughnutPieChart } from "@/_components/common/DoughnutPieChart/DoughnutPieChart";
-import { PieChartData } from "@/_components/features/dashbord/type"
+import { PieChartData } from "@/_components/common/DoughnutPieChart/DoughnutPieChart";
 
 export type ChartWithLetterProps = {
   letter: string;
@@ -25,7 +25,7 @@ export const ChartWithLetter: FC<ChartWithLetterProps> = ({ letter, data }) => {
           display: "flex",
         }}
       >
-        <DoughnutPieChart data={data}/>
+        <DoughnutPieChart data={data} />
         <Box
           sx={{
             position: "absolute",

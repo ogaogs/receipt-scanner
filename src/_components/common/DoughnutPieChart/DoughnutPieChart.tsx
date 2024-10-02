@@ -2,7 +2,13 @@
 
 import { FC } from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { PieChartData } from "@/_components/features/dashboard/type";
+
+export type PieChartData = {
+  id: number;
+  value: number;
+  label: string;
+  color: string;
+};
 
 type DoughnutPieChartProps = {
   data: PieChartData[];

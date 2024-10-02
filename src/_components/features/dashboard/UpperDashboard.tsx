@@ -3,7 +3,7 @@ import { formatCurrency } from "@/utils/financial";
 import { FC, Suspense } from "react";
 
 import { ChartWithLetter } from "@/_components/features/dashboard/ChartWithLetter";
-import { PieChartData } from "@/_components/features/dashboard/type";
+import { PieChartData } from "@/_components/common/DoughnutPieChart/DoughnutPieChart";
 import {
   lightgreen,
   green,

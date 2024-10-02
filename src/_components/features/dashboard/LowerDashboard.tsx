@@ -1,7 +1,7 @@
 import { FC, Suspense } from "react";
 import { Box } from "@mui/material";
 import { BarsDataset } from "@/_components/common/BarsDataset/BarsDataset";
-import { BarsDatasetType } from "@/_components/features/dashboard/type";
+import { BarsDatasetType } from "@/_components/common/BarsDataset/BarsDataset";
 import { green, blue, red } from "@/_components/features/dashboard/style";
 
 type LowerDashboardProps = {
