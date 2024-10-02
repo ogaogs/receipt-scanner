@@ -5,7 +5,7 @@ import {
 import { getMonthExpenses, getMonthBudgets, getCategories } from "@/lib/db";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import { calculateTotalAmount, categoryTotals } from "@/utils/financial";
-import { BarsDatasetType } from "@/_components/features/dashboard/type";
+import { BarsDatasetType } from "@/_components/common/BarsDataset/BarsDataset";
 import { Box } from "@mui/material";
 
 export default async function Page() {
