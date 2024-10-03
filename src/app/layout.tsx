@@ -33,9 +33,8 @@ export default function RootLayout({
         style={{ height: "100vh" }}
       >
         <Header />
-        <Toolbar />
 
-        <Box display="flex" flexDirection="row" height="100%">
+        <Box display="flex" flexDirection="row" height="100%" paddingTop={8}>
           <Box
             component="main"
             height="100%"
