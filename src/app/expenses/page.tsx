@@ -25,6 +25,7 @@ export default async function Page() {
     date: expense.date,
     storeName: expense.storeName,
     amount: expense.amount,
+    category_id: expense.categoryId,
     category: expense.category.name,
   }));
   return (

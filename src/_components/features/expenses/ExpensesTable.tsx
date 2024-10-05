@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { useState, FC } from "react";
 import {
   Table,
   TableBody,
@@ -12,20 +12,29 @@ import {
   Box,
 } from "@mui/material";
 import { formatDate } from "@/utils/time";
-
-type RowType = {
-  expense_id: string;
-  date: Date;
-  storeName: string;
-  amount: number;
-  category: string;
-};
+import { ExpensesDialog } from "@/_components/features/expenses";
+import { RowType } from "@/_components/features/expenses/type";
 
 type ExpensesTableProps = {
   rows: RowType[];
 };
 
 export const ExpensesTable: FC<ExpensesTableProps> = ({ rows }) => {
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<RowType | null>(null);
+
+  // 列がクリックされたときに詳細を表示する関数
+  const handleClick = (item: RowType) => {
+    setSelectedItem(item);
+    setOpen(true);
+  };
+
+  // ダイアログを閉じる関数
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedItem(null);
+  };
+
   return (
     <Box>
       <TableContainer component={Paper} style={{ maxHeight: 640 }}>
@@ -44,6 +53,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows }) => {
                 key={row.expense_id}
                 hover
                 style={{ cursor: "pointer" }}
+                onClick={() => handleClick(row)}
               >
                 <TableCell>
                   {formatDate(row.date, { month: true, day: true })}
@@ -56,6 +66,12 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <ExpensesDialog
+        handleClose={handleClose}
+        open={open}
+        selectedItem={selectedItem}
+      />
     </Box>
   );
 };
