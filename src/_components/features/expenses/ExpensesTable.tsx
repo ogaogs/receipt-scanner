@@ -38,6 +38,9 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
     setSelectedItem(null);
   };
 
+  const headers = ["日付", "店名", "金額", "カテゴリー"];
+  const tableCellStyle = { borderBottom: "solid black" };
+
   return (
     <Box>
       <TableContainer component={Paper} style={{ maxHeight: 640 }}>
@@ -50,10 +53,11 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>日付</TableCell>
-              <TableCell>店名</TableCell>
-              <TableCell>金額</TableCell>
-              <TableCell>カテゴリー</TableCell>
+              {headers.map((header) => (
+                <TableCell key={header} sx={tableCellStyle}>
+                  {header}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
