@@ -96,10 +96,12 @@ export const Sidebar = async () => {
           <MenuItem value={"expenses"}>全ての出費</MenuItem>
           <MenuItem value={"budgets"}>予算の編集</MenuItem>
         </Select>
-        <Button variant="outlined" sx={{}}>
-          <AddCircleOutlineIcon sx={{ m: 2 }} />
-          出費を追加
-        </Button>
+      </FormControl>
+      <Button variant="outlined" sx={{}}>
+        <AddCircleOutlineIcon sx={{ m: 2 }} />
+        出費を追加
+      </Button>
+      <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
         <Select
           // 最後の月をでファルとに選択 → 必然的に今月
           defaultValue={dateDropdownElements[
