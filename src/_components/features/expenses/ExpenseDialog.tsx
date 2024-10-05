@@ -11,20 +11,24 @@ import {
   FormControl,
   Select,
   SelectChangeEvent,
+  InputLabel,
 } from "@mui/material";
 import { formatDate } from "@/utils/time";
 import { RowType } from "@/_components/features/expenses/type";
+import { Category } from "@/types";
 
 type ExpensesDialogProps = {
   handleClose: () => void;
   open: boolean;
   selectedItem: RowType | null;
+  categories: Category[];
 };
 
 export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   handleClose,
   open,
   selectedItem,
+  categories,
 }) => {
   const [category, setCategory] = React.useState<number | undefined>(
     selectedItem?.category_id
@@ -66,18 +70,16 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                 variant="filled"
               />
               <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel variant="filled">カテゴリー</InputLabel>
                 <Select
                   native
-                  value={category}
                   onChange={handleChange}
                   variant="filled"
                   defaultValue={selectedItem.category_id}
                 >
-                  {/* TODO: ここをカテゴリーの実際のデータを使って、mapするようにする。 */}
-                  <option aria-label="None" value="" />
-                  <option value={1}>Ten</option>
-                  <option value={2}>Twenty</option>
-                  <option value={3}>Thirty</option>
+                  {categories.map((category) => (
+                    <option value={category.id}>{category.name}</option>
+                  ))}
                 </Select>
               </FormControl>
             </Box>

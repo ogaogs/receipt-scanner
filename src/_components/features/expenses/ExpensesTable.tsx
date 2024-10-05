@@ -14,12 +14,14 @@ import {
 import { formatDate } from "@/utils/time";
 import { ExpensesDialog } from "@/_components/features/expenses";
 import { RowType } from "@/_components/features/expenses/type";
+import { Category } from "@/types";
 
 type ExpensesTableProps = {
   rows: RowType[];
+  categories: Category[];
 };
 
-export const ExpensesTable: FC<ExpensesTableProps> = ({ rows }) => {
+export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RowType | null>(null);
 
@@ -71,6 +73,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows }) => {
         handleClose={handleClose}
         open={open}
         selectedItem={selectedItem}
+        categories={categories}
       />
     </Box>
   );
