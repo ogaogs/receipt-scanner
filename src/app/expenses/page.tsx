@@ -1,4 +1,4 @@
-import { getMonthExpensesWithCategory } from "@/lib/db";
+import { getMonthExpensesWithCategory, getCategories } from "@/lib/db";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import React from "react";
 import { Box } from "@mui/material";
@@ -19,17 +19,20 @@ export default async function Page() {
     lastDay
   );
 
+  const categories = await getCategories();
+
   // 出費を特定のフォーマットにする
   const rows = monthExpensesWithCate.map((expense) => ({
     expense_id: expense.id,
     date: expense.date,
     storeName: expense.storeName,
     amount: expense.amount,
+    category_id: expense.categoryId,
     category: expense.category.name,
   }));
   return (
     <Box>
-      <ExpensesTable rows={rows} />
+      <ExpensesTable rows={rows} categories={categories} />
     </Box>
   );
 }
