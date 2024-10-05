@@ -17,7 +17,6 @@
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
     "@mui/x-charts": "^7.18.0",
-    "@mui/x-data-grid": "^7.19.0",
     "@prisma/client": "^5.19.1",
     "next": "14.2.13",
     "react": "^18",
