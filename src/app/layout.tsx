@@ -42,6 +42,7 @@ export default function RootLayout({
             sx={{
               backgroundColor: "#DDDDDD",
               paddingX: 8,
+              paddingY: 2,
             }}
           >
             {children}
