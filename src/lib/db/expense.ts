@@ -32,3 +32,24 @@ export const getFirstExpenseDate = cache(
     });
   }
 );
+
+// 指定した月の出費をカテゴリーと共に取得する。
+export const getMonthExpensesWithCategory = cache(
+  async (userId: string, firstDay: Date, lastDay: Date) => {
+    return await prisma.expense.findMany({
+      where: {
+        date: {
+          gte: firstDay,
+          lt: lastDay,
+        },
+        userId: userId,
+      },
+      include: {
+        category: true,
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+  }
+);
