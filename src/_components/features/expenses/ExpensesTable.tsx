@@ -12,6 +12,7 @@ import {
   Box,
 } from "@mui/material";
 import { formatDate } from "@/utils/time";
+import { formatCurrency } from "@/utils/financial";
 import { ExpensesDialog } from "@/_components/features/expenses";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
@@ -40,7 +41,13 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
   return (
     <Box>
       <TableContainer component={Paper} style={{ maxHeight: 640 }}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table
+          stickyHeader
+          aria-label="sticky table"
+          sx={{
+            "& .MuiTableCell-root": { width: "80ch", textAlign: "center" },
+          }}
+        >
           <TableHead>
             <TableRow>
               <TableCell>日付</TableCell>
@@ -61,7 +68,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
                   {formatDate(row.date, { month: true, day: true })}
                 </TableCell>
                 <TableCell>{row.storeName}</TableCell>
-                <TableCell>{row.amount}</TableCell>
+                <TableCell>{formatCurrency(row.amount)}</TableCell>
                 <TableCell>{row.category}</TableCell>
               </TableRow>
             ))}
