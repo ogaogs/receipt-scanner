@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, FC } from "react";
+import React, { useState, FC, useEffect, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -16,15 +16,37 @@ import { formatCurrency } from "@/utils/financial";
 import { ExpensesDialog } from "@/_components/features/expenses";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
+import { getAndFormatExpenses } from "@/_components/features/expenses/expensesServer";
+// import { getMonthExpensesWithCategory } from "@/lib/db";
 
 type ExpensesTableProps = {
-  rows: RowType[];
+  userId: string;
+  firstDay: Date;
+  lastDay: Date;
   categories: Category[];
 };
 
-export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
+export const ExpensesTable: FC<ExpensesTableProps> = ({
+  userId,
+  firstDay,
+  lastDay,
+  categories,
+}) => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RowType | null>(null);
+  const [rows, setRows] = useState<RowType[]>([]);
+
+  useEffect(() => {
+    const setFormattedRows = async () => {
+      const formattedExpenses = await getAndFormatExpenses(
+        userId,
+        firstDay,
+        lastDay
+      );
+      setRows(formattedExpenses);
+    };
+    setFormattedRows();
+  }, [userId, firstDay, lastDay]);
 
   // 列がクリックされたときに詳細を表示する関数
   const handleClick = (item: RowType) => {
@@ -85,6 +107,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
         open={open}
         selectedItem={selectedItem}
         categories={categories}
+        setRows={setRows}
       />
     </Box>
   );

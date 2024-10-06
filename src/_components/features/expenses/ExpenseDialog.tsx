@@ -15,18 +15,20 @@ import {
   FilledInput,
   InputAdornment,
 } from "@mui/material";
-import { RowType } from "@/_components/features/expenses/type";
-import { Category } from "@/types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { RowType } from "@/_components/features/expenses/type";
+import { Category } from "@/types";
+import { formatAndUpdateExpense } from "@/_components/features/expenses/expensesServer";
 
 type ExpensesDialogProps = {
   handleClose: () => void;
   open: boolean;
   selectedItem: RowType | null;
   categories: Category[];
+  setRows: React.Dispatch<React.SetStateAction<RowType[]>>;
 };
 
 export const ExpensesDialog: FC<ExpensesDialogProps> = ({
@@ -34,6 +36,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   open,
   selectedItem,
   categories,
+  setRows,
 }) => {
   const dateRef = useRef<HTMLInputElement>(null);
   const storeNameRef = useRef<HTMLInputElement>(null);
@@ -41,18 +44,30 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   const categoryRef = useRef<HTMLInputElement>(null);
 
   const upddateExpenses = () => {
-    const updatedData = {
-      expense_id: selectedItem?.expense_id,
-      date: dateRef.current?.value,
-      storeName: storeNameRef.current?.value,
-      amount: Number(amountRef.current?.value),
-      category_id: categoryRef.current?.value,
-    };
+    if (
+      selectedItem?.expense_id &&
+      dateRef.current?.value &&
+      storeNameRef.current?.value &&
+      amountRef.current?.value &&
+      categoryRef.current?.value
+    ) {
+      try {
+        formatAndUpdateExpense(
+          selectedItem.expense_id,
+          dateRef.current.value,
+          storeNameRef.current.value,
+          Number(amountRef.current.value),
+          Number(categoryRef.current.value)
+        );
+      } catch (error) {
+        // TODO: エラーの対応を考える
+        console.log(error);
+      }
+    } else {
+      // TODO: エラーの対応を考える
+      console.log("The selected values are invalid");
+    }
 
-    // Log the updated data to the console
-    console.log("Updated data:", updatedData);
-
-    // Optionally: Close the dialog after logging
     handleClose();
   };
   return (
