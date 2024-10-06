@@ -12,7 +12,8 @@ import {
   Select,
   SelectChangeEvent,
   InputLabel,
-  useMediaQuery,
+  FilledInput,
+  InputAdornment,
 } from "@mui/material";
 import { formatDate } from "@/utils/time";
 import { RowType } from "@/_components/features/expenses/type";
@@ -73,12 +74,16 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                   defaultValue={selectedItem.storeName}
                   variant="filled"
                 />
-                <TextField
-                  id="amount"
-                  label="金額"
-                  defaultValue={selectedItem.amount}
-                  variant="filled"
-                />
+                <FormControl sx={{ m: 1, minWidth: 120 }} variant="filled">
+                  <InputLabel id="amount">金額</InputLabel>
+                  <FilledInput
+                    startAdornment={
+                      <InputAdornment position="start">¥</InputAdornment>
+                    }
+                    type="number"
+                    defaultValue={selectedItem.amount}
+                  />
+                </FormControl>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                   <InputLabel variant="filled">カテゴリー</InputLabel>
                   <Select
