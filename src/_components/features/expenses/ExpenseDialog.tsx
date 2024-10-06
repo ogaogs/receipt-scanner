@@ -12,11 +12,15 @@ import {
   Select,
   SelectChangeEvent,
   InputLabel,
-  useMediaQuery,
+  FilledInput,
+  InputAdornment,
 } from "@mui/material";
-import { formatDate } from "@/utils/time";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 type ExpensesDialogProps = {
   handleClose: () => void;
@@ -58,27 +62,39 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                 component="form"
                 sx={{ "& .MuiTextField-root": { m: 1 } }}
               >
-                <TextField
-                  id="date"
-                  label="日付"
-                  defaultValue={formatDate(selectedItem.date, {
-                    month: true,
-                    day: true,
-                  })}
-                  variant="filled"
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      defaultValue={dayjs(selectedItem.date)}
+                      label="日付"
+                      slotProps={{
+                        calendarHeader: {
+                          format: "YYYY年MM月", // カレンダーの年月の部分
+                        },
+                        textField: {
+                          variant: "filled",
+                        },
+                      }}
+                      format="YYYY年MM月DD" // 入力欄
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
                 <TextField
                   id="store-name"
                   label="店名"
                   defaultValue={selectedItem.storeName}
                   variant="filled"
                 />
-                <TextField
-                  id="amount"
-                  label="金額"
-                  defaultValue={selectedItem.amount}
-                  variant="filled"
-                />
+                <FormControl sx={{ m: 1, minWidth: 120 }} variant="filled">
+                  <InputLabel id="amount">金額</InputLabel>
+                  <FilledInput
+                    startAdornment={
+                      <InputAdornment position="start">¥</InputAdornment>
+                    }
+                    type="number"
+                    defaultValue={selectedItem.amount}
+                  />
+                </FormControl>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                   <InputLabel variant="filled">カテゴリー</InputLabel>
                   <Select
