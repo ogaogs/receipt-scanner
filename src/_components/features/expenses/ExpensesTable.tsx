@@ -36,16 +36,21 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
   const [selectedItem, setSelectedItem] = useState<RowType | null>(null);
   const [rows, setRows] = useState<RowType[]>([]);
 
+  const getExpensesAndSetRows: (
+    userId: string,
+    firstDay: Date,
+    lastDay: Date
+  ) => Promise<void> = async () => {
+    const formattedExpenses = await getAndFormatExpenses(
+      userId,
+      firstDay,
+      lastDay
+    );
+    setRows(formattedExpenses);
+  };
+
   useEffect(() => {
-    const setFormattedRows = async () => {
-      const formattedExpenses = await getAndFormatExpenses(
-        userId,
-        firstDay,
-        lastDay
-      );
-      setRows(formattedExpenses);
-    };
-    setFormattedRows();
+    getExpensesAndSetRows(userId, firstDay, lastDay);
   }, [userId, firstDay, lastDay]);
 
   // 列がクリックされたときに詳細を表示する関数
@@ -107,10 +112,10 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
         open={open}
         selectedItem={selectedItem}
         categories={categories}
-        setRows={setRows}
         userId={userId}
         firstDay={firstDay}
         lastDay={lastDay}
+        getExpensesAndSetRows={getExpensesAndSetRows}
       />
     </Box>
   );

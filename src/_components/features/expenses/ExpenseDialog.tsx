@@ -31,10 +31,14 @@ type ExpensesDialogProps = {
   open: boolean;
   selectedItem: RowType | null;
   categories: Category[];
-  setRows: React.Dispatch<React.SetStateAction<RowType[]>>;
   userId: string;
   firstDay: Date;
   lastDay: Date;
+  getExpensesAndSetRows: (
+    userId: string,
+    firstDay: Date,
+    lastDay: Date
+  ) => Promise<void>;
 };
 
 export const ExpensesDialog: FC<ExpensesDialogProps> = ({
@@ -42,10 +46,10 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   open,
   selectedItem,
   categories,
-  setRows,
   userId,
   firstDay,
   lastDay,
+  getExpensesAndSetRows,
 }) => {
   const dateRef = useRef<HTMLInputElement>(null);
   const storeNameRef = useRef<HTMLInputElement>(null);
@@ -77,15 +81,8 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
       console.log("The selected values are invalid");
     }
 
-    const setFormattedRows = async () => {
-      const formattedExpenses = await getAndFormatExpenses(
-        userId,
-        firstDay,
-        lastDay
-      );
-      setRows(formattedExpenses);
-    };
-    setFormattedRows();
+    // データを再取得し、rowsをセットする
+    getExpensesAndSetRows(userId, firstDay, lastDay);
 
     handleClose();
   };
