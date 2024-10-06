@@ -29,3 +29,19 @@ export const formatDate = (
     day: day ? "numeric" : undefined,
   });
 };
+
+export const formatStrDate = (dateStr: string): Date | undefined => {
+  // 正規表現で年、月、日を抽出
+  const dateParts = dateStr.match(/(\d{4})年(\d{1,2})月(\d{1,2})/);
+
+  // 年、月、日を抽出してDateオブジェクトに変換
+  if (dateParts) {
+    const year = parseInt(dateParts[1], 10);
+    const month = parseInt(dateParts[2], 10) - 1; // 月は0が1月になるので、-1する
+    const day = parseInt(dateParts[3], 10);
+    const newdate = new Date(year, month, day)
+    console.log(newdate);
+    
+    return newdate;
+  }
+};
