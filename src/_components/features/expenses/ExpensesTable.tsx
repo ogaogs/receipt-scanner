@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, FC } from "react";
+import React, { useState, FC, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -16,15 +16,41 @@ import { formatCurrency } from "@/utils/financial";
 import { ExpensesDialog } from "@/_components/features/expenses";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
+import { getAndFormatExpenses } from "@/_components/features/expenses/expensesServer";
 
 type ExpensesTableProps = {
-  rows: RowType[];
+  userId: string;
+  firstDay: Date;
+  lastDay: Date;
   categories: Category[];
 };
 
-export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
+export const ExpensesTable: FC<ExpensesTableProps> = ({
+  userId,
+  firstDay,
+  lastDay,
+  categories,
+}) => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RowType | null>(null);
+  const [rows, setRows] = useState<RowType[]>([]);
+
+  const getExpensesAndSetRows: (
+    userId: string,
+    firstDay: Date,
+    lastDay: Date
+  ) => Promise<void> = async () => {
+    const formattedExpenses = await getAndFormatExpenses(
+      userId,
+      firstDay,
+      lastDay
+    );
+    setRows(formattedExpenses);
+  };
+
+  useEffect(() => {
+    getExpensesAndSetRows(userId, firstDay, lastDay);
+  }, [userId, firstDay, lastDay]);
 
   // 列がクリックされたときに詳細を表示する関数
   const handleClick = (item: RowType) => {
@@ -85,6 +111,10 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({ rows, categories }) => {
         open={open}
         selectedItem={selectedItem}
         categories={categories}
+        userId={userId}
+        firstDay={firstDay}
+        lastDay={lastDay}
+        getExpensesAndSetRows={getExpensesAndSetRows}
       />
     </Box>
   );

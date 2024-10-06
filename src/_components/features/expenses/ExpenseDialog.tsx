@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,23 +10,31 @@ import {
   Button,
   FormControl,
   Select,
-  SelectChangeEvent,
   InputLabel,
   FilledInput,
   InputAdornment,
 } from "@mui/material";
-import { RowType } from "@/_components/features/expenses/type";
-import { Category } from "@/types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { RowType } from "@/_components/features/expenses/type";
+import { Category } from "@/types";
+import { formatAndUpdateExpense } from "@/_components/features/expenses/expensesServer";
 
 type ExpensesDialogProps = {
   handleClose: () => void;
   open: boolean;
   selectedItem: RowType | null;
   categories: Category[];
+  userId: string;
+  firstDay: Date;
+  lastDay: Date;
+  getExpensesAndSetRows: (
+    userId: string,
+    firstDay: Date,
+    lastDay: Date
+  ) => Promise<void>;
 };
 
 export const ExpensesDialog: FC<ExpensesDialogProps> = ({
@@ -34,14 +42,46 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   open,
   selectedItem,
   categories,
+  userId,
+  firstDay,
+  lastDay,
+  getExpensesAndSetRows,
 }) => {
-  const [category, setCategory] = React.useState<number | undefined>(
-    selectedItem?.category_id
-  );
-  const handleChange = (event: SelectChangeEvent<typeof category>) => {
-    setCategory(Number(event.target.value));
-  };
+  const dateRef = useRef<HTMLInputElement>(null);
+  const storeNameRef = useRef<HTMLInputElement>(null);
+  const amountRef = useRef<HTMLInputElement>(null);
+  const categoryRef = useRef<HTMLInputElement>(null);
 
+  const upddateExpenses = () => {
+    if (
+      selectedItem?.expense_id &&
+      dateRef.current?.value &&
+      storeNameRef.current?.value &&
+      amountRef.current?.value &&
+      categoryRef.current?.value
+    ) {
+      try {
+        formatAndUpdateExpense(
+          selectedItem.expense_id,
+          dateRef.current.value,
+          storeNameRef.current.value,
+          Number(amountRef.current.value),
+          Number(categoryRef.current.value)
+        );
+      } catch (error) {
+        // TODO: エラーの対応を考える
+        console.log(error);
+      }
+    } else {
+      // TODO: エラーの対応を考える
+      console.log("The selected values are invalid");
+    }
+
+    // データを再取得し、rowsをセットする
+    getExpensesAndSetRows(userId, firstDay, lastDay);
+
+    handleClose();
+  };
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -76,6 +116,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                         },
                       }}
                       format="YYYY年MM月DD" // 入力欄
+                      inputRef={dateRef}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -84,6 +125,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                   label="店名"
                   defaultValue={selectedItem.storeName}
                   variant="filled"
+                  inputRef={storeNameRef}
                 />
                 <FormControl sx={{ m: 1, minWidth: 120 }} variant="filled">
                   <InputLabel id="amount">金額</InputLabel>
@@ -93,15 +135,16 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                     }
                     type="number"
                     defaultValue={selectedItem.amount}
+                    inputRef={amountRef}
                   />
                 </FormControl>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                   <InputLabel variant="filled">カテゴリー</InputLabel>
                   <Select
                     native
-                    onChange={handleChange}
                     variant="filled"
                     defaultValue={selectedItem.category_id}
+                    inputRef={categoryRef}
                   >
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
@@ -132,9 +175,9 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
             <Button
               variant="contained"
               sx={{ fontWeight: "bold" }}
-              onClick={handleClose}
+              onClick={upddateExpenses}
             >
-              保存
+              更新
             </Button>
           </DialogActions>
         </Dialog>
