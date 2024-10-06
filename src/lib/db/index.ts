@@ -4,6 +4,7 @@ import {
   getFirstExpenseDate,
   getMonthExpensesWithCategory,
   updateExpense,
+  deleteExpense,
 } from "@/lib/db/expense";
 import { getCategories } from "@/lib/db/category";
 
@@ -12,6 +13,7 @@ export {
   getMonthExpenses,
   getFirstExpenseDate,
   updateExpense,
+  deleteExpense,
   getCategories,
   getMonthExpensesWithCategory,
 };

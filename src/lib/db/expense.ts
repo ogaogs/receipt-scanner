@@ -58,6 +58,7 @@ export const getMonthExpensesWithCategory = cache(
   }
 );
 
+// 特定の出費を更新する
 export const updateExpense = async (
   expenseId: string,
   amount: number,
@@ -74,6 +75,15 @@ export const updateExpense = async (
       storeName: storeName,
       date: date,
       categoryId: categoryId,
+    },
+  });
+};
+
+// 特定の出費を削除する
+export const deleteExpense = async (expenseId: string): Promise<void> => {
+  await prisma.expense.delete({
+    where: {
+      id: expenseId,
     },
   });
 };

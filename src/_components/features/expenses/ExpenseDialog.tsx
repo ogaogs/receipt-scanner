@@ -20,7 +20,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
-import { formatAndUpdateExpense } from "@/_components/features/expenses/expensesServer";
+import {
+  updateSelectedExpense,
+  deleteSelectedExpense,
+} from "@/_components/features/expenses/expensesServer";
 
 type ExpensesDialogProps = {
   handleClose: () => void;
@@ -52,7 +55,8 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   const amountRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<HTMLInputElement>(null);
 
-  const upddateExpenses = () => {
+  // 更新ボタンの押下の際に実行する関数
+  const upddateExpenses: () => void = () => {
     if (
       selectedItem?.expense_id &&
       dateRef.current?.value &&
@@ -61,7 +65,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
       categoryRef.current?.value
     ) {
       try {
-        formatAndUpdateExpense(
+        updateSelectedExpense(
           selectedItem.expense_id,
           dateRef.current.value,
           storeNameRef.current.value,
@@ -75,6 +79,26 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
     } else {
       // TODO: エラーの対応を考える
       console.log("The selected values are invalid");
+    }
+
+    // データを再取得し、rowsをセットする
+    getExpensesAndSetRows(userId, firstDay, lastDay);
+
+    handleClose();
+  };
+
+  // 削除ボタンの押下の際に実行する
+  const deleteExpenses: () => void = () => {
+    if (selectedItem?.expense_id) {
+      try {
+        deleteSelectedExpense(selectedItem.expense_id);
+      } catch (error) {
+        // TODO: エラーの対応を考える
+        console.log(error);
+      }
+    } else {
+      // TODO: エラーの対応を考える
+      console.log("Failed to delete the expense");
     }
 
     // データを再取得し、rowsをセットする
@@ -168,7 +192,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
               variant="contained"
               sx={{ fontWeight: "bold" }}
               color="error"
-              onClick={handleClose}
+              onClick={deleteExpenses}
             >
               削除
             </Button>
