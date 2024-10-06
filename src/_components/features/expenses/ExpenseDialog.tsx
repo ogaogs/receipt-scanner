@@ -21,7 +21,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
-import { formatAndUpdateExpense } from "@/_components/features/expenses/expensesServer";
+import {
+  formatAndUpdateExpense,
+  getAndFormatExpenses,
+} from "@/_components/features/expenses/expensesServer";
 
 type ExpensesDialogProps = {
   handleClose: () => void;
@@ -29,6 +32,9 @@ type ExpensesDialogProps = {
   selectedItem: RowType | null;
   categories: Category[];
   setRows: React.Dispatch<React.SetStateAction<RowType[]>>;
+  userId: string;
+  firstDay: Date;
+  lastDay: Date;
 };
 
 export const ExpensesDialog: FC<ExpensesDialogProps> = ({
@@ -37,6 +43,9 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   selectedItem,
   categories,
   setRows,
+  userId,
+  firstDay,
+  lastDay,
 }) => {
   const dateRef = useRef<HTMLInputElement>(null);
   const storeNameRef = useRef<HTMLInputElement>(null);
@@ -67,6 +76,16 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
       // TODO: エラーの対応を考える
       console.log("The selected values are invalid");
     }
+
+    const setFormattedRows = async () => {
+      const formattedExpenses = await getAndFormatExpenses(
+        userId,
+        firstDay,
+        lastDay
+      );
+      setRows(formattedExpenses);
+    };
+    setFormattedRows();
 
     handleClose();
   };

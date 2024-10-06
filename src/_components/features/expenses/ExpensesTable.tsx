@@ -108,6 +108,9 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
         selectedItem={selectedItem}
         categories={categories}
         setRows={setRows}
+        userId={userId}
+        firstDay={firstDay}
+        lastDay={lastDay}
       />
     </Box>
   );

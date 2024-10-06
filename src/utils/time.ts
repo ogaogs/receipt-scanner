@@ -39,9 +39,6 @@ export const formatStrDate = (dateStr: string): Date | undefined => {
     const year = parseInt(dateParts[1], 10);
     const month = parseInt(dateParts[2], 10) - 1; // 月は0が1月になるので、-1する
     const day = parseInt(dateParts[3], 10);
-    const newdate = new Date(year, month, day)
-    console.log(newdate);
-    
-    return newdate;
+    return new Date(year, month, day);
   }
 };
