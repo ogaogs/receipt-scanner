@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -35,13 +35,26 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   selectedItem,
   categories,
 }) => {
-  const [category, setCategory] = React.useState<number | undefined>(
-    selectedItem?.category_id
-  );
-  const handleChange = (event: SelectChangeEvent<typeof category>) => {
-    setCategory(Number(event.target.value));
-  };
+  const dateRef = useRef<HTMLInputElement>(null);
+  const storeNameRef = useRef<HTMLInputElement>(null);
+  const amountRef = useRef<HTMLInputElement>(null);
+  const categoryRef = useRef<HTMLInputElement>(null);
 
+  const upddateExpenses = () => {
+    const updatedData = {
+      expense_id: selectedItem?.expense_id,
+      date: dateRef.current?.value,
+      storeName: storeNameRef.current?.value,
+      amount: Number(amountRef.current?.value),
+      category_id: categoryRef.current?.value,
+    };
+
+    // Log the updated data to the console
+    console.log("Updated data:", updatedData);
+
+    // Optionally: Close the dialog after logging
+    handleClose();
+  };
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -76,6 +89,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                         },
                       }}
                       format="YYYY年MM月DD" // 入力欄
+                      inputRef={dateRef}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -84,6 +98,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                   label="店名"
                   defaultValue={selectedItem.storeName}
                   variant="filled"
+                  inputRef={storeNameRef}
                 />
                 <FormControl sx={{ m: 1, minWidth: 120 }} variant="filled">
                   <InputLabel id="amount">金額</InputLabel>
@@ -93,15 +108,16 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                     }
                     type="number"
                     defaultValue={selectedItem.amount}
+                    inputRef={amountRef}
                   />
                 </FormControl>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                   <InputLabel variant="filled">カテゴリー</InputLabel>
                   <Select
                     native
-                    onChange={handleChange}
                     variant="filled"
                     defaultValue={selectedItem.category_id}
+                    inputRef={categoryRef}
                   >
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
@@ -132,9 +148,9 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
             <Button
               variant="contained"
               sx={{ fontWeight: "bold" }}
-              onClick={handleClose}
+              onClick={upddateExpenses}
             >
-              保存
+              更新
             </Button>
           </DialogActions>
         </Dialog>
