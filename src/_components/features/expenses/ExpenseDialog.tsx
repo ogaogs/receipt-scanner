@@ -10,7 +10,6 @@ import {
   Button,
   FormControl,
   Select,
-  SelectChangeEvent,
   InputLabel,
   FilledInput,
   InputAdornment,
@@ -21,10 +20,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
-import {
-  formatAndUpdateExpense,
-  getAndFormatExpenses,
-} from "@/_components/features/expenses/expensesServer";
+import { formatAndUpdateExpense } from "@/_components/features/expenses/expensesServer";
 
 type ExpensesDialogProps = {
   handleClose: () => void;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, FC, useEffect, useCallback } from "react";
+import React, { useState, FC, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -17,7 +17,6 @@ import { ExpensesDialog } from "@/_components/features/expenses";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
 import { getAndFormatExpenses } from "@/_components/features/expenses/expensesServer";
-// import { getMonthExpensesWithCategory } from "@/lib/db";
 
 type ExpensesTableProps = {
   userId: string;
