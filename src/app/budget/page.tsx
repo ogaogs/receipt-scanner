@@ -1,6 +1,7 @@
-import { Box } from "@mui/material";
-import { getMonthBudgetsWithCategory } from "@/lib/db/budget";
+import { Box, Typography, Grid, Paper, Divider } from "@mui/material";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
+import { Budgets } from "@/_components/features/budgets/budgets";
+import React from "react";
 
 export default async function Page() {
   // NOTE: 今後propsもしくは、contextで取得するようにする。
@@ -8,12 +9,10 @@ export default async function Page() {
   const targetDate = new Date(2024, 9, 4); // NOTE: 今後変化する指定された日付
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(targetDate);
-  const monthBudgetsWithCategory = await getMonthBudgetsWithCategory(
-    userId,
-    firstDay,
-    lastDay
-  );
-  console.log(monthBudgetsWithCategory);
 
-  return <Box>予算一覧ページ</Box>;
+  return (
+    <Box>
+      <Budgets userId={userId} firstDay={firstDay} lastDay={lastDay} />
+    </Box>
+  );
 }

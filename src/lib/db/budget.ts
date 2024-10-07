@@ -37,6 +37,9 @@ export const getMonthBudgetsWithCategory = cache(
       include: {
         category: true,
       },
+      orderBy: {
+        categoryId: "asc",
+      },
     });
   }
 );
