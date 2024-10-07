@@ -5,7 +5,7 @@ export const getAndFormatCategoryBudgets = async (
   userId: string,
   firstDay: Date,
   lastDay: Date
-): Promise<CategoryBudgets[]> => {
+): Promise<{ formattedCategoryBudgets: CategoryBudgets[]; totalAmount: number }> => {
   const monthBudgetsWithCategory = await getMonthBudgetsWithCategory(
     userId,
     firstDay,
@@ -13,9 +13,13 @@ export const getAndFormatCategoryBudgets = async (
   );
 
   // 出費を特定のフォーマットにする
-  const categoryBudgets = monthBudgetsWithCategory.map((categoryBudget) => ({
+  const formattedCategoryBudgets = monthBudgetsWithCategory.map((categoryBudget) => ({
     category: categoryBudget.category.name,
     amount: categoryBudget.amount,
   }));
-  return categoryBudgets;
+
+  // 予算の合計を求める
+  const totalAmount = formattedCategoryBudgets.reduce((acc, category) => acc + category.amount, 0);
+
+  return { formattedCategoryBudgets, totalAmount };
 };
