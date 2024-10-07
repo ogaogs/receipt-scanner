@@ -1,5 +1,5 @@
 import { getCategories } from "@/lib/db";
-import { getToday, getStartAndEndOfMonth } from "@/utils/time";
+import { getStartAndEndOfMonth } from "@/utils/time";
 import React from "react";
 import { Box } from "@mui/material";
 import { ExpensesTable } from "@/_components/features/expenses";
