@@ -98,7 +98,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
                   {formatDate(row.date, { month: true, day: true })}
                 </TableCell>
                 <TableCell>{row.storeName}</TableCell>
-                <TableCell>{formatCurrency(row.amount)}</TableCell>
+                <TableCell>{formatCurrency(row.amount, true)}</TableCell>
                 <TableCell>{row.category}</TableCell>
               </TableRow>
             ))}
