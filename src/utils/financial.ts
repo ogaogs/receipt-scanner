@@ -1,10 +1,13 @@
 import { Budget, Expense } from "@/types";
 
-// 日本円の表記にフォーマット (1000 -> ¥1,000)
-export const formatCurrency = (amount: number): string => {
+// 日本円の表記にフォーマット (useCurrencyがture：1000 -> ¥1,000, useCurrencyがfalse：1000 -> 1,000)
+export const formatCurrency = (
+  amount: number,
+  useCurrency: boolean = false
+): string => {
   return new Intl.NumberFormat("ja-JP", {
-    style: "currency",
-    currency: "JPY",
+    style: useCurrency ? "currency" : "decimal",
+    currency: useCurrency ? "JPY" : undefined,
   }).format(amount);
 };
 
