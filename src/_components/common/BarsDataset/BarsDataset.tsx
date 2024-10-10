@@ -2,6 +2,7 @@
 
 import { BarChart } from "@mui/x-charts/BarChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
+import { formatCurrency } from "@/utils/financial";
 import { FC } from "react";
 
 export type BarsDatasetType = {
@@ -35,6 +36,12 @@ export const BarsDataset: FC<BarsDatasetProps> = ({
     <BarChart
       dataset={dataset}
       xAxis={[{ scaleType: "band", dataKey: xAxixsDataKey }]}
+      yAxis={[
+        {
+          valueFormatter: (v) =>
+            v >= 100000 ? `${formatCurrency(v / 10000)}万` : formatCurrency(v),
+        },
+      ]}
       series={series}
       {...chartSetting}
     />
