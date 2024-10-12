@@ -3,6 +3,7 @@ import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import React from "react";
 import { Box } from "@mui/material";
 import { ExpensesTable } from "@/_components/features/expenses";
+import { Sidebar } from "@/_components/features/sidebar/Sidebar";
 
 export default async function Page() {
   // NOTE: 今後propsもしくは、contextで取得するようにする。
@@ -15,13 +16,23 @@ export default async function Page() {
   const categories = await getCategories();
 
   return (
-    <Box>
-      <ExpensesTable
-        userId={userId}
-        firstDay={firstDay}
-        lastDay={lastDay}
-        categories={categories}
-      />
+    <Box display="flex" flexDirection="row" height="100%">
+      <Box
+        height="100%"
+        flexGrow={1}
+        sx={{
+          paddingX: 8,
+          paddingY: 2,
+        }}
+      >
+        <ExpensesTable
+          userId={userId}
+          firstDay={firstDay}
+          lastDay={lastDay}
+          categories={categories}
+        />
+      </Box>
+      <Sidebar />
     </Box>
   );
 }
