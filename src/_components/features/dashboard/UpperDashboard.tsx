@@ -80,7 +80,7 @@ export const UpperDashboard: FC<UpperDashboardProps> = async ({
 
   const formattedDate = formatDate(date.targetDate, {
     year: true,
-    month: true,
+    month: "long",
   });
 
   return (
