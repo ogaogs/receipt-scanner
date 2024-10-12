@@ -64,7 +64,7 @@ export const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [selectedPage, setSelectedPage] = useState(
+  const [selectedPage, setSelectedPage] = useState<string>(
     pathname.split("/")[1] || "dashboard"
   );
   const [dateDropdownElements, setDateDropdownElements] = useState<
