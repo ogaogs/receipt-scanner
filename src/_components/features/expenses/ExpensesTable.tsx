@@ -95,7 +95,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
                 onClick={() => handleClick(row)}
               >
                 <TableCell>
-                  {formatDate(row.date, { month: true, day: true })}
+                  {formatDate(row.date, { month: "long", day: true })}
                 </TableCell>
                 <TableCell>{row.storeName}</TableCell>
                 <TableCell>{formatCurrency(row.amount, true)}</TableCell>
