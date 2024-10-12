@@ -10,7 +10,6 @@ import {
   Button,
   FormControl,
   Select,
-  Toolbar,
   MenuItem,
   Card,
   CardContent,
@@ -132,35 +131,37 @@ export const Sidebar = () => {
         [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
       }}
     >
-      <Toolbar />
-      <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
-        <Select autoWidth value={selectedPage} onChange={handlePageChange}>
-          <MenuItem value={"dashboard"}>ダッシュボード</MenuItem>
-          <MenuItem value={"expenses"}>全ての出費</MenuItem>
-          <MenuItem value={"budgets"}>予算の編集</MenuItem>
-        </Select>
-      </FormControl>
-      <Button variant="outlined" sx={{}}>
-        <AddCircleOutlineIcon sx={{ m: 2 }} />
-        出費を追加
-      </Button>
-      <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
-        <Select
-          // 最後の月をでファルとに選択 → 必然的に今月
-          defaultValue={
-            dateDropdownElements[dateDropdownElements.length - 1].dateValue
-          }
-          // サイドバーのページ遷移のようにvalueで制御するようにする。
-        >
-          {dateDropdownElements.map((item, index) => (
-            <MenuItem key={index} value={item.dateValue}>
-              {item.dateView}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <Box sx={{ m: 1, minWidth: 80 }}>
-        <Card variant="outlined">{card}</Card>
+      {/* ヘッダー分ずらす */}
+      <Box paddingTop={8}>
+        <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
+          <Select autoWidth value={selectedPage} onChange={handlePageChange}>
+            <MenuItem value={"dashboard"}>ダッシュボード</MenuItem>
+            <MenuItem value={"expenses"}>全ての出費</MenuItem>
+            <MenuItem value={"budgets"}>予算の編集</MenuItem>
+          </Select>
+        </FormControl>
+        <Button variant="outlined" sx={{}}>
+          <AddCircleOutlineIcon sx={{ m: 2 }} />
+          出費を追加
+        </Button>
+        <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
+          <Select
+            // 最後の月をでファルとに選択 → 必然的に今月
+            defaultValue={
+              dateDropdownElements[dateDropdownElements.length - 1].dateValue
+            }
+            // サイドバーのページ遷移のようにvalueで制御するようにする。
+          >
+            {dateDropdownElements.map((item, index) => (
+              <MenuItem key={index} value={item.dateValue}>
+                {item.dateView}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Box sx={{ m: 1, minWidth: 80 }}>
+          <Card variant="outlined">{card}</Card>
+        </Box>
       </Box>
     </Drawer>
   );
