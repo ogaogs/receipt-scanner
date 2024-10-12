@@ -7,6 +7,7 @@ import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import { calculateTotalAmount, categoryTotals } from "@/utils/financial";
 import { BarsDatasetType } from "@/_components/common/BarsDataset/BarsDataset";
 import { Box } from "@mui/material";
+import { Sidebar } from "@/_components/features/sidebar/Sidebar";
 
 export default async function Page() {
   const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
@@ -47,14 +48,24 @@ export default async function Page() {
   };
 
   return (
-    <Box>
-      <UpperDashboard
-        date={date}
-        totalBudgetsAmount={totalBudgetsAmount}
-        totalExpensesAmount={totalExpensesAmount}
-      />
-      {/* NOTE: Lowerのサイズを動的にしたい */}
-      <LowerDashboard dataset={dataset} />
+    <Box display="flex" flexDirection="row" height="100%">
+      <Box
+        height="100%"
+        flexGrow={1}
+        sx={{
+          paddingX: 8,
+          paddingY: 2,
+        }}
+      >
+        <UpperDashboard
+          date={date}
+          totalBudgetsAmount={totalBudgetsAmount}
+          totalExpensesAmount={totalExpensesAmount}
+        />
+        {/* NOTE: Lowerのサイズを動的にしたい */}
+        <LowerDashboard dataset={dataset} />
+      </Box>
+      <Sidebar />
     </Box>
   );
 }
