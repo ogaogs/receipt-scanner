@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+
 import { getFirstExpenseDate } from "@/lib/db/index";
 import {
   Box,
@@ -19,8 +23,8 @@ import { formatDate, getToday } from "@/utils/time";
 const drawerWidth = "20%";
 
 type dateDropdownElement = {
-  date: Date;
-  dateStr: string;
+  dateValue: string;
+  dateView: string;
 };
 
 const getDatesInRange = (
@@ -30,7 +34,7 @@ const getDatesInRange = (
   const monthsInRange: Date[] = [];
 
   if (firstExpenseDate._min.date) {
-    // minDateからmaxDateまでの月を取得
+    // minDateの年月を取得
     let currentDate = new Date(
       firstExpenseDate._min.date.getFullYear(),
       firstExpenseDate._min.date.getMonth(),
@@ -50,21 +54,48 @@ const getDatesInRange = (
   return monthsInRange;
 };
 
-export const Sidebar = async () => {
+export const Sidebar = () => {
   const today = getToday();
-  const foramtedToday = formatDate(today, { month: true, day: true });
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth() + 1;
+  const foramtedToday = formatDate(today, { month: "long", day: true });
   const proverb = "時は金なり";
   const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const firstExpense = await getFirstExpenseDate(userId);
+  const [selectedPage, setSelectedPage] = useState(
+    pathname.split("/")[1] || "dashboard"
+  );
+  const [dateDropdownElements, setDateDropdownElements] = useState<
+    dateDropdownElement[]
+  >([
+    {
+      dateValue: `${todayYear}-${todayMonth}`,
+      dateView: `${todayYear}年${todayMonth}月`,
+    },
+  ]);
 
-  const datesInRange = getDatesInRange(firstExpense, today);
-  const dateDropdownElements = datesInRange.map((date): dateDropdownElement => {
-    return {
-      date: date,
-      dateStr: formatDate(date, { year: true, month: true }),
-    };
-  });
+  const setdateDropdownElements: (
+    userId: string
+  ) => Promise<void> = async () => {
+    const firstExpense = await getFirstExpenseDate(userId);
+    const datesInRange = getDatesInRange(firstExpense, today);
+    const dateDropdown = datesInRange.map((date): dateDropdownElement => {
+      return {
+        dateValue: formatDate(date, { year: true, month: "2-digit" }).replace(
+          "/",
+          "-"
+        ),
+        dateView: formatDate(date, { year: true, month: "long" }),
+      };
+    });
+    setDateDropdownElements(dateDropdown);
+  };
+
+  useEffect(() => {
+    setdateDropdownElements(userId);
+  }, [userId]);
 
   const card = (
     <React.Fragment>
@@ -79,6 +110,18 @@ export const Sidebar = async () => {
     </React.Fragment>
   );
 
+  // ページ遷移のための関数
+  const handlePageChange = (event: any) => {
+    const selectedPage = event.target.value;
+    setSelectedPage(selectedPage);
+    router.push(`/${selectedPage}`); // 選択されたページに遷移
+  };
+
+  useEffect(() => {
+    // pathnameが変更された時、selectedPageも更新する
+    setSelectedPage(pathname.split("/")[1] || "dashboard");
+  }, [pathname]);
+
   return (
     <Drawer
       variant="permanent"
@@ -91,7 +134,7 @@ export const Sidebar = async () => {
     >
       <Toolbar />
       <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
-        <Select autoWidth defaultValue={"dashboard"}>
+        <Select autoWidth value={selectedPage} onChange={handlePageChange}>
           <MenuItem value={"dashboard"}>ダッシュボード</MenuItem>
           <MenuItem value={"expenses"}>全ての出費</MenuItem>
           <MenuItem value={"budgets"}>予算の編集</MenuItem>
@@ -104,13 +147,14 @@ export const Sidebar = async () => {
       <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
         <Select
           // 最後の月をでファルとに選択 → 必然的に今月
-          defaultValue={dateDropdownElements[
-            dateDropdownElements.length - 1
-          ].date.toISOString()}
+          defaultValue={
+            dateDropdownElements[dateDropdownElements.length - 1].dateValue
+          }
+          // サイドバーのページ遷移のようにvalueで制御するようにする。
         >
           {dateDropdownElements.map((item, index) => (
-            <MenuItem key={index} value={item.date.toISOString()}>
-              {item.dateStr}
+            <MenuItem key={index} value={item.dateValue}>
+              {item.dateView}
             </MenuItem>
           ))}
         </Select>
