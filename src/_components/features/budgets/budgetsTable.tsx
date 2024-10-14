@@ -3,19 +3,21 @@
 import { FC, useEffect, useState } from "react";
 import { getAndFormatCategoryBudgets } from "@/_components/features/budgets/budgetsSever";
 import { CategoryBudgets } from "@/_components/features/budgets/type";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper, Input } from "@mui/material";
 import { formatCurrency } from "@/utils/financial";
 
 type BudgetsProps = {
   userId: string;
   firstDay: Date;
   lastDay: Date;
+  isThisMonth: boolean;
 };
 
 export const BudgetsTable: FC<BudgetsProps> = ({
   userId,
   firstDay,
   lastDay,
+  isThisMonth,
 }) => {
   const [categoryBudgets, setCategoryBudgets] = useState<CategoryBudgets[]>([]);
   const [totalBudgtesAmount, setTotalBudgtesAmount] = useState<number>(0);
@@ -45,12 +47,15 @@ export const BudgetsTable: FC<BudgetsProps> = ({
           textAlign: "center",
           height: 48,
           gridAutoFlow: "row",
-          gridTemplateColumns: "1fr 1fr 1fr",
+          gridTemplateColumns: "repeat(4, 1fr)",
         }}
       >
         <Typography sx={{ gridColumn: "1", fontSize: 24 }}>合計</Typography>
-        <Typography sx={{ gridColumn: "2 / 4", fontSize: 24 }}>
-          {formatCurrency(totalBudgtesAmount, true)}
+        <Typography sx={{ gridColumn: "2", fontSize: 24, textAlign: "end" }}>
+          ¥
+        </Typography>
+        <Typography sx={{ gridColumn: "3", fontSize: 24, textAlign: "start" }}>
+          {formatCurrency(totalBudgtesAmount, false)}
         </Typography>
       </Paper>
       <Typography
@@ -73,15 +78,48 @@ export const BudgetsTable: FC<BudgetsProps> = ({
             textAlign: "center",
             height: 48,
             gridAutoFlow: "row",
-            gridTemplateColumns: "1fr 1fr 1fr",
+            gridTemplateColumns: "repeat(4, 1fr)",
           }}
         >
           <Typography sx={{ gridColumn: "1", fontSize: 24 }}>
             {category.category}
           </Typography>
-          <Typography sx={{ gridColumn: "2 / 4", fontSize: 24 }}>
-            {formatCurrency(category.amount, true)}
+          <Typography sx={{ gridColumn: "2", fontSize: 24, textAlign: "end" }}>
+            ¥
           </Typography>
+          {isThisMonth ? (
+            <Input
+              type="number"
+              value={category.amount}
+              disableUnderline
+              onChange={(e) => {
+                // ユーザーの入力に基づいて値を更新する処理
+                const newAmount = e.target.value;
+                setCategoryBudgets((prevBudgets) =>
+                  prevBudgets.map((budget, i) =>
+                    i === index
+                      ? { ...budget, amount: Number(newAmount) }
+                      : budget
+                  )
+                );
+                console.log(categoryBudgets);
+              }}
+              sx={{
+                gridColumn: "3",
+                fontSize: 24,
+                textAlign: "start",
+                height: "100%",
+                padding: 0,
+                maxHeight: 36,
+              }}
+            />
+          ) : (
+            <Typography
+              sx={{ gridColumn: "3", fontSize: 24, textAlign: "start" }}
+            >
+              {formatCurrency(category.amount, false)}
+            </Typography>
+          )}
         </Paper>
       ))}
     </Box>

@@ -16,17 +16,19 @@ export default async function Page({
   // NOTE: 今後propsもしくは、contextで取得するようにする。
   const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
   const today = getToday();
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth();
   // クエリからdateを取得
   const paramDate =
     searchParams["date"] ??
-    `${today.getFullYear()}-${(today.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}`;
+    `${todayYear}-${(todayMonth + 1).toString().padStart(2, "0")}`;
 
   // 年と月を取得
-  const [year, month] = paramDate.split("-").map(Number);
+  const [targetYear, targetMonth] = paramDate.split("-").map(Number);
 
-  const targetDate = new Date(year, month - 1); // NOTE: 今後変化する指定された日付
+  const targetDate = new Date(targetYear, targetMonth - 1);
+
+  const isThisMonth = (todayYear === targetYear) && (todayMonth + 1 === targetMonth)
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(targetDate);
 
@@ -50,7 +52,7 @@ export default async function Page({
           paddingY: 2,
         }}
       >
-        <BudgetsTable userId={userId} firstDay={firstDay} lastDay={lastDay} />
+        <BudgetsTable userId={userId} firstDay={firstDay} lastDay={lastDay} isThisMonth={isThisMonth}/>
       </Box>
       <Sidebar paramDate={paramDate} dateDropdownElements={dateDropdown} />
     </Box>
