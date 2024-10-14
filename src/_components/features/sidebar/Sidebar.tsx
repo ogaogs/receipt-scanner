@@ -43,7 +43,7 @@ export const Sidebar: FC<SidebarProps> = ({
   const handlePageChange = (event: any) => {
     const selectedPage = event.target.value;
     setSelectedPage(selectedPage);
-    router.push(`/${selectedPage}`); // 選択されたページに遷移
+    router.push(`/${selectedPage}` + "?date=" + selectedDate); // 選択されたページに遷移
   };
 
   const handleDateChange = (event: any) => {
