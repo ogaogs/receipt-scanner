@@ -22,7 +22,18 @@ export default async function Page({
 }) {
   const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
   const today = getToday(); // 本日の時間を取得 UTC時間
-  const targetDate = today; // NOTE: 今後変化する指定された日付
+
+  // クエリからdateを取得
+  const paramDate =
+    searchParams["date"] ??
+    `${today.getFullYear()}-${(today.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}`;
+
+  // 年と月を取得
+  const [year, month] = paramDate.split("-").map(Number);
+
+  const targetDate = new Date(year, month - 1); // NOTE: 今後変化する指定された日付
 
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(targetDate);
@@ -66,13 +77,6 @@ export default async function Page({
   // 初めての出費から今日までの月日をリストで取得し、サイドバーの月日ドロップダウンに渡す型に整形
   const datesInRange = getDatesInRange(firstExpenseDate, today);
   const dateDropdown = makeDateElements(datesInRange);
-
-  // クエリからdateを取得
-  const paramDate =
-    searchParams["date"] ??
-    `${today.getFullYear()}-${(today.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}`;
 
   return (
     <Box display="flex" flexDirection="row" height="100%">
