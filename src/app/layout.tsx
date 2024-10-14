@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Header } from "@/_components/layouts/Header/Header";
-import { Sidebar } from "@/_components/layouts/Sidebar/Sidebar";
-import { Box, Toolbar } from "@mui/material";
+import { Box } from "@mui/material";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,20 +33,14 @@ export default function RootLayout({
       >
         <Header />
 
-        <Box display="flex" flexDirection="row" height="100%" paddingTop={8}>
-          <Box
-            component="main"
-            height="100%"
-            flexGrow={1}
-            sx={{
-              backgroundColor: "#DDDDDD",
-              paddingX: 8,
-              paddingY: 2,
-            }}
-          >
-            {children}
-          </Box>
-          <Sidebar />
+        <Box
+          height="100%"
+          paddingTop={8}
+          sx={{
+            backgroundColor: "#DDDDDD",
+          }}
+        >
+          {children}
         </Box>
       </body>
     </html>

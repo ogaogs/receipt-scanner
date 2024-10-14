@@ -70,14 +70,17 @@ export const UpperDashboard: FC<UpperDashboardProps> = async ({
   ];
 
   // 日本円の表記にフォーマット
-  const formattedTotalExpensesAmount = formatCurrency(totalExpensesAmount);
-  const formattedTotalBudgetsAmount = formatCurrency(totalBudgetsAmount);
+  const formattedTotalExpensesAmount = formatCurrency(
+    totalExpensesAmount,
+    true
+  );
+  const formattedTotalBudgetsAmount = formatCurrency(totalBudgetsAmount, true);
 
   const daysLeft = remainDaysStr(date.today, date.lastDay);
 
   const formattedDate = formatDate(date.targetDate, {
     year: true,
-    month: true,
+    month: "long",
   });
 
   return (
