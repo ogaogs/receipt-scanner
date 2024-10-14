@@ -1,15 +1,12 @@
 import { Box } from "@mui/material";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
-import { Budgets } from "@/_components/features/budgets/budgets";
-import React from "react";
+import { BudgetsTable } from "@/_components/features/budgets/budgetsTable";
 import { Sidebar } from "@/_components/features/sidebar/Sidebar";
 import {
   getDatesInRange,
   makeDateElements,
 } from "@/_components/features/sidebar/yearMonthElements";
 import { getFirstExpenseDate } from "@/lib/db/index";
-
-
 
 export default async function Page({
   searchParams,
@@ -18,7 +15,7 @@ export default async function Page({
 }) {
   // NOTE: 今後propsもしくは、contextで取得するようにする。
   const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
-  const today = getToday()
+  const today = getToday();
   // クエリからdateを取得
   const paramDate =
     searchParams["date"] ??
@@ -53,7 +50,7 @@ export default async function Page({
           paddingY: 2,
         }}
       >
-        <Budgets userId={userId} firstDay={firstDay} lastDay={lastDay} />
+        <BudgetsTable userId={userId} firstDay={firstDay} lastDay={lastDay} />
       </Box>
       <Sidebar paramDate={paramDate} dateDropdownElements={dateDropdown} />
     </Box>

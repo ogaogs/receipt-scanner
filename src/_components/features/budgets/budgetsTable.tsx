@@ -4,6 +4,7 @@ import { FC, useEffect, useState } from "react";
 import { getAndFormatCategoryBudgets } from "@/_components/features/budgets/budgetsSever";
 import { CategoryBudgets } from "@/_components/features/budgets/type";
 import { Box, Typography, Paper } from "@mui/material";
+import { formatCurrency } from "@/utils/financial";
 
 type BudgetsProps = {
   userId: string;
@@ -11,11 +12,13 @@ type BudgetsProps = {
   lastDay: Date;
 };
 
-export const Budgets: FC<BudgetsProps> = ({ userId, firstDay, lastDay }) => {
+export const BudgetsTable: FC<BudgetsProps> = ({
+  userId,
+  firstDay,
+  lastDay,
+}) => {
   const [categoryBudgets, setCategoryBudgets] = useState<CategoryBudgets[]>([]);
-  const [totalBudgtesAmount, setTotalBudgtesAmount] = useState<number | null>(
-    null
-  );
+  const [totalBudgtesAmount, setTotalBudgtesAmount] = useState<number>(0);
   const getAndSetCategoryBudgets: (
     userId: string,
     firstDay: Date,
@@ -36,32 +39,49 @@ export const Budgets: FC<BudgetsProps> = ({ userId, firstDay, lastDay }) => {
       <Paper
         elevation={1}
         sx={{
-          padding: "10px",
-          display: "flex",
-          justifyContent: "space-between",
+          padding: "8px",
+          display: "grid",
           marginBottom: 1,
+          textAlign: "center",
           height: 48,
+          gridAutoFlow: "row",
+          gridTemplateColumns: "1fr 1fr 1fr",
         }}
       >
-        <Typography>合計</Typography>
-        <Typography>{totalBudgtesAmount}</Typography>
+        <Typography sx={{ gridColumn: "1", fontSize: 24 }}>合計</Typography>
+        <Typography sx={{ gridColumn: "2 / 4", fontSize: 24 }}>
+          {formatCurrency(totalBudgtesAmount, true)}
+        </Typography>
       </Paper>
-      <Typography borderBottom={"solid black"} textAlign={"center"} marginY={2}>カテゴリー毎</Typography>
+      <Typography
+        borderBottom={"solid black"}
+        textAlign={"center"}
+        marginTop={4}
+        marginBottom={2}
+        fontSize={24}
+      >
+        カテゴリー毎
+      </Typography>
       {categoryBudgets.map((category, index) => (
         <Paper
-          key={index}
           elevation={1}
+          key={index}
           sx={{
-            padding: "10px",
-            display: "flex",
-            justifyContent: "space-between",
+            padding: "8px",
+            display: "grid",
             marginBottom: 1,
+            textAlign: "center",
             height: 48,
+            gridAutoFlow: "row",
+            gridTemplateColumns: "1fr 1fr 1fr",
           }}
         >
-          <Typography>{category.category}</Typography>
-          {/* FilledInputを使用して、編集可能 or 不可能を制御できるようにする */}
-          <Typography>{category.amount}</Typography>
+          <Typography sx={{ gridColumn: "1", fontSize: 24 }}>
+            {category.category}
+          </Typography>
+          <Typography sx={{ gridColumn: "2 / 4", fontSize: 24 }}>
+            {formatCurrency(category.amount, true)}
+          </Typography>
         </Paper>
       ))}
     </Box>

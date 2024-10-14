@@ -4,7 +4,6 @@ import {
   getDatesInRange,
   makeDateElements,
 } from "@/_components/features/sidebar/yearMonthElements";
-import React from "react";
 import { Box } from "@mui/material";
 import { ExpensesTable } from "@/_components/features/expenses";
 import { Sidebar } from "@/_components/features/sidebar/Sidebar";
