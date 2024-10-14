@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, FC } from "react";
 import { useRouter, usePathname } from "next/navigation";
-
-import { getFirstExpenseDate } from "@/lib/db/index";
 import {
   Box,
   Drawer,
@@ -16,98 +14,30 @@ import {
   Typography,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { FirstExpenseDate } from "@/types";
 import { formatDate, getToday } from "@/utils/time";
+import { dateDropdownElement } from "@/_components/features/sidebar/type";
 
 const drawerWidth = "20%";
 
-type dateDropdownElement = {
-  dateValue: string;
-  dateView: string;
+type SidebarProps = {
+  paramDate: string;
+  dateDropdownElements: dateDropdownElement[];
 };
 
-const getDatesInRange = (
-  firstExpenseDate: FirstExpenseDate,
-  today: Date
-): Date[] => {
-  const monthsInRange: Date[] = [];
-
-  if (firstExpenseDate._min.date) {
-    // minDateの年月を取得
-    let currentDate = new Date(
-      firstExpenseDate._min.date.getFullYear(),
-      firstExpenseDate._min.date.getMonth(),
-      1
-    );
-
-    while (currentDate <= today) {
-      // 年と月を取得し、Data型でその年月の15日を保存
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-      monthsInRange.push(new Date(year, month, 15)); // UTCでわかりづらいため、15日にし、年月は分かりやすいようにした
-
-      // 次の月に移動
-      currentDate.setMonth(currentDate.getMonth() + 1);
-    }
-  }
-  return monthsInRange;
-};
-
-export const Sidebar = () => {
+export const Sidebar: FC<SidebarProps> = ({
+  paramDate,
+  dateDropdownElements,
+}) => {
   const today = getToday();
-  const todayYear = today.getFullYear();
-  const todayMonth = today.getMonth() + 1;
   const foramtedToday = formatDate(today, { month: "long", day: true });
   const proverb = "時は金なり";
-  const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
   const router = useRouter();
   const pathname = usePathname();
 
   const [selectedPage, setSelectedPage] = useState<string>(
     pathname.split("/")[1] || "dashboard"
   );
-  const [dateDropdownElements, setDateDropdownElements] = useState<
-    dateDropdownElement[]
-  >([
-    {
-      dateValue: `${todayYear}-${todayMonth}`,
-      dateView: `${todayYear}年${todayMonth}月`,
-    },
-  ]);
-
-  const setdateDropdownElements: (
-    userId: string
-  ) => Promise<void> = async () => {
-    const firstExpense = await getFirstExpenseDate(userId);
-    const datesInRange = getDatesInRange(firstExpense, today);
-    const dateDropdown = datesInRange.map((date): dateDropdownElement => {
-      return {
-        dateValue: formatDate(date, { year: true, month: "2-digit" }).replace(
-          "/",
-          "-"
-        ),
-        dateView: formatDate(date, { year: true, month: "long" }),
-      };
-    });
-    setDateDropdownElements(dateDropdown);
-  };
-
-  useEffect(() => {
-    setdateDropdownElements(userId);
-  }, [userId]);
-
-  const card = (
-    <React.Fragment>
-      <CardContent>
-        <Typography gutterBottom sx={{ color: "text.secondary", fontSize: 14 }}>
-          {foramtedToday}の一言
-        </Typography>
-        <Typography variant="h5" component="div">
-          {proverb}
-        </Typography>
-      </CardContent>
-    </React.Fragment>
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(paramDate);
 
   // ページ遷移のための関数
   const handlePageChange = (event: any) => {
@@ -116,10 +46,10 @@ export const Sidebar = () => {
     router.push(`/${selectedPage}`); // 選択されたページに遷移
   };
 
-  useEffect(() => {
-    // pathnameが変更された時、selectedPageも更新する
-    setSelectedPage(pathname.split("/")[1] || "dashboard");
-  }, [pathname]);
+  const handleDateChange = (event: any) => {
+    setSelectedDate(event.target.value);
+    router.push(pathname + "?date=" + event.target.value);
+  };
 
   return (
     <Drawer
@@ -147,10 +77,9 @@ export const Sidebar = () => {
         <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
           <Select
             // 最後の月をでファルとに選択 → 必然的に今月
-            defaultValue={
-              dateDropdownElements[dateDropdownElements.length - 1].dateValue
-            }
+            value={selectedDate}
             // サイドバーのページ遷移のようにvalueで制御するようにする。
+            onChange={handleDateChange}
           >
             {dateDropdownElements.map((item, index) => (
               <MenuItem key={index} value={item.dateValue}>
@@ -160,7 +89,21 @@ export const Sidebar = () => {
           </Select>
         </FormControl>
         <Box sx={{ m: 1, minWidth: 80 }}>
-          <Card variant="outlined">{card}</Card>
+          <Card variant="outlined">
+            <React.Fragment>
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  sx={{ color: "text.secondary", fontSize: 14 }}
+                >
+                  {foramtedToday}の一言
+                </Typography>
+                <Typography variant="h5" component="div">
+                  {proverb}
+                </Typography>
+              </CardContent>
+            </React.Fragment>
+          </Card>
         </Box>
       </Box>
     </Drawer>
