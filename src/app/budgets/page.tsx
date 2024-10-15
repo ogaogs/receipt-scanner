@@ -1,12 +1,11 @@
-import { getCategories } from "@/lib/db";
+import { Box } from "@mui/material";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
+import { BudgetsTable } from "@/_components/features/budgets/budgetsTable";
+import { Sidebar } from "@/_components/features/sidebar/Sidebar";
 import {
   getDatesInRange,
   makeDateElements,
 } from "@/_components/features/sidebar/yearMonthElements";
-import { Box } from "@mui/material";
-import { ExpensesTable } from "@/_components/features/expenses";
-import { Sidebar } from "@/_components/features/sidebar/Sidebar";
 import { getFirstExpenseDate } from "@/lib/db/index";
 
 export default async function Page({
@@ -17,23 +16,22 @@ export default async function Page({
   // NOTE: 今後propsもしくは、contextで取得するようにする。
   const userId = "8f412478-c428-4399-b934-9f0d0cf0a6c5";
   const today = getToday();
-
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth();
   // クエリからdateを取得
   const paramDate =
     searchParams["date"] ??
-    `${today.getFullYear()}-${(today.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}`;
+    `${todayYear}-${(todayMonth + 1).toString().padStart(2, "0")}`;
 
   // 年と月を取得
   const [targetYear, targetMonth] = paramDate.split("-").map(Number);
 
   const targetDate = new Date(targetYear, targetMonth - 1);
 
+  const isThisMonth =
+    todayYear === targetYear && todayMonth + 1 === targetMonth;
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(targetDate);
-
-  const categories = await getCategories();
 
   // 初めての出費日を取得
   const firstExpense = await getFirstExpenseDate(userId);
@@ -55,11 +53,13 @@ export default async function Page({
           paddingY: 2,
         }}
       >
-        <ExpensesTable
+        <BudgetsTable
           userId={userId}
           firstDay={firstDay}
           lastDay={lastDay}
-          categories={categories}
+          isThisMonth={isThisMonth}
+          targetYear={targetYear}
+          targetMonth={targetMonth}
         />
       </Box>
       <Sidebar paramDate={paramDate} dateDropdownElements={dateDropdown} />

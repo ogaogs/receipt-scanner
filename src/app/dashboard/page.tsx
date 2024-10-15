@@ -31,9 +31,9 @@ export default async function Page({
       .padStart(2, "0")}`;
 
   // 年と月を取得
-  const [year, month] = paramDate.split("-").map(Number);
+  const [targetYear, targetMonth] = paramDate.split("-").map(Number);
 
-  const targetDate = new Date(year, month - 1); // NOTE: 今後変化する指定された日付
+  const targetDate = new Date(targetYear, targetMonth - 1);
 
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(targetDate);

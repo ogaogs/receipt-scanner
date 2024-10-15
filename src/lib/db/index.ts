@@ -1,4 +1,4 @@
-import { getMonthBudgets } from "@/lib/db/budget";
+import { getMonthBudgets, getMonthBudgetsWithCategory } from "@/lib/db/budget";
 import {
   getMonthExpenses,
   getFirstExpenseDate,
@@ -16,4 +16,5 @@ export {
   deleteExpense,
   getCategories,
   getMonthExpensesWithCategory,
+  getMonthBudgetsWithCategory,
 };
