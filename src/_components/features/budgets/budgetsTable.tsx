@@ -78,7 +78,7 @@ export const BudgetsTable: FC<BudgetsProps> = ({
         marginBottom={2}
         fontSize={24}
       >
-        カテゴリー毎
+        {isThisMonth ? "カテゴリー毎 (編集可)" : "カテゴリー毎"}
       </Typography>
       {categoryBudgets.map((category, index) => (
         <Paper
