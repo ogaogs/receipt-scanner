@@ -43,3 +43,35 @@ export const getMonthBudgetsWithCategory = cache(
     });
   }
 );
+
+// 予算の作成
+export const createBudget = async (
+  userId: string,
+  amount: number,
+  year_month: Date,
+  categoryId: number
+): Promise<void> => {
+  await prisma.budget.create({
+    data: {
+      userId: userId,
+      amount: amount,
+      year_month: year_month,
+      categoryId: categoryId,
+    },
+  });
+};
+
+// 予算の更新
+export const updateBudget = async (
+  budgetId: string,
+  amount: number
+): Promise<void> => {
+  await prisma.budget.update({
+    where: {
+      id: budgetId,
+    },
+    data: {
+      amount: amount,
+    },
+  });
+};

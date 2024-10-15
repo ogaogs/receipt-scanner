@@ -28,7 +28,8 @@ export default async function Page({
 
   const targetDate = new Date(targetYear, targetMonth - 1);
 
-  const isThisMonth = (todayYear === targetYear) && (todayMonth + 1 === targetMonth)
+  const isThisMonth =
+    todayYear === targetYear && todayMonth + 1 === targetMonth;
   // 月の初日と最終日を取得する
   const { firstDay, lastDay } = getStartAndEndOfMonth(targetDate);
 
@@ -52,7 +53,14 @@ export default async function Page({
           paddingY: 2,
         }}
       >
-        <BudgetsTable userId={userId} firstDay={firstDay} lastDay={lastDay} isThisMonth={isThisMonth}/>
+        <BudgetsTable
+          userId={userId}
+          firstDay={firstDay}
+          lastDay={lastDay}
+          isThisMonth={isThisMonth}
+          targetYear={targetYear}
+          targetMonth={targetMonth}
+        />
       </Box>
       <Sidebar paramDate={paramDate} dateDropdownElements={dateDropdown} />
     </Box>

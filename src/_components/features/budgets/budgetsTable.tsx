@@ -1,9 +1,12 @@
 "use client";
 
 import { FC, useEffect, useState } from "react";
-import { getAndFormatCategoryBudgets } from "@/_components/features/budgets/budgetsSever";
+import {
+  getAndFormatCategoryBudgets,
+  updateCategoryBudgets,
+} from "@/_components/features/budgets/budgetsSever";
 import { CategoryBudgets } from "@/_components/features/budgets/type";
-import { Box, Typography, Paper, Input } from "@mui/material";
+import { Box, Typography, Paper, Input, Button } from "@mui/material";
 import { formatCurrency } from "@/utils/financial";
 
 type BudgetsProps = {
@@ -11,6 +14,8 @@ type BudgetsProps = {
   firstDay: Date;
   lastDay: Date;
   isThisMonth: boolean;
+  targetYear: number;
+  targetMonth: number;
 };
 
 export const BudgetsTable: FC<BudgetsProps> = ({
@@ -18,6 +23,8 @@ export const BudgetsTable: FC<BudgetsProps> = ({
   firstDay,
   lastDay,
   isThisMonth,
+  targetYear,
+  targetMonth,
 }) => {
   const [categoryBudgets, setCategoryBudgets] = useState<CategoryBudgets[]>([]);
   const [totalBudgtesAmount, setTotalBudgtesAmount] = useState<number>(0);
@@ -35,6 +42,12 @@ export const BudgetsTable: FC<BudgetsProps> = ({
   useEffect(() => {
     getAndSetCategoryBudgets(userId, firstDay, lastDay);
   }, [userId, firstDay, lastDay]);
+
+  const updateBudgets = () => {
+    updateCategoryBudgets(userId, categoryBudgets, targetYear, targetMonth);
+
+    getAndSetCategoryBudgets(userId, firstDay, lastDay);
+  };
 
   return (
     <Box>
@@ -102,7 +115,6 @@ export const BudgetsTable: FC<BudgetsProps> = ({
                       : budget
                   )
                 );
-                console.log(categoryBudgets);
               }}
               sx={{
                 gridColumn: "3",
@@ -122,6 +134,18 @@ export const BudgetsTable: FC<BudgetsProps> = ({
           )}
         </Paper>
       ))}
+      <Button
+        variant="contained"
+        sx={{
+          fontWeight: "bold",
+          display: "block",
+          marginLeft: "auto",
+          marginTop: 2,
+        }}
+        onClick={updateBudgets}
+      >
+        更新
+      </Button>
     </Box>
   );
 };
