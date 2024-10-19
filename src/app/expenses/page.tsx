@@ -25,6 +25,8 @@ export default async function Page({
       .toString()
       .padStart(2, "0")}`;
 
+  const pramUpdateState = searchParams["update"] == "true";
+
   // 年と月を取得
   const [targetYear, targetMonth] = paramDate.split("-").map(Number);
 
@@ -67,6 +69,7 @@ export default async function Page({
         paramDate={paramDate}
         dateDropdownElements={dateDropdown}
         categories={categories}
+        pramUpdateState={pramUpdateState}
       />
     </Box>
   );

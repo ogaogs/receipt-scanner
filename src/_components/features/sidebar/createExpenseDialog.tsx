@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -50,7 +50,6 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log(file);
 
     if (file) {
       setFileName(file.name);
@@ -64,7 +63,6 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
   const handleCreateExpense = () => {
     if (
-      fileName &&
       dateRef.current?.value &&
       storeNameRef.current?.value &&
       amountRef.current?.value &&

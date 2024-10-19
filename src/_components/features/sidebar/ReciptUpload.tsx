@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import { Box, Button, Avatar, IconButton } from "@mui/material";
+import React, { FC } from "react";
+import { Box, Avatar, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 type ReceiptUploadProps = {
@@ -12,24 +12,6 @@ export const ReceiptUpload: FC<ReceiptUploadProps> = ({
   selectedImage,
   handleImageRemove,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [avatarSize, setAvatarSize] = useState<{
-    width: number;
-    height: number;
-  }>({
-    width: 0,
-    height: 0,
-  });
-  useEffect(() => {
-    // 親要素のサイズを取得してstateにセット
-    if (containerRef.current) {
-      const { clientWidth, clientHeight } = containerRef.current;
-      setAvatarSize({ width: clientWidth, height: clientHeight });
-    }
-    console.log(containerRef.current);
-    console.log(avatarSize);
-  }, [containerRef]);
-
   return (
     <Box
       display="flex"
