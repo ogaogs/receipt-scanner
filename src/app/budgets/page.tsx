@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import { BudgetsTable } from "@/_components/features/budgets/budgetsTable";
 import { Sidebar } from "@/_components/features/sidebar/Sidebar";
+import { getCategories } from "@/lib/db";
 import {
   getDatesInRange,
   makeDateElements,
@@ -43,6 +44,9 @@ export default async function Page({
   const datesInRange = getDatesInRange(firstExpenseDate, today);
   const dateDropdown = makeDateElements(datesInRange);
 
+  // カテゴリーを取得
+  const categories = await getCategories();
+
   return (
     <Box display="flex" flexDirection="row" height="100%">
       <Box
@@ -60,9 +64,15 @@ export default async function Page({
           isThisMonth={isThisMonth}
           targetYear={targetYear}
           targetMonth={targetMonth}
+          categories={categories}
         />
       </Box>
-      <Sidebar paramDate={paramDate} dateDropdownElements={dateDropdown} />
+      <Sidebar
+        userId={userId}
+        paramDate={paramDate}
+        dateDropdownElements={dateDropdown}
+        categories={categories}
+      />
     </Box>
   );
 }

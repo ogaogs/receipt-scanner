@@ -62,7 +62,12 @@ export default async function Page({
           categories={categories}
         />
       </Box>
-      <Sidebar paramDate={paramDate} dateDropdownElements={dateDropdown} />
+      <Sidebar
+        userId={userId}
+        paramDate={paramDate}
+        dateDropdownElements={dateDropdown}
+        categories={categories}
+      />
     </Box>
   );
 }

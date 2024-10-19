@@ -96,7 +96,12 @@ export default async function Page({
         {/* NOTE: Lowerのサイズを動的にしたい */}
         <LowerDashboard dataset={dataset} />
       </Box>
-      <Sidebar paramDate={paramDate} dateDropdownElements={dateDropdown} />
+      <Sidebar
+        userId={userId}
+        paramDate={paramDate}
+        dateDropdownElements={dateDropdown}
+        categories={categories}
+      />
     </Box>
   );
 }

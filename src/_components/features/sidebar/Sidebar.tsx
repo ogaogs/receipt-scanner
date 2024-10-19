@@ -16,28 +16,36 @@ import {
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { formatDate, getToday } from "@/utils/time";
 import { dateDropdownElement } from "@/_components/features/sidebar/type";
+import { Category } from "@/types";
+import { CreateExpenseDialog } from "@/_components/features/sidebar/createExpenseDialog";
 
 const drawerWidth = "20%";
 
 type SidebarProps = {
+  userId: string;
   paramDate: string;
   dateDropdownElements: dateDropdownElement[];
+  categories: Category[];
 };
-
 export const Sidebar: FC<SidebarProps> = ({
+  userId,
   paramDate,
   dateDropdownElements,
+  categories,
 }) => {
   const today = getToday();
   const foramtedToday = formatDate(today, { month: "long", day: true });
   const proverb = "時は金なり";
   const router = useRouter();
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   const [selectedPage, setSelectedPage] = useState<string>(
     pathname.split("/")[1] || "dashboard"
   );
   const [selectedDate, setSelectedDate] = useState<string>(paramDate);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   // ページ遷移のための関数
   const handlePageChange = (event: any) => {
@@ -51,6 +59,16 @@ export const Sidebar: FC<SidebarProps> = ({
     router.push(pathname + "?date=" + event.target.value);
   };
 
+  const handleShowCreateDialog = () => {
+    setOpen(true);
+  };
+
+  // ダイアログを閉じる関数
+  const handleCloseCreateDialog = () => {
+    setOpen(false);
+    setSelectedImage(null);
+    setFileName(null);
+  };
   return (
     <Drawer
       variant="permanent"
@@ -70,10 +88,20 @@ export const Sidebar: FC<SidebarProps> = ({
             <MenuItem value={"budgets"}>予算の編集</MenuItem>
           </Select>
         </FormControl>
-        <Button variant="outlined" sx={{}}>
+        <Button variant="outlined" onClick={handleShowCreateDialog}>
           <AddCircleOutlineIcon sx={{ m: 2 }} />
           出費を追加
         </Button>
+        <CreateExpenseDialog
+          handleClose={handleCloseCreateDialog}
+          open={open}
+          categories={categories}
+          userId={userId}
+          selectedImage={selectedImage}
+          setSelectedImage={setSelectedImage}
+          fileName={fileName}
+          setFileName={setFileName}
+        />
         <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
           <Select
             // 最後の月をでファルとに選択 → 必然的に今月
