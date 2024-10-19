@@ -48,9 +48,9 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
       setFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result as string); // Store the image as a base64 string
+        setSelectedImage(reader.result as string); // base64をstringでセット
       };
-      reader.readAsDataURL(file); // Convert the file to base64 format
+      reader.readAsDataURL(file); // base64に置き換え
     }
   };
 
