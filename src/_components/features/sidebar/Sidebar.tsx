@@ -17,7 +17,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { formatDate, getToday } from "@/utils/time";
 import { dateDropdownElement } from "@/_components/features/sidebar/type";
 import { Category } from "@/types";
-import { CreateDialog } from "@/_components/features/sidebar/CreateDialog";
+import { CreateExpenseDialog } from "@/_components/features/sidebar/createExpenseDialog";
 
 const drawerWidth = "20%";
 
@@ -44,6 +44,8 @@ export const Sidebar: FC<SidebarProps> = ({
     pathname.split("/")[1] || "dashboard"
   );
   const [selectedDate, setSelectedDate] = useState<string>(paramDate);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   // ページ遷移のための関数
   const handlePageChange = (event: any) => {
@@ -64,6 +66,8 @@ export const Sidebar: FC<SidebarProps> = ({
   // ダイアログを閉じる関数
   const handleCloseCreateDialog = () => {
     setOpen(false);
+    setSelectedImage(null);
+    setFileName(null);
   };
   return (
     <Drawer
@@ -88,11 +92,15 @@ export const Sidebar: FC<SidebarProps> = ({
           <AddCircleOutlineIcon sx={{ m: 2 }} />
           出費を追加
         </Button>
-        <CreateDialog
+        <CreateExpenseDialog
           handleClose={handleCloseCreateDialog}
           open={open}
           categories={categories}
           userId={userId}
+          selectedImage={selectedImage}
+          setSelectedImage={setSelectedImage}
+          fileName={fileName}
+          setFileName={setFileName}
         />
         <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
           <Select
