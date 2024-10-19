@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from "react";
 import {
   getAndFormatCategoryBudgets,
   updateCategoryBudgets,
-} from "@/_components/features/budgets/budgetsSever";
+} from "@/_components/features/budgets/BudgetsSever";
 import { CategoryBudgets } from "@/_components/features/budgets/type";
 import { Box, Typography, Paper, Input, Button } from "@mui/material";
 import { formatCurrency } from "@/utils/financial";

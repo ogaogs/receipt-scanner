@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, FC } from "react";
+import React, { useState, FC, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import {
   Box,
@@ -26,12 +26,14 @@ type SidebarProps = {
   paramDate: string;
   dateDropdownElements: dateDropdownElement[];
   categories: Category[];
+  pramUpdateState: boolean;
 };
 export const Sidebar: FC<SidebarProps> = ({
   userId,
   paramDate,
   dateDropdownElements,
   categories,
+  pramUpdateState,
 }) => {
   const today = getToday();
   const foramtedToday = formatDate(today, { month: "long", day: true });
@@ -69,6 +71,12 @@ export const Sidebar: FC<SidebarProps> = ({
     setSelectedImage(null);
     setFileName(null);
   };
+
+  // 新規登録がされた際に実行するUseEffect
+  useEffect(() => {
+    router.push(pathname + "?date=" + selectedDate);
+  }, [pramUpdateState]);
+
   return (
     <Drawer
       variant="permanent"
@@ -101,6 +109,9 @@ export const Sidebar: FC<SidebarProps> = ({
           setSelectedImage={setSelectedImage}
           fileName={fileName}
           setFileName={setFileName}
+          pathname={pathname}
+          selectedDate={selectedDate}
+          router={router}
         />
         <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
           <Select

@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { cache } from "react";
 import { Expense, FirstExpenseDate, MonthExpensesWithCategory } from "@/types";
+import { da } from "@faker-js/faker";
 
 // 指定した月の出費を取得する
 export const getMonthExpenses = cache(
@@ -84,6 +85,32 @@ export const deleteExpense = async (expenseId: string): Promise<void> => {
   await prisma.expense.delete({
     where: {
       id: expenseId,
+    },
+  });
+};
+
+export const createExpense = async (
+  userId: string,
+  amount: number,
+  storeName: string,
+  date: Date,
+  categoryId: number,
+  fileName: string | null
+): Promise<void> => {
+  await prisma.expense.create({
+    data: {
+      userId: userId,
+      storeName: storeName,
+      amount: amount,
+      date: date,
+      categoryId: categoryId,
+      receipt: fileName
+        ? {
+            create: {
+              filePath: fileName,
+            },
+          }
+        : undefined,
     },
   });
 };

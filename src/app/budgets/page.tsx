@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
-import { BudgetsTable } from "@/_components/features/budgets/budgetsTable";
+import { BudgetsTable } from "@/_components/features/budgets/BudgetsTable";
 import { Sidebar } from "@/_components/features/sidebar/Sidebar";
 import { getCategories } from "@/lib/db";
 import {
   getDatesInRange,
   makeDateElements,
-} from "@/_components/features/sidebar/yearMonthElements";
+} from "@/_components/features/sidebar/SidebarServer";
 import { getFirstExpenseDate } from "@/lib/db/index";
 
 export default async function Page({
@@ -23,6 +23,8 @@ export default async function Page({
   const paramDate =
     searchParams["date"] ??
     `${todayYear}-${(todayMonth + 1).toString().padStart(2, "0")}`;
+
+  const pramUpdateState = searchParams["update"] == "true";
 
   // 年と月を取得
   const [targetYear, targetMonth] = paramDate.split("-").map(Number);
@@ -72,6 +74,7 @@ export default async function Page({
         paramDate={paramDate}
         dateDropdownElements={dateDropdown}
         categories={categories}
+        pramUpdateState={pramUpdateState}
       />
     </Box>
   );

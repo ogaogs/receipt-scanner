@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,8 @@ import {
   ReceiptUpload,
   AddExpenseDetail,
 } from "@/_components/features/sidebar";
+import { formatAndCreateExpense } from "@/_components/features/sidebar/SidebarServer";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 type CreateDialogProps = {
   handleClose: () => void;
@@ -23,6 +25,9 @@ type CreateDialogProps = {
   setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>;
   fileName: string | null;
   setFileName: React.Dispatch<React.SetStateAction<string | null>>;
+  pathname: string;
+  selectedDate: string;
+  router: AppRouterInstance; // できるだけ、インスタンスを増やさないようにする
 };
 
 export const CreateExpenseDialog: FC<CreateDialogProps> = ({
@@ -34,6 +39,9 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   setSelectedImage,
   fileName,
   setFileName,
+  pathname,
+  selectedDate,
+  router,
 }) => {
   const dateRef = useRef<HTMLInputElement>(null);
   const storeNameRef = useRef<HTMLInputElement>(null);
@@ -42,40 +50,33 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log(file);
 
     if (file) {
       setFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result as string); // Store the image as a base64 string
+        setSelectedImage(reader.result as string); // base64をstringでセット
       };
-      reader.readAsDataURL(file); // Convert the file to base64 format
+      reader.readAsDataURL(file); // base64に置き換え
     }
   };
 
   const handleCreateExpense = () => {
     if (
-      fileName &&
       dateRef.current?.value &&
       storeNameRef.current?.value &&
       amountRef.current?.value &&
       categoryRef.current?.value
     ) {
-      console.log(
-        "userId",
+      formatAndCreateExpense(
         userId,
-        "date",
         dateRef.current.value,
-        "storeName",
         storeNameRef.current.value,
-        "amount",
-        amountRef.current.value,
-        "category",
-        categoryRef.current.value,
-        "fileName",
+        Number(amountRef.current.value),
+        Number(categoryRef.current.value),
         fileName
       );
+      router.push(pathname + "?date=" + selectedDate + "&update=true");
     } else {
       // TODO: エラーの対応を考える
       console.log("The selected values are invalid");

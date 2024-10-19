@@ -23,7 +23,7 @@ import { Category } from "@/types";
 import {
   updateSelectedExpense,
   deleteSelectedExpense,
-} from "@/_components/features/expenses/expensesServer";
+} from "@/_components/features/expenses/ExpensesServer";
 
 type ExpensesDialogProps = {
   handleClose: () => void;

@@ -3,7 +3,7 @@ import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import {
   getDatesInRange,
   makeDateElements,
-} from "@/_components/features/sidebar/yearMonthElements";
+} from "@/_components/features/sidebar/SidebarServer";
 import { Box } from "@mui/material";
 import { ExpensesTable } from "@/_components/features/expenses";
 import { Sidebar } from "@/_components/features/sidebar/Sidebar";
@@ -24,6 +24,8 @@ export default async function Page({
     `${today.getFullYear()}-${(today.getMonth() + 1)
       .toString()
       .padStart(2, "0")}`;
+
+  const pramUpdateState = searchParams["update"] == "true";
 
   // 年と月を取得
   const [targetYear, targetMonth] = paramDate.split("-").map(Number);
@@ -67,6 +69,7 @@ export default async function Page({
         paramDate={paramDate}
         dateDropdownElements={dateDropdown}
         categories={categories}
+        pramUpdateState={pramUpdateState}
       />
     </Box>
   );
