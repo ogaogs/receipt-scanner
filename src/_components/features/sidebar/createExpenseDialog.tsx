@@ -13,6 +13,7 @@ import {
   ReceiptUpload,
   AddExpenseDetail,
 } from "@/_components/features/sidebar";
+import { formatAndCreateExpense } from "@/_components/features/sidebar/SidebarServer";
 
 type CreateDialogProps = {
   handleClose: () => void;
@@ -74,6 +75,14 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
         "category",
         categoryRef.current.value,
         "fileName",
+        fileName
+      );
+      formatAndCreateExpense(
+        userId,
+        dateRef.current.value,
+        storeNameRef.current.value,
+        Number(amountRef.current.value),
+        Number(categoryRef.current.value),
         fileName
       );
     } else {
