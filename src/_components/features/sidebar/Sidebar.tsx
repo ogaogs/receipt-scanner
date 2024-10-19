@@ -15,9 +15,12 @@ import {
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { formatDate, getToday } from "@/utils/time";
-import { dateDropdownElement } from "@/_components/features/sidebar/type";
+import {
+  dateDropdownElement,
+  ExpenseDetail,
+} from "@/_components/features/sidebar/type";
 import { Category } from "@/types";
-import { CreateExpenseDialog } from "@/_components/features/sidebar/createExpenseDialog";
+import { CreateExpenseDialog } from "@/_components/features/sidebar/CreateExpenseDialog";
 
 const drawerWidth = "20%";
 
@@ -48,6 +51,25 @@ export const Sidebar: FC<SidebarProps> = ({
   const [selectedDate, setSelectedDate] = useState<string>(paramDate);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [expenseDate, setExpenseDate] = useState<Date | undefined>(undefined);
+  const [storeName, setStoreName] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
+  const [categoryId, setCategoryId] = useState<number>(1);
+
+  const expenseDetailUseState: ExpenseDetail = {
+    expenseDate: expenseDate,
+    storeName: storeName,
+    amount: amount,
+    categoryId: categoryId,
+    selectedImage: selectedImage,
+    fileName: fileName,
+    setExpenseDate: setExpenseDate,
+    setStoreName: setStoreName,
+    setAmount: setAmount,
+    setCategoryId: setCategoryId,
+    setSelectedImage: setSelectedImage,
+    setFileName: setFileName,
+  };
 
   // ページ遷移のための関数
   const handlePageChange = (event: any) => {
@@ -70,6 +92,10 @@ export const Sidebar: FC<SidebarProps> = ({
     setOpen(false);
     setSelectedImage(null);
     setFileName(null);
+    setExpenseDate(undefined);
+    setStoreName("");
+    setAmount(0);
+    setCategoryId(1);
   };
 
   // 新規登録がされた際に実行するUseEffect
@@ -105,13 +131,10 @@ export const Sidebar: FC<SidebarProps> = ({
           open={open}
           categories={categories}
           userId={userId}
-          selectedImage={selectedImage}
-          setSelectedImage={setSelectedImage}
-          fileName={fileName}
-          setFileName={setFileName}
           pathname={pathname}
           selectedDate={selectedDate}
           router={router}
+          expenseDetailUseState={expenseDetailUseState}
         />
         <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
           <Select

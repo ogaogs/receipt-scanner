@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useRef } from "react";
+import React, { FC } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,11 +9,15 @@ import {
   Button,
 } from "@mui/material";
 import { Category } from "@/types";
+import { ExpenseDetail } from "@/_components/features/sidebar/type";
 import {
   ReceiptUpload,
   AddExpenseDetail,
 } from "@/_components/features/sidebar";
-import { formatAndCreateExpense } from "@/_components/features/sidebar/SidebarServer";
+import {
+  formatAndCreateExpense,
+  getReceiptDetail,
+} from "@/_components/features/sidebar/SidebarServer";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 type CreateDialogProps = {
@@ -21,13 +25,10 @@ type CreateDialogProps = {
   open: boolean;
   categories: Category[];
   userId: string;
-  selectedImage: string | null;
-  setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>;
-  fileName: string | null;
-  setFileName: React.Dispatch<React.SetStateAction<string | null>>;
   pathname: string;
   selectedDate: string;
   router: AppRouterInstance; // できるだけ、インスタンスを増やさないようにする
+  expenseDetailUseState: ExpenseDetail;
 };
 
 export const CreateExpenseDialog: FC<CreateDialogProps> = ({
@@ -35,18 +36,25 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   open,
   categories,
   userId,
-  selectedImage,
-  setSelectedImage,
-  fileName,
-  setFileName,
   pathname,
   selectedDate,
   router,
+  expenseDetailUseState,
 }) => {
-  const dateRef = useRef<HTMLInputElement>(null);
-  const storeNameRef = useRef<HTMLInputElement>(null);
-  const amountRef = useRef<HTMLInputElement>(null);
-  const categoryRef = useRef<HTMLInputElement>(null);
+  const {
+    expenseDate,
+    setExpenseDate,
+    storeName,
+    setStoreName,
+    amount,
+    setAmount,
+    categoryId,
+    setCategoryId,
+    selectedImage,
+    setSelectedImage,
+    fileName,
+    setFileName,
+  } = expenseDetailUseState;
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -62,18 +70,14 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   };
 
   const handleCreateExpense = () => {
-    if (
-      dateRef.current?.value &&
-      storeNameRef.current?.value &&
-      amountRef.current?.value &&
-      categoryRef.current?.value
-    ) {
+    if (expenseDate && storeName && amount && categoryId) {
+      console.log(expenseDate, storeName, amount, categoryId, fileName);
       formatAndCreateExpense(
         userId,
-        dateRef.current.value,
-        storeNameRef.current.value,
-        Number(amountRef.current.value),
-        Number(categoryRef.current.value),
+        expenseDate,
+        storeName,
+        amount,
+        categoryId,
         fileName
       );
       router.push(pathname + "?date=" + selectedDate + "&update=true");
@@ -85,7 +89,17 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     handleClose();
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
+    if (selectedImage && fileName) {
+      const analyzedReceiptDate = await getReceiptDetail(
+        selectedImage,
+        fileName
+      );
+      setExpenseDate(analyzedReceiptDate.date); // 解析された日付をセット
+      setStoreName(analyzedReceiptDate.storeName); // 解析された店名をセット
+      setAmount(analyzedReceiptDate.amount); // 解析された金額をセット
+      setCategoryId(analyzedReceiptDate.category); // 解析されたカテゴリをセット
+    }
     console.log("解析");
   };
 
@@ -114,11 +128,8 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
             handleImageRemove={handleImageRemove}
           />
           <AddExpenseDetail
-            dateRef={dateRef}
-            storeNameRef={storeNameRef}
-            amountRef={amountRef}
-            categoryRef={categoryRef}
             categories={categories}
+            expenseDetailUseState={expenseDetailUseState}
           />
         </Box>
       </DialogContent>
@@ -147,13 +158,15 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
                 style={{ display: "none" }}
               />
             </Button>
-            <Button
-              variant="contained"
-              sx={{ fontWeight: "bold" }}
-              onClick={handleAnalyze}
-            >
-              レシート解析
-            </Button>
+            {selectedImage ? (
+              <Button
+                variant="contained"
+                sx={{ fontWeight: "bold" }}
+                onClick={handleAnalyze}
+              >
+                レシート解析
+              </Button>
+            ) : null}
           </Box>
           <Button
             variant="contained"

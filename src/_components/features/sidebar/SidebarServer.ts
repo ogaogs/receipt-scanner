@@ -1,6 +1,10 @@
-import { dateDropdownElement } from "@/_components/features/sidebar/type";
-import { formatDate, formatStrDate } from "@/utils/time";
+import {
+  dateDropdownElement,
+  ReceiptDetail,
+} from "@/_components/features/sidebar/type";
+import { formatDate } from "@/utils/time";
 import { createExpense } from "@/lib/db";
+import { uploadFileToS3, generatePutPreSignedURL } from "@/lib/s3";
 
 // 最初の月から今日までの年月をリストにする
 export const getDatesInRange = (
@@ -44,18 +48,32 @@ export const makeDateElements = (
   });
 };
 
+export const getReceiptDetail = async (
+  selectedImage: string,
+  fileName: string
+): Promise<ReceiptDetail> => {
+  const putPreSignedURL = await generatePutPreSignedURL(
+    selectedImage,
+    fileName
+  );
+  uploadFileToS3(fileName, putPreSignedURL);
+  // NOTE: 一旦以下を返す。
+  return {
+    storeName: "八百屋",
+    amount: 10000,
+    date: new Date(2024, 10, 9),
+    category: 1,
+  };
+};
+
 export const formatAndCreateExpense = async (
   userId: string,
-  dateStr: string,
+  date: Date,
   storeName: string,
   amount: number,
   categoryId: number,
   fileName: string | null
 ) => {
-  const date = formatStrDate(dateStr);
-  if (date === undefined) {
-    throw new Error("The date is invalid");
-  }
   try {
     await createExpense(userId, amount, storeName, date, categoryId, fileName);
   } catch (error) {
