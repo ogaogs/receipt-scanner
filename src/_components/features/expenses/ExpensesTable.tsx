@@ -16,7 +16,7 @@ import { formatCurrency } from "@/utils/financial";
 import { ExpensesDialog } from "@/_components/features/expenses";
 import { RowType } from "@/_components/features/expenses/type";
 import { Category } from "@/types";
-import { getAndFormatExpenses } from "@/_components/features/expenses/expensesServer";
+import { getAndFormatExpenses } from "@/_components/features/expenses/ExpensesServer";
 
 type ExpensesTableProps = {
   userId: string;

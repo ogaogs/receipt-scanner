@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
-import { BudgetsTable } from "@/_components/features/budgets/budgetsTable";
+import { BudgetsTable } from "@/_components/features/budgets/BudgetsTable";
 import { Sidebar } from "@/_components/features/sidebar/Sidebar";
 import { getCategories } from "@/lib/db";
 import {
   getDatesInRange,
   makeDateElements,
-} from "@/_components/features/sidebar/yearMonthElements";
+} from "@/_components/features/sidebar/SidebarServer";
 import { getFirstExpenseDate } from "@/lib/db/index";
 
 export default async function Page({
