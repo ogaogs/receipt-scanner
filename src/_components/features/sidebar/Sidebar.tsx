@@ -101,6 +101,9 @@ export const Sidebar: FC<SidebarProps> = ({
           setSelectedImage={setSelectedImage}
           fileName={fileName}
           setFileName={setFileName}
+          pathname={pathname}
+          selectedDate={selectedDate}
+          router={router}
         />
         <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
           <Select

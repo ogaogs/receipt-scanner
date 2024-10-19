@@ -14,6 +14,7 @@ import {
   AddExpenseDetail,
 } from "@/_components/features/sidebar";
 import { formatAndCreateExpense } from "@/_components/features/sidebar/SidebarServer";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 type CreateDialogProps = {
   handleClose: () => void;
@@ -24,6 +25,9 @@ type CreateDialogProps = {
   setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>;
   fileName: string | null;
   setFileName: React.Dispatch<React.SetStateAction<string | null>>;
+  pathname: string;
+  selectedDate: string;
+  router: AppRouterInstance; // できるだけ、インスタンスを増やさないようにする
 };
 
 export const CreateExpenseDialog: FC<CreateDialogProps> = ({
@@ -35,6 +39,9 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   setSelectedImage,
   fileName,
   setFileName,
+  pathname,
+  selectedDate,
+  router,
 }) => {
   const dateRef = useRef<HTMLInputElement>(null);
   const storeNameRef = useRef<HTMLInputElement>(null);
@@ -63,20 +70,6 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
       amountRef.current?.value &&
       categoryRef.current?.value
     ) {
-      console.log(
-        "userId",
-        userId,
-        "date",
-        dateRef.current.value,
-        "storeName",
-        storeNameRef.current.value,
-        "amount",
-        amountRef.current.value,
-        "category",
-        categoryRef.current.value,
-        "fileName",
-        fileName
-      );
       formatAndCreateExpense(
         userId,
         dateRef.current.value,
@@ -85,6 +78,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
         Number(categoryRef.current.value),
         fileName
       );
+      router.push(pathname + "?date=" + selectedDate + "&update=true");
     } else {
       // TODO: エラーの対応を考える
       console.log("The selected values are invalid");
