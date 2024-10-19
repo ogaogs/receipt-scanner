@@ -4,12 +4,13 @@ import {
   updateBudget,
 } from "@/lib/db/budget";
 import { CategoryBudgets } from "@/_components/features/budgets/type";
-import { getCategories } from "@/lib/db";
+import { Category } from "@/types";
 
 export const getAndFormatCategoryBudgets = async (
   userId: string,
   firstDay: Date,
-  lastDay: Date
+  lastDay: Date,
+  categories: Category[]
 ): Promise<{
   formattedCategoryBudgets: CategoryBudgets[];
   totalAmount: number;
@@ -19,8 +20,6 @@ export const getAndFormatCategoryBudgets = async (
     firstDay,
     lastDay
   );
-
-  const categories = await getCategories();
 
   // 出費を特定のフォーマットにする
   const formattedCategoryBudgets = categories.map((category) => {

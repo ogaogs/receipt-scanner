@@ -8,6 +8,7 @@ import {
 import { CategoryBudgets } from "@/_components/features/budgets/type";
 import { Box, Typography, Paper, Input, Button } from "@mui/material";
 import { formatCurrency } from "@/utils/financial";
+import { Category } from "@/types";
 
 type BudgetsProps = {
   userId: string;
@@ -16,6 +17,7 @@ type BudgetsProps = {
   isThisMonth: boolean;
   targetYear: number;
   targetMonth: number;
+  categories: Category[];
 };
 
 export const BudgetsTable: FC<BudgetsProps> = ({
@@ -25,6 +27,7 @@ export const BudgetsTable: FC<BudgetsProps> = ({
   isThisMonth,
   targetYear,
   targetMonth,
+  categories,
 }) => {
   const [categoryBudgets, setCategoryBudgets] = useState<CategoryBudgets[]>([]);
   const [totalBudgtesAmount, setTotalBudgtesAmount] = useState<number>(0);
@@ -34,7 +37,7 @@ export const BudgetsTable: FC<BudgetsProps> = ({
     lastDay: Date
   ) => Promise<void> = async () => {
     const { formattedCategoryBudgets, totalAmount } =
-      await getAndFormatCategoryBudgets(userId, firstDay, lastDay);
+      await getAndFormatCategoryBudgets(userId, firstDay, lastDay, categories);
     setCategoryBudgets(formattedCategoryBudgets);
     setTotalBudgtesAmount(totalAmount);
   };
