@@ -13,23 +13,27 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { Category } from "@/types";
-import { ReceiptUpload } from "@/_components/features/sidebar/ReciptUpload";
+import { ExpenseDetail } from "@/_components/features/sidebar/type";
 
 type AddExpenseDetailProps = {
-  dateRef: React.RefObject<HTMLInputElement>;
-  storeNameRef: React.RefObject<HTMLInputElement>;
-  amountRef: React.RefObject<HTMLInputElement>;
-  categoryRef: React.RefObject<HTMLInputElement>;
+  expenseDetailUseState: ExpenseDetail;
   categories: Category[];
 };
 
 export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
-  dateRef,
-  storeNameRef,
-  amountRef,
-  categoryRef,
+  expenseDetailUseState,
   categories,
 }) => {
+  const {
+    expenseDate,
+    setExpenseDate,
+    storeName,
+    setStoreName,
+    amount,
+    setAmount,
+    categoryId,
+    setCategoryId,
+  } = expenseDetailUseState;
   return (
     <Box
       display="flex"
@@ -42,6 +46,10 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
         <DemoContainer components={["DatePicker"]}>
           <DatePicker
             label="日付"
+            value={dayjs(expenseDate)}
+            onChange={(newValue) => {
+              newValue ? setExpenseDate(newValue.toDate()) : null;
+            }}
             slotProps={{
               calendarHeader: {
                 format: "YYYY年MM月", // カレンダーの年月の部分
@@ -51,7 +59,6 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
               },
             }}
             format="YYYY年MM月DD" // 入力欄
-            inputRef={dateRef}
           />
         </DemoContainer>
       </LocalizationProvider>
@@ -59,19 +66,26 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
         id="store-name"
         label="店名"
         variant="filled"
-        inputRef={storeNameRef}
+        value={storeName}
+        onChange={(e) => setStoreName(e.target.value)}
       />
       <FormControl sx={{ minWidth: 120, mb: 1, ml: 1 }} variant="filled">
         <InputLabel id="amount">金額</InputLabel>
         <FilledInput
           startAdornment={<InputAdornment position="start">¥</InputAdornment>}
           type="number"
-          inputRef={amountRef}
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
         />
       </FormControl>
       <FormControl sx={{ minWidth: 120, mb: 1, ml: 1 }}>
         <InputLabel variant="filled">カテゴリー</InputLabel>
-        <Select native variant="filled" inputRef={categoryRef}>
+        <Select
+          native
+          variant="filled"
+          value={categoryId}
+          onChange={(e) => setCategoryId(Number(e.target.value))}
+        >
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
