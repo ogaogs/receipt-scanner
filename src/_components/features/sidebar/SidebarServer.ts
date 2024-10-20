@@ -3,12 +3,8 @@ import {
   ReceiptDetail,
 } from "@/_components/features/sidebar/type";
 import { formatDate } from "@/utils/time";
-import { createExpense } from "@/lib/db";
-import {
-  uploadFileToS3,
-  downloadFileFromS3,
-  generatePreSignedURL,
-} from "@/lib/s3";
+import { createExpense, isFileNameExists } from "@/lib/db";
+import { uploadFileToS3, generatePreSignedURL } from "@/lib/s3";
 
 // 最初の月から今日までの年月をリストにする
 export const getDatesInRange = (
@@ -83,4 +79,8 @@ export const formatAndCreateExpense = async (
   } catch (error) {
     throw error;
   }
+};
+
+export const checkFileNameExists = async (fileName: string) => {
+  return await isFileNameExists(fileName);
 };

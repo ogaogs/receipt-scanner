@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import {
 import {
   formatAndCreateExpense,
   getReceiptDetail,
+  checkFileNameExists,
 } from "@/_components/features/sidebar/SidebarServer";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
@@ -55,11 +56,21 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     fileName,
     setFileName,
   } = expenseDetailUseState;
+  const [isCreateDisabled, setIsCreateDisabled] = useState(false);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
 
     if (file) {
+      const fileNameExists = await checkFileNameExists(file.name);
+      if (fileNameExists) {
+        alert(
+          "このファイル名はすでに使用されています。別のファイル名を選択してください。"
+        );
+        return;
+      }
       setFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -129,6 +140,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
           <AddExpenseDetail
             categories={categories}
             expenseDetailUseState={expenseDetailUseState}
+            setIsCreateDisabled={setIsCreateDisabled}
           />
         </Box>
       </DialogContent>
@@ -171,6 +183,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
             variant="contained"
             sx={{ fontWeight: "bold" }}
             onClick={handleCreateExpense}
+            disabled={isCreateDisabled}
           >
             作成
           </Button>

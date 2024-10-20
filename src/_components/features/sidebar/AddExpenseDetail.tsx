@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   TextField,
   Box,
@@ -14,15 +14,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { Category } from "@/types";
 import { ExpenseDetail } from "@/_components/features/sidebar/type";
+import { error_red } from "@/_components/common/Style/style";
 
 type AddExpenseDetailProps = {
   expenseDetailUseState: ExpenseDetail;
   categories: Category[];
+  setIsCreateDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
   expenseDetailUseState,
   categories,
+  setIsCreateDisabled,
 }) => {
   const {
     expenseDate,
@@ -34,6 +37,28 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
     categoryId,
     setCategoryId,
   } = expenseDetailUseState;
+
+  // エラー状態の管理
+  const [storeNameError, setStoreNameError] = useState(false);
+  const [amountError, setAmountError] = useState(false);
+
+  // バリデーションチェック関数
+  const validateFields = () => {
+    const isStoreNameValid = storeName.trim() !== "";
+    const isAmountValid = amount > 0;
+
+    setStoreNameError(!isStoreNameValid);
+    setAmountError(!isAmountValid);
+
+    // 作成ボタンの有効/無効を親コンポーネントに伝える
+    setIsCreateDisabled(!(isStoreNameValid && isAmountValid));
+  };
+
+  // 入力が変更されるたびにバリデーションを実行
+  useEffect(() => {
+    validateFields();
+  }, [storeName, amount]);
+
   return (
     <Box
       display="flex"
@@ -41,7 +66,6 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
       component="form"
       sx={{ "& .MuiTextField-root": { mb: 1, ml: 1 } }}
     >
-      {/* TODO: 全ての要素がrequiredでなければならない */}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DatePicker"]}>
           <DatePicker
@@ -68,15 +92,37 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
         variant="filled"
         value={storeName}
         onChange={(e) => setStoreName(e.target.value)}
+        error={storeNameError} // エラー表示
+        helperText={storeNameError ? "必須項目です。" : ""}
       />
       <FormControl sx={{ minWidth: 120, mb: 1, ml: 1 }} variant="filled">
-        <InputLabel id="amount">金額</InputLabel>
+        <InputLabel
+          id="amount"
+          sx={{
+            color: amountError ? error_red : "inherit",
+          }}
+        >
+          金額
+        </InputLabel>
         <FilledInput
           startAdornment={<InputAdornment position="start">¥</InputAdornment>}
           type="number"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
+          error={amountError}
         />
+        {amountError && (
+          <span
+            style={{
+              color: error_red, // エラーカラー
+              fontSize: "0.75rem", // TextFieldのhelperTextと同じフォントサイズ
+              marginLeft: "14px", // TextFieldのhelperTextと同じ左余白
+              marginTop: "3px", // エラーメッセージの上に少し余白
+            }}
+          >
+            必須項目です。
+          </span>
+        )}
       </FormControl>
       <FormControl sx={{ minWidth: 120, mb: 1, ml: 1 }}>
         <InputLabel variant="filled">カテゴリー</InputLabel>

@@ -8,6 +8,7 @@ import {
   createExpense,
 } from "@/lib/db/expense";
 import { getCategories } from "@/lib/db/category";
+import { isFileNameExists } from "@/lib/db/receipt";
 
 export {
   getMonthBudgets,
@@ -19,4 +20,5 @@ export {
   getCategories,
   getMonthExpensesWithCategory,
   getMonthBudgetsWithCategory,
+  isFileNameExists,
 };

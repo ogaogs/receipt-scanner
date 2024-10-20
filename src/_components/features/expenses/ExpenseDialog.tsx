@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useRef} from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,11 +26,12 @@ import {
   getPreSignedURL,
 } from "@/_components/features/expenses/ExpensesServer";
 import { ShowReceipt } from "@/_components/features/expenses";
+import { error_red } from "@/_components/common/Style/style";
 
 type ExpensesDialogProps = {
   handleClose: () => void;
   open: boolean;
-  selectedItem: RowType | null;
+  selectedItem: RowType;
   categories: Category[];
   userId: string;
   firstDay: Date;
@@ -56,11 +57,36 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   setReceiptImage,
   getExpensesAndSetRows,
 }) => {
-  const dateRef = useRef<HTMLInputElement>(null);
-  const storeNameRef = useRef<HTMLInputElement>(null);
-  const amountRef = useRef<HTMLInputElement>(null);
-  const categoryRef = useRef<HTMLInputElement>(null);
-  const fileName = selectedItem?.fileName;
+  const fileName = selectedItem.fileName;
+
+  const [expenseDate, setExpenseDate] = useState<Date>(selectedItem.date);
+  const [storeName, setStoreName] = useState<string>(selectedItem.storeName);
+  const [amount, setAmount] = useState<number>(selectedItem.amount);
+  const [categoryId, setCategoryId] = useState<number>(selectedItem.categoryId);
+
+  // エラー状態の管理
+  const [storeNameError, setStoreNameError] = useState(true);
+  const [amountError, setAmountError] = useState(true);
+
+  // 更新ボタン
+  const [isuUpdateDisabled, setIsUpdateDisabled] = useState(true);
+
+  // バリデーションチェック関数
+  const validateFields = () => {
+    const isStoreNameValid = storeName?.trim() !== "";
+    const isAmountValid = amount > 0;
+
+    setStoreNameError(!isStoreNameValid);
+    setAmountError(!isAmountValid);
+
+    // 作成ボタンの有効/無効を親コンポーネントに伝える
+    setIsUpdateDisabled(!(isStoreNameValid && isAmountValid));
+  };
+
+  // 入力が変更されるたびにバリデーションを実行
+  useEffect(() => {
+    validateFields();
+  }, [storeName, amount]);
 
   const getReceiptImage = async (): Promise<void> => {
     if (fileName) {
@@ -75,28 +101,17 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
 
   // 更新ボタンの押下の際に実行する関数
   const upddateExpenses: () => void = () => {
-    if (
-      selectedItem?.expenseId &&
-      dateRef.current?.value &&
-      storeNameRef.current?.value &&
-      amountRef.current?.value &&
-      categoryRef.current?.value
-    ) {
-      try {
-        updateSelectedExpense(
-          selectedItem.expenseId,
-          dateRef.current.value,
-          storeNameRef.current.value,
-          Number(amountRef.current.value),
-          Number(categoryRef.current.value)
-        );
-      } catch (error) {
-        // TODO: エラーの対応を考える
-        console.log(error);
-      }
-    } else {
+    try {
+      updateSelectedExpense(
+        selectedItem.expenseId,
+        expenseDate,
+        storeName,
+        amount,
+        categoryId
+      );
+    } catch (error) {
       // TODO: エラーの対応を考える
-      console.log("Failed to update the expense");
+      console.log(error);
     }
 
     // データを再取得し、rowsをセットする
@@ -107,16 +122,11 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
 
   // 削除ボタンの押下の際に実行する
   const deleteExpenses: () => void = () => {
-    if (selectedItem?.expenseId) {
-      try {
-        deleteSelectedExpense(selectedItem.expenseId);
-      } catch (error) {
-        // TODO: エラーの対応を考える
-        console.log(error);
-      }
-    } else {
+    try {
+      deleteSelectedExpense(selectedItem.expenseId);
+    } catch (error) {
       // TODO: エラーの対応を考える
-      console.log("Failed to delete the expense");
+      console.log(error);
     }
 
     // データを再取得し、rowsをセットする
@@ -139,67 +149,88 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
       <DialogContent>
         <Box display="flex" flexDirection="row" height={"100%"}>
           <ShowReceipt receiptImage={receiptImage} fileName={fileName} />
-          {selectedItem && (
-            <Box
-              display="flex"
-              flexDirection="column"
-              component="form"
-              sx={{ "& .MuiTextField-root": { m: 1 } }}
-            >
-              {/* TODO: 全ての要素がrequiredでなければならない */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DatePicker"]}>
-                  <DatePicker
-                    defaultValue={dayjs(selectedItem.date)}
-                    label="日付"
-                    slotProps={{
-                      calendarHeader: {
-                        format: "YYYY年MM月", // カレンダーの年月の部分
-                      },
-                      textField: {
-                        variant: "filled",
-                      },
-                    }}
-                    format="YYYY年MM月DD" // 入力欄
-                    inputRef={dateRef}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-              <TextField
-                id="store-name"
-                label="店名"
-                defaultValue={selectedItem.storeName}
-                variant="filled"
-                inputRef={storeNameRef}
-              />
-              <FormControl sx={{ m: 1, minWidth: 120 }} variant="filled">
-                <InputLabel id="amount">金額</InputLabel>
-                <FilledInput
-                  startAdornment={
-                    <InputAdornment position="start">¥</InputAdornment>
-                  }
-                  type="number"
-                  defaultValue={selectedItem.amount}
-                  inputRef={amountRef}
+          <Box
+            display="flex"
+            flexDirection="column"
+            component="form"
+            sx={{ "& .MuiTextField-root": { mb: 1, ml: 1 } }}
+          >
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="日付"
+                  value={dayjs(expenseDate)}
+                  onChange={(newValue) => {
+                    newValue ? setExpenseDate(newValue.toDate()) : null;
+                  }}
+                  slotProps={{
+                    calendarHeader: {
+                      format: "YYYY年MM月", // カレンダーの年月の部分
+                    },
+                    textField: {
+                      variant: "filled",
+                    },
+                  }}
+                  format="YYYY年MM月DD" // 入力欄
                 />
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel variant="filled">カテゴリー</InputLabel>
-                <Select
-                  native
-                  variant="filled"
-                  defaultValue={selectedItem.categoryId}
-                  inputRef={categoryRef}
+              </DemoContainer>
+            </LocalizationProvider>
+            <TextField
+              id="store-name"
+              label="店名"
+              variant="filled"
+              value={storeName}
+              onChange={(e) => setStoreName(e.target.value)}
+              error={storeNameError} // エラー表示
+              helperText={storeNameError ? "必須項目です。" : ""}
+            />
+            <FormControl sx={{ minWidth: 120, mb: 1, ml: 1 }} variant="filled">
+              <InputLabel
+                id="amount"
+                sx={{
+                  color: amountError ? error_red : "inherit",
+                }}
+              >
+                金額
+              </InputLabel>
+              <FilledInput
+                startAdornment={
+                  <InputAdornment position="start">¥</InputAdornment>
+                }
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(Number(e.target.value))}
+                error={amountError}
+              />
+              {amountError && (
+                <span
+                  style={{
+                    color: error_red, // エラーカラー
+                    fontSize: "0.75rem", // TextFieldのhelperTextと同じフォントサイズ
+                    marginLeft: "14px", // TextFieldのhelperTextと同じ左余白
+                    marginTop: "3px", // エラーメッセージの上に少し余白
+                  }}
                 >
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-          )}
+                  必須項目です。
+                </span>
+              )}
+            </FormControl>
+            <FormControl sx={{ minWidth: 120, mb: 1, ml: 1 }}>
+              <InputLabel variant="filled">カテゴリー</InputLabel>
+              <Select
+                native
+                variant="filled"
+                value={categoryId}
+                onChange={(e) => setCategoryId(Number(e.target.value))}
+              >
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
         </Box>
       </DialogContent>
       <DialogActions>
@@ -215,6 +246,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
           variant="contained"
           sx={{ fontWeight: "bold" }}
           onClick={upddateExpenses}
+          disabled={isuUpdateDisabled}
         >
           更新
         </Button>

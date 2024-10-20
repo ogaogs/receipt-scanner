@@ -36,15 +36,11 @@ export const getAndFormatExpenses = async (
 // 特定の出費を更新する
 export const updateSelectedExpense = async (
   expenseId: string,
-  dateStr: string,
+  date: Date,
   storeName: string,
   amount: number,
   categoryId: number
 ) => {
-  const date = formatStrDate(dateStr);
-  if (date === undefined) {
-    throw new Error("The date is invalid");
-  }
   try {
     await updateExpense(expenseId, amount, storeName, date, categoryId);
   } catch (error) {
