@@ -1,8 +1,9 @@
 export type RowType = {
-  expense_id: string;
+  expenseId: string;
   date: Date;
   storeName: string;
   amount: number;
-  category_id: number;
+  categoryId: number;
   category: string;
+  fileName: string | undefined;
 };

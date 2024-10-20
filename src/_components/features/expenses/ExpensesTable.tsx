@@ -89,7 +89,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
           <TableBody>
             {rows.map((row) => (
               <TableRow
-                key={row.expense_id}
+                key={row.expenseId}
                 hover
                 style={{ cursor: "pointer" }}
                 onClick={() => handleClick(row)}
