@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -56,6 +56,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     fileName,
     setFileName,
   } = expenseDetailUseState;
+  const [isCreateDisabled, setIsCreateDisabled] = useState(false);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -139,6 +140,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
           <AddExpenseDetail
             categories={categories}
             expenseDetailUseState={expenseDetailUseState}
+            setIsCreateDisabled={setIsCreateDisabled}
           />
         </Box>
       </DialogContent>
@@ -181,6 +183,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
             variant="contained"
             sx={{ fontWeight: "bold" }}
             onClick={handleCreateExpense}
+            disabled={isCreateDisabled}
           >
             作成
           </Button>
