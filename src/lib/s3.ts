@@ -1,6 +1,10 @@
 "use server";
 
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const REGION = "ap-northeast-1";
@@ -15,15 +19,30 @@ const s3 = new S3Client({
   },
 });
 
-export const generatePutPreSignedURL = async (fileName: string) => {
-  const params = {
+export const generatePreSignedURL = async (
+  fileName: string,
+  operation: "put" | "get" // "put" または "get" で動作を切り替える
+): Promise<string> => {
+  const params: {
+    Bucket: string;
+    Key: string;
+    ContentType?: string;
+  } = {
     Bucket: BUCKET_NAME,
     Key: fileName,
-    ContentType: "image/*",
   };
 
+  // PUTの場合はContentTypeを追加
+  if (operation === "put") {
+    params.ContentType = "image/*";
+  }
+
+  const command =
+    operation === "put"
+      ? new PutObjectCommand(params)
+      : new GetObjectCommand(params);
+
   // Pre-signed URLを生成
-  const command = new PutObjectCommand(params);
   const preSignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 }); // 5分有効
   return preSignedUrl;
 };
@@ -31,7 +50,7 @@ export const generatePutPreSignedURL = async (fileName: string) => {
 export const uploadFileToS3 = async (
   fileData: string, // base64エンコードされた画像データ
   putPreSignedURL: string
-) => {
+): Promise<void> => {
   // base64の文字列からbase64部分を取り出し、デコード
   const byteString = atob(fileData.split(",")[1]);
 
@@ -60,4 +79,8 @@ export const uploadFileToS3 = async (
   if (!response.ok) {
     throw new Error("S3へのアップロードに失敗しました");
   }
+};
+
+export const downloadFileFromS3 = (downloadrePreSignedURL: string) => {
+  return "imag_data";
 };

@@ -51,7 +51,7 @@ export const Sidebar: FC<SidebarProps> = ({
   const [selectedDate, setSelectedDate] = useState<string>(paramDate);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [expenseDate, setExpenseDate] = useState<Date | undefined>(undefined);
+  const [expenseDate, setExpenseDate] = useState<Date>(today);
   const [storeName, setStoreName] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
   const [categoryId, setCategoryId] = useState<number>(1);
@@ -92,7 +92,7 @@ export const Sidebar: FC<SidebarProps> = ({
     setOpen(false);
     setSelectedImage(null);
     setFileName(null);
-    setExpenseDate(undefined);
+    setExpenseDate(today);
     setStoreName("");
     setAmount(0);
     setCategoryId(1);

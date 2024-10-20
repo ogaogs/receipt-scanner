@@ -71,7 +71,6 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
   const handleCreateExpense = () => {
     if (expenseDate && storeName && amount && categoryId) {
-      console.log(expenseDate, storeName, amount, categoryId, fileName);
       formatAndCreateExpense(
         userId,
         expenseDate,
