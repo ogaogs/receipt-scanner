@@ -81,6 +81,6 @@ export const uploadFileToS3 = async (
   }
 };
 
-export const downloadFileFromS3 = (downloadrePreSignedURL: string) => {
+export const downloadFileFromS3 = async (downloadrePreSignedURL: string) => {
   return "imag_data";
 };

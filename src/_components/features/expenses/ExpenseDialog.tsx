@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useRef } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +23,7 @@ import { Category } from "@/types";
 import {
   updateSelectedExpense,
   deleteSelectedExpense,
+  downloadReceiptImage,
 } from "@/_components/features/expenses/ExpensesServer";
 
 type ExpensesDialogProps = {
@@ -54,11 +55,24 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   const storeNameRef = useRef<HTMLInputElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<HTMLInputElement>(null);
+  const fileName = selectedItem?.fileName;
+  const [receiptImage, setReceiptImage] = useState<string | null>(null);
+
+  const getReceiptImage = async (): Promise<void> => {
+    if (fileName) {
+      const downloadImg = await downloadReceiptImage(fileName);
+      setReceiptImage(downloadImg);
+    }
+  };
+
+  useEffect(() => {
+    getReceiptImage();
+  }, [fileName !== undefined]);
 
   // 更新ボタンの押下の際に実行する関数
   const upddateExpenses: () => void = () => {
     if (
-      selectedItem?.expense_id &&
+      selectedItem?.expenseId &&
       dateRef.current?.value &&
       storeNameRef.current?.value &&
       amountRef.current?.value &&
@@ -66,7 +80,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
     ) {
       try {
         updateSelectedExpense(
-          selectedItem.expense_id,
+          selectedItem.expenseId,
           dateRef.current.value,
           storeNameRef.current.value,
           Number(amountRef.current.value),
@@ -89,9 +103,9 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
 
   // 削除ボタンの押下の際に実行する
   const deleteExpenses: () => void = () => {
-    if (selectedItem?.expense_id) {
+    if (selectedItem?.expenseId) {
       try {
-        deleteSelectedExpense(selectedItem.expense_id);
+        deleteSelectedExpense(selectedItem.expenseId);
       } catch (error) {
         // TODO: エラーの対応を考える
         console.log(error);
@@ -168,7 +182,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                   <Select
                     native
                     variant="filled"
-                    defaultValue={selectedItem.category_id}
+                    defaultValue={selectedItem.categoryId}
                     inputRef={categoryRef}
                   >
                     {categories.map((category) => (

@@ -7,26 +7,28 @@ import {
 } from "@/lib/db";
 import { RowType } from "@/_components/features/expenses/type";
 import { formatStrDate } from "@/utils/time";
+import { downloadFileFromS3, generatePreSignedURL } from "@/lib/s3";
 
 export const getAndFormatExpenses = async (
   userId: string,
   firstDay: Date,
   lastDay: Date
 ): Promise<RowType[]> => {
-  const monthExpensesWithCate = await getMonthExpensesWithCategory(
+  const monthExpensesWithCateReceipt = await getMonthExpensesWithCategory(
     userId,
     firstDay,
     lastDay
   );
 
   // 出費を特定のフォーマットにする
-  const rows = monthExpensesWithCate.map((expense) => ({
-    expense_id: expense.id,
+  const rows = monthExpensesWithCateReceipt.map((expense) => ({
+    expenseId: expense.id,
     date: expense.date,
     storeName: expense.storeName,
     amount: expense.amount,
-    category_id: expense.categoryId,
+    categoryId: expense.categoryId,
     category: expense.category.name,
+    fileName: expense.receipt?.fileName,
   }));
   return rows;
 };
@@ -57,4 +59,12 @@ export const deleteSelectedExpense = async (expenseId: string) => {
   } catch (error) {
     throw error;
   }
+};
+
+export const downloadReceiptImage = async (fileName: string) => {
+  const getPreSignedURL = await generatePreSignedURL(fileName, "get");
+  console.log(getPreSignedURL);
+
+  const downloadImg = await downloadFileFromS3(getPreSignedURL);
+  return downloadImg;
 };
