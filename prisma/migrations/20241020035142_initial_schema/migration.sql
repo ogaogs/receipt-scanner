@@ -35,7 +35,7 @@ CREATE TABLE "categories" (
 -- CreateTable
 CREATE TABLE "receipts" (
     "id" UUID NOT NULL,
-    "file_path" TEXT NOT NULL,
+    "file_name" TEXT NOT NULL,
     "expense_id" UUID NOT NULL,
 
     CONSTRAINT "receipts_pkey" PRIMARY KEY ("id")
@@ -61,6 +61,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "receipts_file_name_key" ON "receipts"("file_name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "receipts_expense_id_key" ON "receipts"("expense_id");
 
 -- AddForeignKey
@@ -70,7 +73,7 @@ ALTER TABLE "expenses" ADD CONSTRAINT "expenses_user_id_fkey" FOREIGN KEY ("user
 ALTER TABLE "expenses" ADD CONSTRAINT "expenses_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "receipts" ADD CONSTRAINT "receipts_expense_id_fkey" FOREIGN KEY ("expense_id") REFERENCES "expenses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "receipts" ADD CONSTRAINT "receipts_expense_id_fkey" FOREIGN KEY ("expense_id") REFERENCES "expenses"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

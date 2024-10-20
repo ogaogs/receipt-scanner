@@ -78,7 +78,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
       }
     } else {
       // TODO: エラーの対応を考える
-      console.log("The selected values are invalid");
+      console.log("Failed to update the expense");
     }
 
     // データを再取得し、rowsをセットする
