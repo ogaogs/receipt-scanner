@@ -4,12 +4,7 @@ import { FC, Suspense } from "react";
 
 import { ChartWithLetter } from "@/_components/features/dashboard/ChartWithLetter";
 import { PieChartData } from "@/_components/common/DoughnutPieChart/DoughnutPieChart";
-import {
-  lightgreen,
-  green,
-  blue,
-  red,
-} from "@/_components/features/dashboard/style";
+import { lightgreen, green, blue, red } from "@/_components/common/Style/style";
 import { formatDate } from "@/utils/time";
 
 type remainDaysReturn = {
