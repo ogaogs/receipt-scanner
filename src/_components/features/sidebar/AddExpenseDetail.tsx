@@ -7,6 +7,7 @@ import {
   InputLabel,
   FilledInput,
   InputAdornment,
+  Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -139,6 +140,9 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
           ))}
         </Select>
       </FormControl>
+      <Typography variant="caption" gutterBottom sx={{ mb: 1, ml: 1 }}>
+        ※解析には2秒程かかります。
+      </Typography>
     </Box>
   );
 };
