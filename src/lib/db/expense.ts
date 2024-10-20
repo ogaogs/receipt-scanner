@@ -107,7 +107,7 @@ export const createExpense = async (
       receipt: fileName
         ? {
             create: {
-              filePath: fileName,
+              fileName: fileName,
             },
           }
         : undefined,
