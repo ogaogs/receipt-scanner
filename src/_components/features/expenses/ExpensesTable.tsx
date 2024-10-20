@@ -107,19 +107,20 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-
-      <ExpensesDialog
-        handleClose={handleClose}
-        open={open}
-        selectedItem={selectedItem}
-        categories={categories}
-        userId={userId}
-        firstDay={firstDay}
-        lastDay={lastDay}
-        getExpensesAndSetRows={getExpensesAndSetRows}
-        receiptImage={receiptImage}
-        setReceiptImage={setReceiptImage}
-      />
+      {selectedItem && (
+        <ExpensesDialog
+          handleClose={handleClose}
+          open={open}
+          selectedItem={selectedItem}
+          categories={categories}
+          userId={userId}
+          firstDay={firstDay}
+          lastDay={lastDay}
+          getExpensesAndSetRows={getExpensesAndSetRows}
+          receiptImage={receiptImage}
+          setReceiptImage={setReceiptImage}
+        />
+      )}
     </Box>
   );
 };

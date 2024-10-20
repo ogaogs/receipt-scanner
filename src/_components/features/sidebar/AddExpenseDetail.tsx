@@ -66,7 +66,6 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
       component="form"
       sx={{ "& .MuiTextField-root": { mb: 1, ml: 1 } }}
     >
-      {/* TODO: 全ての要素がrequiredでなければならない */}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DatePicker"]}>
           <DatePicker
