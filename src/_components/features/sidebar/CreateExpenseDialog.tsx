@@ -17,6 +17,7 @@ import {
 import {
   formatAndCreateExpense,
   getReceiptDetail,
+  checkFileNameExists,
 } from "@/_components/features/sidebar/SidebarServer";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
@@ -56,10 +57,19 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     setFileName,
   } = expenseDetailUseState;
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
 
     if (file) {
+      const fileNameExists = await checkFileNameExists(file.name);
+      if (fileNameExists) {
+        alert(
+          "このファイル名はすでに使用されています。別のファイル名を選択してください。"
+        );
+        return;
+      }
       setFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
