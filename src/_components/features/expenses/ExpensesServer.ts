@@ -6,7 +6,6 @@ import {
   deleteExpense,
 } from "@/lib/db";
 import { RowType } from "@/_components/features/expenses/type";
-import { formatStrDate } from "@/utils/time";
 import { generatePreSignedURL } from "@/lib/s3";
 
 export const getAndFormatExpenses = async (

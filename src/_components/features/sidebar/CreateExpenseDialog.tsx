@@ -103,14 +103,14 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     if (selectedImage && fileName) {
       const analyzedReceiptDate = await getReceiptDetail(
         selectedImage,
-        fileName
+        fileName,
+        categories
       );
       setExpenseDate(analyzedReceiptDate.date); // 解析された日付をセット
       setStoreName(analyzedReceiptDate.storeName); // 解析された店名をセット
       setAmount(analyzedReceiptDate.amount); // 解析された金額をセット
       setCategoryId(analyzedReceiptDate.category); // 解析されたカテゴリをセット
     }
-    console.log("解析");
   };
 
   const handleImageRemove = () => {

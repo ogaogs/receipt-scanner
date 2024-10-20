@@ -36,7 +36,7 @@ export const formatDate = (
 
 export const formatStrDate = (dateStr: string): Date | undefined => {
   // 正規表現で年、月、日を抽出
-  const dateParts = dateStr.match(/(\d{4})年(\d{1,2})月(\d{1,2})/);
+  const dateParts = dateStr.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
 
   // 年、月、日を抽出してDateオブジェクトに変換
   if (dateParts) {
