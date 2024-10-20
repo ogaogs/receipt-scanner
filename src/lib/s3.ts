@@ -80,7 +80,3 @@ export const uploadFileToS3 = async (
     throw new Error("S3へのアップロードに失敗しました");
   }
 };
-
-export const downloadFileFromS3 = async (downloadrePreSignedURL: string) => {
-  return "imag_data";
-};

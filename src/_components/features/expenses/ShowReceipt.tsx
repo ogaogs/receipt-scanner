@@ -3,9 +3,13 @@ import { Box, Avatar } from "@mui/material";
 
 type ShowReceiptProps = {
   receiptImage: string | null;
+  fileName: string | undefined;
 };
 
-export const ShowReceipt: FC<ShowReceiptProps> = ({ receiptImage }) => {
+export const ShowReceipt: FC<ShowReceiptProps> = ({
+  receiptImage,
+  fileName,
+}) => {
   return (
     <Box
       display="flex"
@@ -15,7 +19,7 @@ export const ShowReceipt: FC<ShowReceiptProps> = ({ receiptImage }) => {
       flexGrow={1}
       position="relative"
     >
-      {receiptImage ? (
+      {fileName ? (
         <>
           <Avatar
             sx={{
@@ -24,14 +28,18 @@ export const ShowReceipt: FC<ShowReceiptProps> = ({ receiptImage }) => {
             }}
             variant="square"
           >
-            <img
-              src={receiptImage}
-              style={{
-                maxWidth: "99%", // Avatarの幅に合わせて画像の幅を縮小
-                maxHeight: "99%", // Avatarの高さに合わせて画像の高さを縮小
-                objectFit: "contain", // 画像が見切れないように比率を保って表示
-              }}
-            />
+            {receiptImage ? (
+              <img
+                src={receiptImage}
+                style={{
+                  maxWidth: "99%", // Avatarの幅に合わせて画像の幅を縮小
+                  maxHeight: "99%", // Avatarの高さに合わせて画像の高さを縮小
+                  objectFit: "contain", // 画像が見切れないように比率を保って表示
+                }}
+              />
+            ) : (
+              <p>loading ...</p>
+            )}
           </Avatar>
         </>
       ) : (

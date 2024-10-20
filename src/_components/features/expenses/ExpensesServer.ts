@@ -7,7 +7,7 @@ import {
 } from "@/lib/db";
 import { RowType } from "@/_components/features/expenses/type";
 import { formatStrDate } from "@/utils/time";
-import { downloadFileFromS3, generatePreSignedURL } from "@/lib/s3";
+import { generatePreSignedURL } from "@/lib/s3";
 
 export const getAndFormatExpenses = async (
   userId: string,
@@ -61,10 +61,7 @@ export const deleteSelectedExpense = async (expenseId: string) => {
   }
 };
 
-export const downloadReceiptImage = async (fileName: string) => {
-  const getPreSignedURL = await generatePreSignedURL(fileName, "get");
-  console.log(getPreSignedURL);
-
-  const downloadImg = await downloadFileFromS3(getPreSignedURL);
-  return downloadImg;
+export const getPreSignedURL = async (fileName: string) => {
+  const preSignedURL = await generatePreSignedURL(fileName, "get");
+  return preSignedURL;
 };

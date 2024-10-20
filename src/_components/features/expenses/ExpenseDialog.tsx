@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef} from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,7 @@ import { Category } from "@/types";
 import {
   updateSelectedExpense,
   deleteSelectedExpense,
-  downloadReceiptImage,
+  getPreSignedURL,
 } from "@/_components/features/expenses/ExpensesServer";
 import { ShowReceipt } from "@/_components/features/expenses";
 
@@ -35,6 +35,8 @@ type ExpensesDialogProps = {
   userId: string;
   firstDay: Date;
   lastDay: Date;
+  receiptImage: string | null;
+  setReceiptImage: React.Dispatch<React.SetStateAction<string | null>>;
   getExpensesAndSetRows: (
     userId: string,
     firstDay: Date,
@@ -50,6 +52,8 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   userId,
   firstDay,
   lastDay,
+  receiptImage,
+  setReceiptImage,
   getExpensesAndSetRows,
 }) => {
   const dateRef = useRef<HTMLInputElement>(null);
@@ -57,11 +61,10 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   const amountRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<HTMLInputElement>(null);
   const fileName = selectedItem?.fileName;
-  const [receiptImage, setReceiptImage] = useState<string | null>(null);
 
   const getReceiptImage = async (): Promise<void> => {
     if (fileName) {
-      const downloadImg = await downloadReceiptImage(fileName);
+      const downloadImg = await getPreSignedURL(fileName);
       setReceiptImage(downloadImg);
     }
   };
@@ -135,7 +138,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
     >
       <DialogContent>
         <Box display="flex" flexDirection="row" height={"100%"}>
-          <ShowReceipt receiptImage={receiptImage} />
+          <ShowReceipt receiptImage={receiptImage} fileName={fileName} />
           {selectedItem && (
             <Box
               display="flex"
