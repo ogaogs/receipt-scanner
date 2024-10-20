@@ -52,11 +52,8 @@ export const getReceiptDetail = async (
   selectedImage: string,
   fileName: string
 ): Promise<ReceiptDetail> => {
-  const putPreSignedURL = await generatePutPreSignedURL(
-    selectedImage,
-    fileName
-  );
-  uploadFileToS3(fileName, putPreSignedURL);
+  const putPreSignedURL = await generatePutPreSignedURL(fileName);
+  uploadFileToS3(selectedImage, putPreSignedURL);
   // NOTE: 一旦以下を返す。
   return {
     storeName: "八百屋",
