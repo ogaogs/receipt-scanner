@@ -34,6 +34,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RowType | null>(null);
   const [rows, setRows] = useState<RowType[]>([]);
+  const [receiptImage, setReceiptImage] = useState<string | null>(null);
 
   const getExpensesAndSetRows: (
     userId: string,
@@ -62,6 +63,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
   const handleClose = () => {
     setOpen(false);
     setSelectedItem(null);
+    setReceiptImage(null);
   };
 
   const headers = ["日付", "店名", "金額", "カテゴリー"];
@@ -89,7 +91,7 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
           <TableBody>
             {rows.map((row) => (
               <TableRow
-                key={row.expense_id}
+                key={row.expenseId}
                 hover
                 style={{ cursor: "pointer" }}
                 onClick={() => handleClick(row)}
@@ -115,6 +117,8 @@ export const ExpensesTable: FC<ExpensesTableProps> = ({
         firstDay={firstDay}
         lastDay={lastDay}
         getExpensesAndSetRows={getExpensesAndSetRows}
+        receiptImage={receiptImage}
+        setReceiptImage={setReceiptImage}
       />
     </Box>
   );

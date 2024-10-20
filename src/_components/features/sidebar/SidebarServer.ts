@@ -59,7 +59,8 @@ export const getReceiptDetail = async (
   const putPreSignedURL = await generatePreSignedURL(fileName, "put");
   uploadFileToS3(selectedImage, putPreSignedURL);
   const getPreSignedURL = await generatePreSignedURL(fileName, "get");
-  const downloadImg = downloadFileFromS3(getPreSignedURL);
+
+  // TODO: ここでpythonとやりとりできるようにする。
   // NOTE: 一旦以下を返す。
   return {
     storeName: "八百屋",

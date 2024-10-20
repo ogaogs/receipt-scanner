@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useRef } from "react";
+import React, { FC, useEffect, useRef} from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,9 @@ import { Category } from "@/types";
 import {
   updateSelectedExpense,
   deleteSelectedExpense,
+  getPreSignedURL,
 } from "@/_components/features/expenses/ExpensesServer";
+import { ShowReceipt } from "@/_components/features/expenses";
 
 type ExpensesDialogProps = {
   handleClose: () => void;
@@ -33,6 +35,8 @@ type ExpensesDialogProps = {
   userId: string;
   firstDay: Date;
   lastDay: Date;
+  receiptImage: string | null;
+  setReceiptImage: React.Dispatch<React.SetStateAction<string | null>>;
   getExpensesAndSetRows: (
     userId: string,
     firstDay: Date,
@@ -48,17 +52,31 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
   userId,
   firstDay,
   lastDay,
+  receiptImage,
+  setReceiptImage,
   getExpensesAndSetRows,
 }) => {
   const dateRef = useRef<HTMLInputElement>(null);
   const storeNameRef = useRef<HTMLInputElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<HTMLInputElement>(null);
+  const fileName = selectedItem?.fileName;
+
+  const getReceiptImage = async (): Promise<void> => {
+    if (fileName) {
+      const downloadImg = await getPreSignedURL(fileName);
+      setReceiptImage(downloadImg);
+    }
+  };
+
+  useEffect(() => {
+    getReceiptImage();
+  }, [fileName !== undefined]);
 
   // 更新ボタンの押下の際に実行する関数
   const upddateExpenses: () => void = () => {
     if (
-      selectedItem?.expense_id &&
+      selectedItem?.expenseId &&
       dateRef.current?.value &&
       storeNameRef.current?.value &&
       amountRef.current?.value &&
@@ -66,7 +84,7 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
     ) {
       try {
         updateSelectedExpense(
-          selectedItem.expense_id,
+          selectedItem.expenseId,
           dateRef.current.value,
           storeNameRef.current.value,
           Number(amountRef.current.value),
@@ -89,9 +107,9 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
 
   // 削除ボタンの押下の際に実行する
   const deleteExpenses: () => void = () => {
-    if (selectedItem?.expense_id) {
+    if (selectedItem?.expenseId) {
       try {
-        deleteSelectedExpense(selectedItem.expense_id);
+        deleteSelectedExpense(selectedItem.expenseId);
       } catch (error) {
         // TODO: エラーの対応を考える
         console.log(error);
@@ -107,106 +125,100 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
     handleClose();
   };
   return (
-    <>
-      <Box sx={{ position: "relative" }}>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          sx={{
-            "& .MuiDialog-paper": {
-              right: "10%",
-            },
-          }}
-        >
-          <DialogContent>
-            {selectedItem && (
-              <Box
-                display="flex"
-                flexDirection="column"
-                component="form"
-                sx={{ "& .MuiTextField-root": { m: 1 } }}
-              >
-                {/* TODO: 全ての要素がrequiredでなければならない */}
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker"]}>
-                    <DatePicker
-                      defaultValue={dayjs(selectedItem.date)}
-                      label="日付"
-                      slotProps={{
-                        calendarHeader: {
-                          format: "YYYY年MM月", // カレンダーの年月の部分
-                        },
-                        textField: {
-                          variant: "filled",
-                        },
-                      }}
-                      format="YYYY年MM月DD" // 入力欄
-                      inputRef={dateRef}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-                <TextField
-                  id="store-name"
-                  label="店名"
-                  defaultValue={selectedItem.storeName}
-                  variant="filled"
-                  inputRef={storeNameRef}
-                />
-                <FormControl sx={{ m: 1, minWidth: 120 }} variant="filled">
-                  <InputLabel id="amount">金額</InputLabel>
-                  <FilledInput
-                    startAdornment={
-                      <InputAdornment position="start">¥</InputAdornment>
-                    }
-                    type="number"
-                    defaultValue={selectedItem.amount}
-                    inputRef={amountRef}
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      sx={{
+        "& .MuiDialog-paper": {
+          right: "10%",
+          width: "50%",
+          height: "70%",
+        },
+      }}
+    >
+      <DialogContent>
+        <Box display="flex" flexDirection="row" height={"100%"}>
+          <ShowReceipt receiptImage={receiptImage} fileName={fileName} />
+          {selectedItem && (
+            <Box
+              display="flex"
+              flexDirection="column"
+              component="form"
+              sx={{ "& .MuiTextField-root": { m: 1 } }}
+            >
+              {/* TODO: 全ての要素がrequiredでなければならない */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DatePicker"]}>
+                  <DatePicker
+                    defaultValue={dayjs(selectedItem.date)}
+                    label="日付"
+                    slotProps={{
+                      calendarHeader: {
+                        format: "YYYY年MM月", // カレンダーの年月の部分
+                      },
+                      textField: {
+                        variant: "filled",
+                      },
+                    }}
+                    format="YYYY年MM月DD" // 入力欄
+                    inputRef={dateRef}
                   />
-                </FormControl>
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel variant="filled">カテゴリー</InputLabel>
-                  <Select
-                    native
-                    variant="filled"
-                    defaultValue={selectedItem.category_id}
-                    inputRef={categoryRef}
-                  >
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              sx={{ fontWeight: "bold", marginRight: "64px" }}
-              onClick={handleClose}
-            >
-              レシートを表示
-            </Button>
-            <Button
-              variant="contained"
-              sx={{ fontWeight: "bold" }}
-              color="error"
-              onClick={deleteExpenses}
-            >
-              削除
-            </Button>
-            <Button
-              variant="contained"
-              sx={{ fontWeight: "bold" }}
-              onClick={upddateExpenses}
-            >
-              更新
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
-    </>
+                </DemoContainer>
+              </LocalizationProvider>
+              <TextField
+                id="store-name"
+                label="店名"
+                defaultValue={selectedItem.storeName}
+                variant="filled"
+                inputRef={storeNameRef}
+              />
+              <FormControl sx={{ m: 1, minWidth: 120 }} variant="filled">
+                <InputLabel id="amount">金額</InputLabel>
+                <FilledInput
+                  startAdornment={
+                    <InputAdornment position="start">¥</InputAdornment>
+                  }
+                  type="number"
+                  defaultValue={selectedItem.amount}
+                  inputRef={amountRef}
+                />
+              </FormControl>
+              <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel variant="filled">カテゴリー</InputLabel>
+                <Select
+                  native
+                  variant="filled"
+                  defaultValue={selectedItem.categoryId}
+                  inputRef={categoryRef}
+                >
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          variant="contained"
+          sx={{ fontWeight: "bold" }}
+          color="error"
+          onClick={deleteExpenses}
+        >
+          削除
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ fontWeight: "bold" }}
+          onClick={upddateExpenses}
+        >
+          更新
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
