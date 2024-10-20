@@ -2,7 +2,11 @@
 
 import prisma from "@/lib/prisma";
 import { cache } from "react";
-import { Expense, FirstExpenseDate, MonthExpensesWithCategory } from "@/types";
+import {
+  Expense,
+  FirstExpenseDate,
+  MonthExpensesWithCategoryReceipt,
+} from "@/types";
 import { da } from "@faker-js/faker";
 
 // 指定した月の出費を取得する
@@ -40,7 +44,7 @@ export const getMonthExpensesWithCategory = cache(
     userId: string,
     firstDay: Date,
     lastDay: Date
-  ): Promise<MonthExpensesWithCategory[]> => {
+  ): Promise<MonthExpensesWithCategoryReceipt[]> => {
     return await prisma.expense.findMany({
       where: {
         date: {
@@ -51,6 +55,7 @@ export const getMonthExpensesWithCategory = cache(
       },
       include: {
         category: true,
+        receipt: true,
       },
       orderBy: {
         date: "desc",
