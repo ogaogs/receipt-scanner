@@ -56,8 +56,7 @@ model Category {
 
 model Receipt {
   id       String @id @default(uuid()) @db.Uuid
-  filePath String @map("file_path")
-
+  fileName String @map("file_name") @unique
   expenseId String @unique @map("expense_id") @db.Uuid
 
   expense Expense @relation(fields: [expenseId], references: [id])
