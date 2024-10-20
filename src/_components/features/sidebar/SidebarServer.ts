@@ -4,7 +4,12 @@ import {
 } from "@/_components/features/sidebar/type";
 import { formatDate } from "@/utils/time";
 import { createExpense } from "@/lib/db";
-import { uploadFileToS3, generatePutPreSignedURL } from "@/lib/s3";
+import {
+  uploadFileToS3,
+  downloadFileFromS3,
+  generatePutPreSignedURL,
+  generateGetPreSignedURL,
+} from "@/lib/s3";
 
 // 最初の月から今日までの年月をリストにする
 export const getDatesInRange = (
@@ -54,6 +59,8 @@ export const getReceiptDetail = async (
 ): Promise<ReceiptDetail> => {
   const putPreSignedURL = await generatePutPreSignedURL(fileName);
   uploadFileToS3(selectedImage, putPreSignedURL);
+  const getPreSignedURL = await generateGetPreSignedURL(fileName);
+  const downloadImg = downloadFileFromS3(getPreSignedURL);
   // NOTE: 一旦以下を返す。
   return {
     storeName: "八百屋",

@@ -1,6 +1,10 @@
 "use server";
 
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const REGION = "ap-northeast-1";
@@ -15,7 +19,9 @@ const s3 = new S3Client({
   },
 });
 
-export const generatePutPreSignedURL = async (fileName: string) => {
+export const generatePutPreSignedURL = async (
+  fileName: string
+): Promise<string> => {
   const params = {
     Bucket: BUCKET_NAME,
     Key: fileName,
@@ -31,7 +37,7 @@ export const generatePutPreSignedURL = async (fileName: string) => {
 export const uploadFileToS3 = async (
   fileData: string, // base64エンコードされた画像データ
   putPreSignedURL: string
-) => {
+): Promise<void> => {
   // base64の文字列からbase64部分を取り出し、デコード
   const byteString = atob(fileData.split(",")[1]);
 
@@ -60,4 +66,23 @@ export const uploadFileToS3 = async (
   if (!response.ok) {
     throw new Error("S3へのアップロードに失敗しました");
   }
+};
+
+export const generateGetPreSignedURL = async (
+  fileName: string
+): Promise<string> => {
+  const params = {
+    Bucket: BUCKET_NAME,
+    Key: fileName,
+  };
+
+  const command = new GetObjectCommand(params);
+
+  // Pre-signed URLを生成
+  const getPreSignedURL = await getSignedUrl(s3, command, { expiresIn: 300 });
+  return getPreSignedURL;
+};
+
+export const downloadFileFromS3 = (downloadrePreSignedURL: string) => {
+  return "imag_data";
 };
