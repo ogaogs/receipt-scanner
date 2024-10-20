@@ -11,8 +11,8 @@ export type ReceiptDetail = {
 };
 
 export type ExpenseDetail = {
-  expenseDate: Date | undefined;
-  setExpenseDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  expenseDate: Date;
+  setExpenseDate: React.Dispatch<React.SetStateAction<Date>>;
   storeName: string;
   setStoreName: React.Dispatch<React.SetStateAction<string>>;
   amount: number;
