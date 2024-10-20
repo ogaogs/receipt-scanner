@@ -19,17 +19,30 @@ const s3 = new S3Client({
   },
 });
 
-export const generatePutPreSignedURL = async (
-  fileName: string
+export const generatePreSignedURL = async (
+  fileName: string,
+  operation: "put" | "get" // "put" または "get" で動作を切り替える
 ): Promise<string> => {
-  const params = {
+  const params: {
+    Bucket: string;
+    Key: string;
+    ContentType?: string;
+  } = {
     Bucket: BUCKET_NAME,
     Key: fileName,
-    ContentType: "image/*",
   };
 
+  // PUTの場合はContentTypeを追加
+  if (operation === "put") {
+    params.ContentType = "image/*";
+  }
+
+  const command =
+    operation === "put"
+      ? new PutObjectCommand(params)
+      : new GetObjectCommand(params);
+
   // Pre-signed URLを生成
-  const command = new PutObjectCommand(params);
   const preSignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 }); // 5分有効
   return preSignedUrl;
 };
@@ -66,21 +79,6 @@ export const uploadFileToS3 = async (
   if (!response.ok) {
     throw new Error("S3へのアップロードに失敗しました");
   }
-};
-
-export const generateGetPreSignedURL = async (
-  fileName: string
-): Promise<string> => {
-  const params = {
-    Bucket: BUCKET_NAME,
-    Key: fileName,
-  };
-
-  const command = new GetObjectCommand(params);
-
-  // Pre-signed URLを生成
-  const getPreSignedURL = await getSignedUrl(s3, command, { expiresIn: 300 });
-  return getPreSignedURL;
 };
 
 export const downloadFileFromS3 = (downloadrePreSignedURL: string) => {
