@@ -59,7 +59,7 @@ model Receipt {
   fileName String @map("file_name") @unique
   expenseId String @unique @map("expense_id") @db.Uuid
 
-  expense Expense @relation(fields: [expenseId], references: [id])
+  expense Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
 
   @@map("receipts")
 }
