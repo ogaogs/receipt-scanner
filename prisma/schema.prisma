@@ -17,7 +17,7 @@ model User {
   id             String    @id @default(uuid()) @db.Uuid
   name           String
   email          String    @unique
-  passwordDigest String    @map("password_digest")
+  passwordDigest String?   @map("password_digest")
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
   expenses       Expense[]
@@ -55,8 +55,8 @@ model Category {
 }
 
 model Receipt {
-  id       String @id @default(uuid()) @db.Uuid
-  fileName String @map("file_name") @unique
+  id        String @id @default(uuid()) @db.Uuid
+  fileName  String @unique @map("file_name")
   expenseId String @unique @map("expense_id") @db.Uuid
 
   expense Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
