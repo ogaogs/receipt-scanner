@@ -23,6 +23,7 @@
     "@prisma/client": "^5.19.1",
     "dayjs": "^1.11.13",
     "next": "14.2.13",
+    "next-auth": "^5.0.0-beta.25",
     "react": "^18",
     "react-dom": "^18"
   },
