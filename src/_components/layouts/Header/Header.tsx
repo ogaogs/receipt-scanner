@@ -30,40 +30,54 @@ export const Header: FC<HeaderProps> = ({
           {/* 色を付けたり、ルートへのリンクを付けたり行う。 */}
           <StarIcon />
           <Typography variant="h6">{HeaderTitle}</Typography>
-          <div
-            style={{
-              borderRadius: "50%",
-              overflow: "hidden",
-              width: "40px",
-              height: "40px",
+          <Box
+            sx={{
+              marginLeft: "auto",
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
             }}
           >
-            <Image src={IconImage} alt="avatar" width={40} height={40}></Image>
-          </div>
-          {isSignedIn ? (
-            <>
-              <Typography variant="h6">{userName}</Typography>
+            <div
+              style={{
+                borderRadius: "50%",
+                overflow: "hidden",
+                width: "40px",
+                height: "40px",
+              }}
+            >
+              <Image
+                src={IconImage}
+                alt="avatar"
+                width={40}
+                height={40}
+              ></Image>
+            </div>
+            {isSignedIn ? (
+              <>
+                <Typography variant="h6">{userName}</Typography>
+                <Button
+                  variant="outlined"
+                  onClick={async () => {
+                    await authControl("signOut");
+                  }}
+                  sx={{ backgroundColor: "white" }}
+                >
+                  ログアウト
+                </Button>
+              </>
+            ) : (
               <Button
                 variant="outlined"
                 onClick={async () => {
-                  await authControl("signOut");
+                  await authControl("signIn");
                 }}
                 sx={{ backgroundColor: "white" }}
               >
-                ログアウト
+                ログイン
               </Button>
-            </>
-          ) : (
-            <Button
-              variant="outlined"
-              onClick={async () => {
-                await authControl("signIn");
-              }}
-              sx={{ backgroundColor: "white" }}
-            >
-              ログイン
-            </Button>
-          )}
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>
