@@ -6,10 +6,9 @@ const LoginPage = () => {
   return (
     <Box
       sx={{
-        paddingTop: "20%",
+        paddingTop: "10%",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
       }}
     >
       <Card
@@ -21,7 +20,9 @@ const LoginPage = () => {
       >
         <CardContent>
           <Typography variant="h5" gutterBottom>
-            家計簿くんへ<br></br>ようこそ
+            家計簿くんへ
+            <br />
+            ようこそ
           </Typography>
           <form
             action={async () => {
