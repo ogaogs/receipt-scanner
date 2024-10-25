@@ -1,3 +1,5 @@
+import { auth, signOut } from "@/auth";
+import { notFound } from "next/navigation";
 import {
   UpperDashboard,
   LowerDashboard,
@@ -20,6 +22,9 @@ export default async function Page({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
+  // TODO: ここでセッションを取得
+  const session = await auth();
+  if (!session) return notFound();
   const userId = "75c204db-abc1-4ed2-a145-b641e69dbda3";
   const today = getToday(); // 本日の時間を取得 UTC時間
 
