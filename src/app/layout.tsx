@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Header } from "@/_components/layouts/Header/Header";
 import { Box } from "@mui/material";
+import { auth } from "@/auth";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,18 +21,26 @@ export const metadata: Metadata = {
   description: "家計簿をつけることができるアプリ",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+  const isSignedIn = Boolean(session?.user.id);
+  const userName = session?.user.name;
+  const userImage = session?.user.image;
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable}`}
         style={{ height: "100vh" }}
       >
-        <Header />
+        <Header
+          isSignedIn={isSignedIn}
+          userName={userName}
+          userImage={userImage}
+        />
 
         <Box
           height="100%"

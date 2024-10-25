@@ -9,6 +9,7 @@ import {
 } from "@/lib/db/expense";
 import { getCategories } from "@/lib/db/category";
 import { isFileNameExists } from "@/lib/db/receipt";
+import { getUser, createUser } from "@/lib/db/user";
 
 export {
   getMonthBudgets,
@@ -21,4 +22,6 @@ export {
   getMonthExpensesWithCategory,
   getMonthBudgetsWithCategory,
   isFileNameExists,
+  getUser,
+  createUser,
 };

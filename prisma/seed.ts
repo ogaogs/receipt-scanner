@@ -31,80 +31,82 @@ async function main() {
     console.log(`Created category named ${newCategory.name}`);
   });
 
-  for (let i = 0; i < 3; i++) {
-    // ユーザーの作成
-    const newUser = await prisma.user.create({
-      data: {
-        name: faker.person.fullName(),
-        email: faker.internet.email(),
-        passwordDigest: faker.internet.password(),
-      },
-    });
-    console.log(`Created user named ${newUser.name}`);
-
-    for (let i = 0; i < 50; i++) {
-      // 出費の作成
-      const newExpense = await prisma.expense.create({
+  if (process.env.NODE_ENV === "development") {
+    for (let i = 0; i < 3; i++) {
+      // ユーザーの作成
+      const newUser = await prisma.user.create({
         data: {
-          storeName: faker.company.name(),
-          amount: parseInt(
-            faker.finance.amount({ min: 0, max: 30000, dec: 0 })
-          ),
-          date: faker.date.between({
-            from: "2024-08-15T00:00:00.000Z",
-            to: "2024-10-31T00:00:00.000Z",
-          }),
-          userId: newUser.id,
-          categoryId: Math.floor(Math.random() * 9) + 1,
+          name: faker.person.fullName(),
+          email: faker.internet.email(),
+          passwordDigest: faker.internet.password(),
         },
       });
-    }
-    console.log("Created Expenses");
+      console.log(`Created user named ${newUser.name}`);
 
-    // 予算の作成
-    // 8月分
-    for (let i = 1; i < 10; i++) {
-      const newBudget = await prisma.budget.create({
-        data: {
-          amount: parseInt(
-            faker.finance.amount({ min: 10000, max: 30000, dec: 0 })
-          ),
-          year_month: new Date(2024, 7, 15),
-          userId: newUser.id,
-          categoryId: i,
-        },
-      });
-      console.log(`Created newBudget ${newBudget.year_month}`);
-    }
+      for (let i = 0; i < 50; i++) {
+        // 出費の作成
+        const newExpense = await prisma.expense.create({
+          data: {
+            storeName: faker.company.name(),
+            amount: parseInt(
+              faker.finance.amount({ min: 0, max: 30000, dec: 0 })
+            ),
+            date: faker.date.between({
+              from: "2024-08-15T00:00:00.000Z",
+              to: "2024-10-31T00:00:00.000Z",
+            }),
+            userId: newUser.id,
+            categoryId: Math.floor(Math.random() * 9) + 1,
+          },
+        });
+      }
+      console.log("Created Expenses");
 
-    // 9月分
-    for (let i = 1; i < 10; i++) {
-      const newBudget = await prisma.budget.create({
-        data: {
-          amount: parseInt(
-            faker.finance.amount({ min: 10000, max: 30000, dec: 0 })
-          ),
-          year_month: new Date(2024, 8, 15),
-          userId: newUser.id,
-          categoryId: i,
-        },
-      });
-      console.log(`Created newBudget ${newBudget.year_month}`);
-    }
+      // 予算の作成
+      // 8月分
+      for (let i = 1; i < 10; i++) {
+        const newBudget = await prisma.budget.create({
+          data: {
+            amount: parseInt(
+              faker.finance.amount({ min: 10000, max: 30000, dec: 0 })
+            ),
+            year_month: new Date(2024, 7, 15),
+            userId: newUser.id,
+            categoryId: i,
+          },
+        });
+        console.log(`Created newBudget ${newBudget.year_month}`);
+      }
 
-    // 10月分
-    for (let i = 1; i < 10; i++) {
-      const newBudget = await prisma.budget.create({
-        data: {
-          amount: parseInt(
-            faker.finance.amount({ min: 10000, max: 30000, dec: 0 })
-          ),
-          year_month: new Date(2024, 9, 15),
-          userId: newUser.id,
-          categoryId: i,
-        },
-      });
-      console.log(`Created newBudget ${newBudget.year_month}`);
+      // 9月分
+      for (let i = 1; i < 10; i++) {
+        const newBudget = await prisma.budget.create({
+          data: {
+            amount: parseInt(
+              faker.finance.amount({ min: 10000, max: 30000, dec: 0 })
+            ),
+            year_month: new Date(2024, 8, 15),
+            userId: newUser.id,
+            categoryId: i,
+          },
+        });
+        console.log(`Created newBudget ${newBudget.year_month}`);
+      }
+
+      // 10月分
+      for (let i = 1; i < 10; i++) {
+        const newBudget = await prisma.budget.create({
+          data: {
+            amount: parseInt(
+              faker.finance.amount({ min: 10000, max: 30000, dec: 0 })
+            ),
+            year_month: new Date(2024, 9, 15),
+            userId: newUser.id,
+            categoryId: i,
+          },
+        });
+        console.log(`Created newBudget ${newBudget.year_month}`);
+      }
     }
   }
 }
