@@ -1,3 +1,5 @@
+import { auth } from "@/auth";
+import { notFound } from "next/navigation";
 import { getCategories } from "@/lib/db";
 import { getToday, getStartAndEndOfMonth } from "@/utils/time";
 import {
@@ -14,8 +16,9 @@ export default async function Page({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
-  // NOTE: 今後propsもしくは、contextで取得するようにする。
-  const userId = "75c204db-abc1-4ed2-a145-b641e69dbda3";
+  const session = await auth();
+  if (!session) return notFound();
+  const userId = session.user.id;
   const today = getToday();
 
   // クエリからdateを取得
