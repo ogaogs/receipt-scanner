@@ -1,6 +1,6 @@
 "use client";
 
-import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Link, Toolbar, Typography } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { FC } from "react";
 import Image from "next/image";
@@ -27,9 +27,16 @@ export const Header: FC<HeaderProps> = ({
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
-          {/* 色を付けたり、ルートへのリンクを付けたり行う。 */}
-          <StarIcon />
-          <Typography variant="h6">{HeaderTitle}</Typography>
+          <Link
+            href="/"
+            underline="none"
+            sx={{ color: "white", display: "flex", alignItems: "center" }}
+          >
+            <StarIcon />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              {HeaderTitle}
+            </Typography>
+          </Link>
           <Box
             sx={{
               marginLeft: "auto",
