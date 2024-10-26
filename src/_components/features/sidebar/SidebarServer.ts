@@ -17,7 +17,7 @@ export const getDatesInRange = (
 
   if (firstExpenseDate) {
     // minDateの年月を取得
-    let currentDate = new Date(
+    const currentDate = new Date(
       firstExpenseDate.getFullYear(),
       firstExpenseDate.getMonth(),
       1

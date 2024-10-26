@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -161,7 +161,9 @@ export const ExpensesDialog: FC<ExpensesDialogProps> = ({
                   label="日付"
                   value={dayjs(expenseDate)}
                   onChange={(newValue) => {
-                    newValue ? setExpenseDate(newValue.toDate()) : null;
+                    if (newValue) {
+                      setExpenseDate(newValue.toDate());
+                    }
                   }}
                   slotProps={{
                     calendarHeader: {

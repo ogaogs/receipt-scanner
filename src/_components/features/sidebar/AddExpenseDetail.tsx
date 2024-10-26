@@ -73,7 +73,9 @@ export const AddExpenseDetail: FC<AddExpenseDetailProps> = ({
             label="日付"
             value={dayjs(expenseDate)}
             onChange={(newValue) => {
-              newValue ? setExpenseDate(newValue.toDate()) : null;
+              if (newValue) {
+                setExpenseDate(newValue.toDate());
+              }
             }}
             slotProps={{
               calendarHeader: {
