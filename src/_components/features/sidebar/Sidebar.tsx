@@ -12,6 +12,7 @@ import {
   Card,
   CardContent,
   Typography,
+  SelectChangeEvent,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { formatDate, getToday } from "@/utils/time";
@@ -73,13 +74,13 @@ export const Sidebar: FC<SidebarProps> = ({
   };
 
   // ページ遷移のための関数
-  const handlePageChange = (event: any) => {
+  const handlePageChange = (event: SelectChangeEvent<string>) => {
     const selectedPage = event.target.value;
     setSelectedPage(selectedPage);
     router.push(`/${selectedPage}` + "?date=" + selectedDate); // 選択されたページに遷移
   };
 
-  const handleDateChange = (event: any) => {
+  const handleDateChange = (event: SelectChangeEvent<string>) => {
     setSelectedDate(event.target.value);
     router.push(pathname + "?date=" + event.target.value);
   };
