@@ -137,18 +137,20 @@ export const BudgetsTable: FC<BudgetsProps> = ({
           )}
         </Paper>
       ))}
-      <Button
-        variant="contained"
-        sx={{
-          fontWeight: "bold",
-          display: "block",
-          marginLeft: "auto",
-          marginTop: 2,
-        }}
-        onClick={updateBudgets}
-      >
-        更新
-      </Button>
+      {isThisMonth && (
+        <Button
+          variant="contained"
+          sx={{
+            fontWeight: "bold",
+            display: "block",
+            marginLeft: "auto",
+            marginTop: 2,
+          }}
+          onClick={updateBudgets}
+        >
+          更新
+        </Button>
+      )}
     </Box>
   );
 };
