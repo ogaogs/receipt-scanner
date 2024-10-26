@@ -7,7 +7,6 @@ import {
   FirstExpenseDate,
   MonthExpensesWithCategoryReceipt,
 } from "@/types";
-import { da } from "@faker-js/faker";
 
 // 指定した月の出費を取得する
 export const getMonthExpenses = cache(
