@@ -21,6 +21,7 @@ import {
 } from "@/_components/features/sidebar/type";
 import { Category } from "@/types";
 import { CreateExpenseDialog } from "@/_components/features/sidebar/CreateExpenseDialog";
+import { gray } from "@/_components/common/Style/style";
 
 const drawerWidth = "20%";
 
@@ -110,19 +111,43 @@ export const Sidebar: FC<SidebarProps> = ({
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
+        [`& .MuiDrawer-paper`]: {
+          width: drawerWidth,
+          boxSizing: "border-box",
+          maxWidth: 250,
+          minWidth: 80,
+        },
       }}
     >
       {/* ヘッダー分ずらす */}
-      <Box paddingTop={8}>
-        <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
+      <Box
+        paddingTop={8}
+        sx={{
+          paddingX: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        <FormControl sx={{ marginY: 2, width: "100%", textAlign: "center" }}>
           <Select autoWidth value={selectedPage} onChange={handlePageChange}>
             <MenuItem value={"dashboard"}>ダッシュボード</MenuItem>
             <MenuItem value={"expenses"}>全ての出費</MenuItem>
             <MenuItem value={"budgets"}>予算の編集</MenuItem>
           </Select>
         </FormControl>
-        <Button variant="outlined" onClick={handleShowCreateDialog}>
+        <Button
+          variant="outlined"
+          onClick={handleShowCreateDialog}
+          sx={{
+            marginBottom: 2,
+            color: "black",
+            borderColor: gray,
+            "&:hover": {
+              borderColor: "black",
+            },
+          }}
+        >
           <AddCircleOutlineIcon sx={{ m: 2 }} />
           出費を追加
         </Button>
@@ -136,7 +161,9 @@ export const Sidebar: FC<SidebarProps> = ({
           router={router}
           expenseDetailUseState={expenseDetailUseState}
         />
-        <FormControl sx={{ m: 1, minWidth: 80, textAlign: "center" }}>
+        <FormControl
+          sx={{ marginBottom: 2, width: "100%", textAlign: "center" }}
+        >
           <Select
             // 最後の月をでファルとに選択 → 必然的に今月
             value={selectedDate}
@@ -150,23 +177,22 @@ export const Sidebar: FC<SidebarProps> = ({
             ))}
           </Select>
         </FormControl>
-        <Box sx={{ m: 1, minWidth: 80 }}>
-          <Card variant="outlined">
-            <React.Fragment>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  sx={{ color: "text.secondary", fontSize: 14 }}
-                >
-                  {foramtedToday}の一言
-                </Typography>
-                <Typography variant="h5" component="div">
-                  {proverb}
-                </Typography>
-              </CardContent>
-            </React.Fragment>
-          </Card>
-        </Box>
+        <Box sx={{ flexGrow: 1 }} />
+        <Card variant="outlined" sx={{ marginTop: "auto", marginBottom: 16 }}>
+          <React.Fragment>
+            <CardContent>
+              <Typography
+                gutterBottom
+                sx={{ color: "text.secondary", fontSize: 14 }}
+              >
+                {foramtedToday}の一言
+              </Typography>
+              <Typography variant="h5" component="div">
+                {proverb}
+              </Typography>
+            </CardContent>
+          </React.Fragment>
+        </Card>
       </Box>
     </Drawer>
   );
