@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     remotePatterns: [{ hostname: "lh3.googleusercontent.com" }],
   },
+  trailingSlash: false
 };
 
 export default nextConfig;
