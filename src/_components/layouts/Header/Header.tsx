@@ -32,7 +32,7 @@ export const Header: FC<HeaderProps> = ({
           >
             <Toolbar>
               <Link
-                href="/"
+                href="/signin"
                 underline="none"
                 sx={{ color: "white", display: "flex", alignItems: "center" }}
               >

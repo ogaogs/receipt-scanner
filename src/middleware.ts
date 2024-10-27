@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 
 import { authConfig } from "@/lib/auth.config";
-import { API_AUTH_PREFIX, AUTH_ROUTES, PROTECTED_ROUTES } from "@/route";
+import { API_AUTH_PREFIX, TOP_ROUTE, AUTH_ROUTES, PROTECTED_ROUTES } from "@/route";
 
 export const { auth } = NextAuth(authConfig);
 
@@ -13,6 +13,7 @@ export default auth((req) => {
   const isAuth = req.auth;
 
   const isAccessingApiAuthRoute = pathname.startsWith(API_AUTH_PREFIX);
+  const isAccessingTopRoute = TOP_ROUTE.some((route) => pathname === route);
   const isAccessingAuthRoute = AUTH_ROUTES.some((route) => pathname === route);
   const isAccessingProtectedRoute = PROTECTED_ROUTES.some((route) =>
     pathname.startsWith(route)
@@ -20,6 +21,14 @@ export default auth((req) => {
 
   if (isAccessingApiAuthRoute) {
     return NextResponse.next();
+  }
+
+  if (isAccessingTopRoute){
+    if (isAuth) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    } else {
+      return NextResponse.redirect(new URL("/signin", req.url));
+    }
   }
 
   if (isAccessingAuthRoute) {
@@ -30,7 +39,7 @@ export default auth((req) => {
   }
 
   if (!isAuth && isAccessingProtectedRoute) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/signin", req.url));
   }
 });
 
