@@ -31,7 +31,7 @@
 
 ## 必要条件
 
-- **npm を使用した環境設定**
+- npm を使用した環境設定
 
   - 以下のコマンドで必要な環境を設定する
     `npm install`
@@ -47,8 +47,8 @@
     - 承認済みのリダイレクト URI
       - 開発環境：http://localhost:3000/api/auth/callback/google
       - 本番環境：https://{YOUR_DOMAIN}/api/auth/callback/google
-- **環境変数の設定**
-  .env.default を参考に.env に設定する
+- 環境変数の設定<br>
+  .env.default を参考に.env に設定する<br>
   | 環境変数 | 用途 |
   | ------------ | ------- |
   | DATABASE_URL | prisma と DB との連携 |
