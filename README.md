@@ -63,24 +63,52 @@
 
 ## 実行方法
 
-- postgres を立ち上げる<br>
-  `docker-compose -f docker/dev/compose.yml up`
+- postgres を立ち上げる
+
+  ```sh
+  docker-compose -f docker/dev/compose.yml up
+  ```
 
 - レシートを解析する API を実行する<br>
   [こちら](https://github.com/AyumuOgasawara/receipt-scanner-model)を参考に`receipt-scanner-model`を立ち上げる
 
+- prisma のマイグレーションと seeding を行う
+
+  - schema.prisma ファイルのモデルを変更した際に、migration ファイルを生成せずにテーブルを変更する([詳細](https://www.prisma.io/docs/orm/prisma-migrate/workflows/prototyping-your-schema))
+    ```sh
+    npx prisma db push
+    ```
+
+  -　 seeding を行う([詳細](https://www.prisma.io/docs/orm/prisma-migrate/workflows/seeding))<br>
+  予算などの seeding も行う場合は環境変数に`NODE_ENV=development`を追加する
+
+  ```sh
+  npx prisma db seed
+  ```
+
+  - seeding が成功しているかの確認
+    ```sh
+    npx prisma studio
+    ```
+
 - 以下のコマンドで実行することができる。<br>
-  `npm run dev`
+  ```sh
+  npm run dev
+  ```
 
 ### ビルド方法
 
 - 以下のコマンドでビルドすることができる<br>
-  `npm run build`
+  ```sh
+  npm run build
+  ```
 
 ### ビルドイメージの実行方法
 
 - 以下のコマンドでビルドすることができる<br>
-  `npm run start`
+  ```
+  npm run start
+  ```
 
 ## ディレクトリ構成
 
@@ -117,3 +145,14 @@ receipt-scanner/
 ├── package.json
 └── README.md
 ```
+
+## デモ動画(なぜか解析が動いていないのでし今後修正する)
+
+ログインから基本操作
+<video src="architecture/DemoVideo/画面収録 2024-11-25 8.20.52.mov" controls="true"></video>
+
+出費が予算を超えた場合
+<video src="architecture/DemoVideo/画面収録 2024-11-25 8.22.18.mov" controls="true"></video>
+
+レシート解析
+<video src="architecture/DemoVideo/378206844-e742ff6f-6e27-412e-a441-c9df796cb38a.mov" controls="true"></video>
