@@ -149,10 +149,10 @@ receipt-scanner/
 ## デモ動画(なぜか解析が動いていないのでし今後修正する)
 
 ログインから基本操作
-<video src="architecture/DemoVideo/画面収録 2024-11-25 8.20.52.mov" controls="true"></video>
+https://github.com/user-attachments/assets/2453e032-f8d7-417c-91ef-37379019510e
 
 出費が予算を超えた場合
-<video src="architecture/DemoVideo/画面収録 2024-11-25 8.22.18.mov" controls="true"></video>
+https://github.com/user-attachments/assets/abd650b0-1af6-43d6-9a9b-aa410d2de3d0
 
 レシート解析
-<video src="architecture/DemoVideo/378206844-e742ff6f-6e27-412e-a441-c9df796cb38a.mov" controls="true"></video>
+https://github.com/user-attachments/assets/47a8326e-0f0f-4246-931d-7a12a851d916
