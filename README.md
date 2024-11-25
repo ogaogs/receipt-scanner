@@ -148,11 +148,12 @@ receipt-scanner/
 
 ## デモ動画(なぜか解析が動いていないのでし今後修正する)
 
-ログインから基本操作
-https://github.com/user-attachments/assets/2453e032-f8d7-417c-91ef-37379019510e
+ログインから基本操作<br>
+![2024-11-258 20 52-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/7b8edf5f-2e04-48bd-953b-942a74e85b71)
 
-出費が予算を超えた場合
-https://github.com/user-attachments/assets/abd650b0-1af6-43d6-9a9b-aa410d2de3d0
+出費が予算を超えた場合<br>
+![2024-11-258 22 18-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/9aa74aaf-9f9c-40a6-986b-b91ce79bfee1)
 
-レシート解析
-https://github.com/user-attachments/assets/47a8326e-0f0f-4246-931d-7a12a851d916
+レシート解析<br>
+![378206844-e742ff6f-6e27-412e-a441-c9df796cb38a-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/839a25bb-14d2-4795-8cee-412a4bc69fd8)
+
