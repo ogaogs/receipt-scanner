@@ -37,7 +37,7 @@
     `npm install`
 
 - aws アカウントを作成し、IAM ユーザーを作成する
-  - 作者は`AdministratorAccess`と`AWSCompromisedKeyQuarantineV3`をポリシーとして割り当てているが、S3 からデータのダウンロードとアップ絵オードができるポリシーがあれば良い。
+  - 作者は`AdministratorAccess`と`AmazonS3FullAccess`をポリシーとして割り当てている、権限の範囲などを考慮して」設定する。
   - S3 に`receipt-scanner`というバケットを作成し、[こちら](https://github.com/AyumuOgasawara/receipt-scanner-model/issues/28#issuecomment-2419930774)を参考にバケットポリシーを作成する。
 - Google OAuth の設定
   - [こちら](https://next-auth.js.org/providers/google)を参考に`OAuth 2.0 クライアント ID`を作成し、以下を設定する
@@ -156,4 +156,3 @@ receipt-scanner/
 
 レシート解析<br>
 ![378206844-e742ff6f-6e27-412e-a441-c9df796cb38a-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/839a25bb-14d2-4795-8cee-412a4bc69fd8)
-

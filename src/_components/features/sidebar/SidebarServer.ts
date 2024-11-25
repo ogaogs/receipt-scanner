@@ -56,7 +56,7 @@ export const getReceiptDetail = async (
   categories: Category[]
 ): Promise<ReceiptDetail> => {
   const putPreSignedURL = await generatePreSignedURL(fileName, "put");
-  uploadFileToS3(selectedImage, putPreSignedURL);
+  await uploadFileToS3(selectedImage, putPreSignedURL);
   const getPreSignedURL = await generatePreSignedURL(fileName, "get");
 
   const receiptDetail = await getReceiptDetailFromModel(getPreSignedURL);
