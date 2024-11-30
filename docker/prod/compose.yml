@@ -2,7 +2,7 @@ services:
   app:
     build: 
       context: ../..
-      dockerfile: ./docker/product/Dockerfile
+      dockerfile: ./docker/prod/Dockerfile
     container_name: next-app
     restart: unless-stopped
     ports:
