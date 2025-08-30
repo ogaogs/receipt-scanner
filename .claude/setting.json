@@ -29,7 +29,11 @@
       "Bash(docker:*)",
       "Bash(systemctl:*)",
       "Bash(chmod:*)",
-      "Write(**/config/**)"
+      "Write(**/config/**)",
+      "Write(**/.env*)",
+      "Read(**/.env*)",
+      "Bash(npm publish:*)",
+      "Write(**/node_modules/**)"
     ]
   }
 }
