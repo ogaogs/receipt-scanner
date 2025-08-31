@@ -8,7 +8,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const REGION = "ap-northeast-1";
-const BUCKET_NAME = "receipt-scanner";
+const BUCKET_NAME = "receipt-scanner-v1";
 
 // S3クライアントのインスタンスを作成
 const s3 = new S3Client({
