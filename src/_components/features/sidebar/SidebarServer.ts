@@ -3,7 +3,7 @@ import {
   ReceiptDetail,
 } from "@/_components/features/sidebar/type";
 import { formatDate, formatStrDate } from "@/utils/time";
-import { createExpense, isFileNameExists } from "@/lib/db";
+import { createExpense } from "@/lib/db";
 import { uploadFileToS3, generatePreSignedURL } from "@/lib/s3";
 import { getReceiptDetailFromModel } from "@/utils/analyzeReceipt";
 import { Category } from "@/types";
@@ -57,19 +57,13 @@ export const getReceiptDetail = async (
 ): Promise<ReceiptDetail> => {
   const putPreSignedURL = await generatePreSignedURL(fileName, "put");
   await uploadFileToS3(selectedImage, putPreSignedURL);
-  const getPreSignedURL = await generatePreSignedURL(fileName, "get");
 
-  const receiptDetail = await getReceiptDetailFromModel(getPreSignedURL);
-  if (receiptDetail.error) {
-    throw new Error(receiptDetail.error.message);
-  }
+  const receiptDetail = await getReceiptDetailFromModel(fileName);
 
-  console.log(receiptDetail);
-
-  const responseStoreName = receiptDetail.receipt_detail?.store_name || "";
-  const responseAmount = receiptDetail.receipt_detail?.amount || 0;
-  const responseDate = receiptDetail.receipt_detail?.date || "";
-  const responseCategory = receiptDetail.receipt_detail?.category || "";
+  const responseStoreName = receiptDetail?.store_name || "";
+  const responseAmount = receiptDetail?.amount || 0;
+  const responseDate = receiptDetail?.date || "";
+  const responseCategory = receiptDetail?.category || "";
 
   const date = formatStrDate(responseDate) || new Date(); // うまく取得できなかったら本日の日付を返す
   const categoryId =
@@ -96,8 +90,4 @@ export const formatAndCreateExpense = async (
   } catch (error) {
     throw error;
   }
-};
-
-export const checkFileNameExists = async (fileName: string) => {
-  return await isFileNameExists(fileName);
 };

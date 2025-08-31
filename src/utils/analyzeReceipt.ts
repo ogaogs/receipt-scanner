@@ -1,7 +1,7 @@
 "use server";
 
-type PreSignedURL = {
-  pre_signed_url: string;
+type RequestBody = {
+  filename: string;
 };
 
 type Error = {
@@ -11,21 +11,16 @@ type Error = {
 
 type AnalyzedReceiptDetail = {
   store_name: string | null;
-  amount: number;
+  amount: number | null;
   date: string | null;
   category: string | null;
 };
 
-type ReceiptAnalyzationResponse = {
-  receipt_detail: AnalyzedReceiptDetail | null;
-  error: Error | null;
-};
-
 export const getReceiptDetailFromModel = async (
-  preSignedURL: string
-): Promise<ReceiptAnalyzationResponse> => {
-  const body: PreSignedURL = {
-    pre_signed_url: preSignedURL,
+  fileName: string
+): Promise<AnalyzedReceiptDetail> => {
+  const body: RequestBody = {
+    filename: fileName,
   };
 
   const response = await fetch(
@@ -42,6 +37,11 @@ export const getReceiptDetailFromModel = async (
     throw error;
   });
 
-  const analyzationResponse: ReceiptAnalyzationResponse = await response.json();
-  return analyzationResponse;
+  if (!response.ok) {
+    throw new Error("レシートの解析に失敗しました");
+  }
+
+  const receiptDetail: AnalyzedReceiptDetail = await response.json();
+  
+  return receiptDetail;
 };

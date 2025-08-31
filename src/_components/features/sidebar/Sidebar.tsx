@@ -166,7 +166,7 @@ export const Sidebar: FC<SidebarProps> = ({
           sx={{ marginBottom: 2, width: "100%", textAlign: "center" }}
         >
           <Select
-            // 最後の月をでファルとに選択 → 必然的に今月
+            // 最後の月をデフォルトに選択 → 必然的に今月
             value={selectedDate}
             // サイドバーのページ遷移のようにvalueで制御するようにする。
             onChange={handleDateChange}

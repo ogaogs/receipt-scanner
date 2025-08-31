@@ -17,7 +17,6 @@ import {
 import {
   formatAndCreateExpense,
   getReceiptDetail,
-  checkFileNameExists,
 } from "@/_components/features/sidebar/SidebarServer";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
@@ -63,15 +62,13 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   ) => {
     const file = event.target.files?.[0];
 
+    // TODO: MINETypeのチェックとファイルサイズのチェックを行う。
+
     if (file) {
-      const fileNameExists = await checkFileNameExists(file.name);
-      if (fileNameExists) {
-        alert(
-          "このファイル名はすでに使用されています。別のファイル名を選択してください。"
-        );
-        return;
-      }
-      setFileName(file.name);
+      const fileNameUUID = crypto.randomUUID();
+      const fileExtension = file.name.split(".").pop();
+      const fileName = `${fileNameUUID}.${fileExtension}`;
+      setFileName(fileName); // UUIDファイル名を保存
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string); // base64をstringでセット
@@ -163,7 +160,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
               アップロード
               <input
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg" // MINETypeを指定
                 onChange={handleImageUpload}
                 width="100%"
                 style={{ display: "none" }}
