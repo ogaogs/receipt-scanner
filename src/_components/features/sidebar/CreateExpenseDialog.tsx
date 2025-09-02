@@ -31,6 +31,47 @@ type CreateDialogProps = {
   expenseDetailUseState: ExpenseDetail;
 };
 
+const MAX_SIZE_IN_BYTES = 5 * 1024 * 1024; // 5MB
+
+const validateFileType = async (file: File): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const arr = new Uint8Array(reader.result as ArrayBuffer);
+
+      // JPEG: FF D8 FF
+      if (
+        arr.length >= 3 &&
+        arr[0] === 0xff &&
+        arr[1] === 0xd8 &&
+        arr[2] === 0xff
+      ) {
+        resolve(true);
+        return;
+      }
+
+      // PNG: 89 50 4E 47 0D 0A 1A 0A
+      if (
+        arr.length >= 8 &&
+        arr[0] === 0x89 &&
+        arr[1] === 0x50 &&
+        arr[2] === 0x4e &&
+        arr[3] === 0x47 &&
+        arr[4] === 0x0d &&
+        arr[5] === 0x0a &&
+        arr[6] === 0x1a &&
+        arr[7] === 0x0a
+      ) {
+        resolve(true);
+        return;
+      }
+
+      resolve(false);
+    };
+    reader.readAsArrayBuffer(file.slice(0, 8));
+  });
+};
+
 export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   handleClose,
   open,
@@ -62,9 +103,21 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   ) => {
     const file = event.target.files?.[0];
 
-    // TODO: MINETypeのチェックとファイルサイズのチェックを行う。
-
     if (file) {
+      // ファイルサイズチェック (5MB制限)
+      if (file.size > MAX_SIZE_IN_BYTES) {
+        alert(
+          "ファイルサイズが大きすぎます。5MB以下のファイルを選択してください。"
+        );
+        return;
+      }
+
+      // ファイルタイプチェック（マジックナンバーでの検証）
+      const isValidFileType = await validateFileType(file);
+      if (!isValidFileType) {
+        alert("PNG または JPEG ファイルのみアップロード可能です。");
+        return;
+      }
       const fileNameUUID = crypto.randomUUID();
       const fileExtension = file.name.split(".").pop();
       const fileName = `${fileNameUUID}.${fileExtension}`;
