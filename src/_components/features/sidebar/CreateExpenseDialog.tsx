@@ -41,7 +41,7 @@ const validateFileType = async (file: File): Promise<boolean> => {
         resolve(false);
         return;
       }
-      const arr = new Uint8Array(reader.result as ArrayBuffer);
+      const arr = new Uint8Array(reader.result);
 
       // JPEG: FF D8 FF
       if (
