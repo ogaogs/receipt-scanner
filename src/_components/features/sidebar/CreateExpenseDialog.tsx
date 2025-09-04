@@ -72,6 +72,10 @@ const validateFileType = async (file: File): Promise<boolean> => {
 
       resolve(false);
     };
+    reader.onerror = () => {
+      console.error("ファイルアップロード時のエラー:", reader.error);
+      resolve(false);
+    };
     reader.readAsArrayBuffer(file.slice(0, 8));
   });
 };
