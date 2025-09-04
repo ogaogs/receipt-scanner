@@ -221,7 +221,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
               アップロード
               <input
                 type="file"
-                accept="image/png,image/jpeg" // MINETypeを指定
+                accept="image/png,image/jpeg" // MIMETypeを指定
                 onChange={handleImageUpload}
                 width="100%"
                 style={{ display: "none" }}
