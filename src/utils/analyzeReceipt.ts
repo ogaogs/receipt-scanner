@@ -1,5 +1,10 @@
 "use server";
 
+import {
+  PYTHON_API_ERROR_CODES,
+  type PythonAPIErrorCode,
+} from "@/constants/errors";
+
 type RequestBody = {
   filename: string;
 };
@@ -61,20 +66,20 @@ export const getReceiptDetailFromModel = async (
 
     let userMessage: string;
 
-    switch (errorResponse.error_type_code.toUpperCase()) {
-      case "SIZE_ERROR":
+    switch (errorResponse.error_type_code.toUpperCase() as PythonAPIErrorCode) {
+      case PYTHON_API_ERROR_CODES.SIZE_ERROR:
         userMessage =
           "レシート解析中にエラーが発生しました。アップロードする画像は5MB以下にしてください。";
         break;
-      case "INVALID_TYPE":
+      case PYTHON_API_ERROR_CODES.INVALID_TYPE:
         userMessage =
           "レシート解析中にエラーが発生しました。画像はpngもしくはjpegのみ対応しています。";
         break;
-      case "CLIENT_ERROR":
+      case PYTHON_API_ERROR_CODES.CLIENT_ERROR:
         userMessage =
           "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
         break;
-      case "SERVER_ERROR":
+      case PYTHON_API_ERROR_CODES.SERVER_ERROR:
         if (response.status === 503) {
           userMessage =
             "レシート解析中にエラーが発生しました。しばらく時間をおいてから再度お試しください。";
