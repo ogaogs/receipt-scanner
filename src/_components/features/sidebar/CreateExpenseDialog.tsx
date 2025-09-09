@@ -116,10 +116,12 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     const file = event.target.files?.[0];
 
     if (file) {
-      // ファイルサイズチェック (5MB制限)
+      // ファイルサイズチェック
       if (file.size > MAX_SIZE_IN_BYTES) {
-        alert(
-          "ファイルサイズが大きすぎます。5MB以下のファイルを選択してください。"
+        setErrorMessage(
+          `ファイルサイズが大きすぎます。${
+            MAX_SIZE_IN_BYTES / (1024 * 1024)
+          }MB以下のファイルを選択してください。`
         );
         return;
       }
@@ -127,7 +129,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
       // ファイルタイプチェック（マジックナンバーでの検証）
       const isValidFileType = await validateFileType(file);
       if (!isValidFileType) {
-        alert("PNG または JPEG ファイルのみアップロード可能です。");
+        setErrorMessage("PNG または JPEG ファイルのみアップロード可能です。");
         return;
       }
       const fileNameUUID = crypto.randomUUID();
