@@ -55,26 +55,35 @@ export const getReceiptDetail = async (
   fileName: string,
   categories: Category[]
 ): Promise<ReceiptDetail> => {
-  const putPreSignedURL = await generatePreSignedURL(fileName, "put");
-  await uploadFileToS3(selectedImage, putPreSignedURL);
+  try {
+    const putPreSignedURL = await generatePreSignedURL(fileName, "put");
+    await uploadFileToS3(selectedImage, putPreSignedURL);
 
-  const receiptDetail = await getReceiptDetailFromModel(fileName);
+    const receiptDetail = await getReceiptDetailFromModel(fileName);
 
-  const responseStoreName = receiptDetail?.store_name || "";
-  const responseAmount = receiptDetail?.amount || 0;
-  const responseDate = receiptDetail?.date || "";
-  const responseCategory = receiptDetail?.category || "";
+    const responseStoreName = receiptDetail?.store_name || "";
+    const responseAmount = receiptDetail?.amount || 0;
+    const responseDate = receiptDetail?.date || "";
+    const responseCategory = receiptDetail?.category || "";
 
-  const date = formatStrDate(responseDate) || new Date(); // うまく取得できなかったら本日の日付を返す
-  const categoryId =
-    categories.find((category) => category.name === responseCategory)?.id || 1; // うまく取得できなかったら"食費"を返す
+    const date = formatStrDate(responseDate) || new Date(); // うまく取得できなかったら本日の日付を返す
+    const categoryId =
+      categories.find((category) => category.name === responseCategory)?.id || 1; // うまく取得できなかったら"食費"を返す
 
-  return {
-    storeName: responseStoreName,
-    amount: responseAmount,
-    date: date,
-    category: categoryId,
-  };
+    return {
+      storeName: responseStoreName,
+      amount: responseAmount,
+      date: date,
+      category: categoryId,
+    };
+  } catch (error) {
+    console.error("レシート解析中にエラーが発生しました:", {
+      message: error instanceof Error ? error.message : "Unknown error",
+      fileName
+    });
+    
+    throw new Error(error instanceof Error ? error.message : "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。");
+  }
 };
 
 export const formatAndCreateExpense = async (

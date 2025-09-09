@@ -7,6 +7,8 @@ import {
   DialogActions,
   Box,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Category } from "@/types";
 import { ExpenseDetail } from "@/_components/features/sidebar/type";
@@ -105,6 +107,8 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     setFileName,
   } = expenseDetailUseState;
   const [isCreateDisabled, setIsCreateDisabled] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -159,15 +163,28 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
   const handleAnalyze = async () => {
     if (selectedImage && fileName) {
-      const analyzedReceiptDate = await getReceiptDetail(
-        selectedImage,
-        fileName,
-        categories
-      );
-      setExpenseDate(analyzedReceiptDate.date); // 解析された日付をセット
-      setStoreName(analyzedReceiptDate.storeName); // 解析された店名をセット
-      setAmount(analyzedReceiptDate.amount); // 解析された金額をセット
-      setCategoryId(analyzedReceiptDate.category); // 解析されたカテゴリをセット
+      try {
+        setErrorMessage(null);
+        setIsAnalyzing(true);
+        const analyzedReceiptDate = await getReceiptDetail(
+          selectedImage,
+          fileName,
+          categories
+        );
+        setExpenseDate(analyzedReceiptDate.date); // 解析された日付をセット
+        setStoreName(analyzedReceiptDate.storeName); // 解析された店名をセット
+        setAmount(analyzedReceiptDate.amount); // 解析された金額をセット
+        setCategoryId(analyzedReceiptDate.category); // 解析されたカテゴリをセット
+      } catch (error) {
+        console.error("レシート解析エラー:", error);
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。"
+        );
+      } finally {
+        setIsAnalyzing(false);
+      }
     }
   };
 
@@ -232,8 +249,9 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
                 variant="contained"
                 sx={{ fontWeight: "bold" }}
                 onClick={handleAnalyze}
+                disabled={isAnalyzing}
               >
-                レシート解析
+                {isAnalyzing ? "解析中..." : "レシート解析"}
               </Button>
             ) : null}
           </Box>
@@ -247,6 +265,20 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
           </Button>
         </Box>
       </DialogActions>
+      <Snackbar
+        open={!!errorMessage}
+        autoHideDuration={6000}
+        onClose={() => setErrorMessage(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setErrorMessage(null)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Dialog>
   );
 };

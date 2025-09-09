@@ -4,8 +4,8 @@ type RequestBody = {
   filename: string;
 };
 
-type Error = {
-  code: number;
+type PythonAPIError = {
+  error_type_code: string;
   message: string;
 };
 
@@ -33,12 +33,52 @@ export const getReceiptDetailFromModel = async (
       body: JSON.stringify(body), // bodyをheadersの外に移動
     }
   ).catch((error) => {
-    console.log(error);
-    throw error;
+    console.error("レシート解析中にエラーが発生しました:Python_API_Serverへのfetchで予期せぬエラーが発生しました。", {
+      message: error.message,
+      fileName
+    });
+    throw new Error("レシート解析中にエラーが発生しました。サポートまでお問い合わせください。");
   });
 
   if (!response.ok) {
-    throw new Error("レシートの解析に失敗しました");
+    const errorResponse: PythonAPIError = await response.json().catch(() => ({
+      error_type_code: "UNKNOWN",
+      message: "不明なエラーが発生しました"
+    }));
+    
+    console.error("レシート解析中にエラーが発生しました - Python API Error:", {
+      status: response.status,
+      statusText: response.statusText,
+      error_type_code: errorResponse.error_type_code,
+      message: errorResponse.message,
+      fileName
+    });
+    
+    let userMessage: string;
+    
+    switch (errorResponse.error_type_code.toUpperCase()) {
+      case "SIZE_ERROR":
+        userMessage = "レシート解析中にエラーが発生しました。アップロードする画像は5MB以下にしてください。";
+        break;
+      case "INVALID_TYPE":
+        userMessage = "レシート解析中にエラーが発生しました。画像はpngもしくはjpegのみ対応しています。";
+        break;
+      case "CLIENT_ERROR":
+        userMessage = "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
+        break;
+      case "SERVER_ERROR":
+        if (response.status === 503) {
+          userMessage = "レシート解析中にエラーが発生しました。しばらく時間をおいてから再度お試しください。";
+        } else {
+          userMessage = "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
+        }
+        break;
+      default:
+        userMessage = "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
+        break;
+    }
+    
+    throw new Error(userMessage);
   }
 
   const receiptDetail: AnalyzedReceiptDetail = await response.json();
