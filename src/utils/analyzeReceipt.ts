@@ -33,55 +33,66 @@ export const getReceiptDetailFromModel = async (
       body: JSON.stringify(body), // bodyをheadersの外に移動
     }
   ).catch((error) => {
-    console.error("レシート解析中にエラーが発生しました:Python_API_Serverへのfetchで予期せぬエラーが発生しました。", {
-      message: error.message,
-      fileName
-    });
-    throw new Error("レシート解析中にエラーが発生しました。サポートまでお問い合わせください。");
+    console.error(
+      "レシート解析中にエラーが発生しました:Python_API_Serverへのfetchで予期せぬエラーが発生しました。",
+      {
+        message: error.message,
+        fileName,
+      }
+    );
+    throw new Error(
+      "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。"
+    );
   });
 
   if (!response.ok) {
     const errorResponse: PythonAPIError = await response.json().catch(() => ({
       error_type_code: "UNKNOWN",
-      message: "不明なエラーが発生しました"
+      message: "不明なエラーが発生しました",
     }));
-    
+
     console.error("レシート解析中にエラーが発生しました - Python API Error:", {
       status: response.status,
       statusText: response.statusText,
       error_type_code: errorResponse.error_type_code,
       message: errorResponse.message,
-      fileName
+      fileName,
     });
-    
+
     let userMessage: string;
-    
+
     switch (errorResponse.error_type_code.toUpperCase()) {
       case "SIZE_ERROR":
-        userMessage = "レシート解析中にエラーが発生しました。アップロードする画像は5MB以下にしてください。";
+        userMessage =
+          "レシート解析中にエラーが発生しました。アップロードする画像は5MB以下にしてください。";
         break;
       case "INVALID_TYPE":
-        userMessage = "レシート解析中にエラーが発生しました。画像はpngもしくはjpegのみ対応しています。";
+        userMessage =
+          "レシート解析中にエラーが発生しました。画像はpngもしくはjpegのみ対応しています。";
         break;
       case "CLIENT_ERROR":
-        userMessage = "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
+        userMessage =
+          "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
         break;
       case "SERVER_ERROR":
         if (response.status === 503) {
-          userMessage = "レシート解析中にエラーが発生しました。しばらく時間をおいてから再度お試しください。";
+          userMessage =
+            "レシート解析中にエラーが発生しました。しばらく時間をおいてから再度お試しください。";
         } else {
-          userMessage = "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
+          userMessage =
+            "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
         }
         break;
       default:
-        userMessage = "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
+        userMessage =
+          "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。";
         break;
     }
-    
+
     throw new Error(userMessage);
   }
 
   const receiptDetail: AnalyzedReceiptDetail = await response.json();
-  
+
   return receiptDetail;
 };
