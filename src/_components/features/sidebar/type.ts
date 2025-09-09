@@ -3,11 +3,12 @@ export type dateDropdownElement = {
   dateView: string;
 };
 
-export type ReceiptDetail = {
+export type ReceiptDetailResponse = {
   storeName: string;
   amount: number;
   date: Date;
   category: number;
+  isAnalyzed: boolean;
 };
 
 export type ExpenseDetail = {

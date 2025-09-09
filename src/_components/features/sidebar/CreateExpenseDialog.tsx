@@ -166,15 +166,22 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
       try {
         setErrorMessage(null);
         setIsAnalyzing(true);
-        const analyzedReceiptDate = await getReceiptDetail(
+        const analyzedReceiptDateRes = await getReceiptDetail(
           selectedImage,
           fileName,
           categories
         );
-        setExpenseDate(analyzedReceiptDate.date); // 解析された日付をセット
-        setStoreName(analyzedReceiptDate.storeName); // 解析された店名をセット
-        setAmount(analyzedReceiptDate.amount); // 解析された金額をセット
-        setCategoryId(analyzedReceiptDate.category); // 解析されたカテゴリをセット
+        setExpenseDate(analyzedReceiptDateRes.date); // 解析された日付をセット
+        setStoreName(analyzedReceiptDateRes.storeName); // 解析された店名をセット
+        setAmount(analyzedReceiptDateRes.amount); // 解析された金額をセット
+        setCategoryId(analyzedReceiptDateRes.category); // 解析されたカテゴリをセット
+
+        // 解析できなかった場合の警告メッセージ
+        if (!analyzedReceiptDateRes.isAnalyzed) {
+          setErrorMessage(
+            "画像からレシート情報を取得できませんでした。鮮明な写真でお試しください。"
+          );
+        }
       } catch (error) {
         console.error("レシート解析エラー:", error);
         setErrorMessage(

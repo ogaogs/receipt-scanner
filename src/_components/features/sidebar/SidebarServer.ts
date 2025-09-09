@@ -1,6 +1,6 @@
 import {
   dateDropdownElement,
-  ReceiptDetail,
+  ReceiptDetailResponse,
 } from "@/_components/features/sidebar/type";
 import { formatDate, formatStrDate } from "@/utils/time";
 import { createExpense } from "@/lib/db";
@@ -54,12 +54,20 @@ export const getReceiptDetail = async (
   selectedImage: string,
   fileName: string,
   categories: Category[]
-): Promise<ReceiptDetail> => {
+): Promise<ReceiptDetailResponse> => {
   try {
     const putPreSignedURL = await generatePreSignedURL(fileName, "put");
     await uploadFileToS3(selectedImage, putPreSignedURL);
 
     const receiptDetail = await getReceiptDetailFromModel(fileName);
+
+    // 全ての項目がnullの場合のチェック
+    const isAnalyzed = !(
+      receiptDetail.store_name === null &&
+      receiptDetail.amount === null &&
+      receiptDetail.date === null &&
+      receiptDetail.category === null
+    );
 
     const responseStoreName = receiptDetail?.store_name || "";
     const responseAmount = receiptDetail?.amount || 0;
@@ -75,6 +83,7 @@ export const getReceiptDetail = async (
       amount: responseAmount,
       date: date,
       category: categoryId,
+      isAnalyzed: isAnalyzed,
     };
   } catch (error) {
     console.error("レシート解析中にエラーが発生しました:", {
