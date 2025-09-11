@@ -8,7 +8,7 @@ import { getCategories } from "@/lib/db";
 import {
   getDatesInRange,
   makeDateElements,
-} from "@/_components/features/sidebar/SidebarServer";
+} from "@/_components/features/sidebar/SidebarUtils";
 import { getFirstExpenseDate } from "@/lib/db/index";
 
 export default async function Page({
