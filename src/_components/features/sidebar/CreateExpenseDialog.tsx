@@ -75,7 +75,6 @@ const validateFileType = async (file: File): Promise<boolean> => {
       resolve(false);
     };
     reader.onerror = () => {
-      console.error("ファイルアップロード時のエラー:", reader.error);
       resolve(false);
     };
     reader.readAsArrayBuffer(file.slice(0, 8));
@@ -185,7 +184,6 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
           );
         }
       } catch (error) {
-        console.error("レシート解析エラー:", error);
         setErrorMessage(
           error instanceof Error
             ? error.message
