@@ -11,6 +11,16 @@ export type ReceiptDetailResponse = {
   isAnalyzed: boolean;
 };
 
+export type AnalyzeResult =
+  | {
+      success: true;
+      data: ReceiptDetailResponse;
+    }
+  | {
+      success: false;
+      error: string;
+    };
+
 export type ExpenseDetail = {
   expenseDate: Date;
   setExpenseDate: React.Dispatch<React.SetStateAction<Date>>;

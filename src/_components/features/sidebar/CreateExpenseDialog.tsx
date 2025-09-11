@@ -19,7 +19,7 @@ import {
 import {
   formatAndCreateExpense,
   getReceiptDetail,
-} from "@/_components/features/sidebar/SidebarServer";
+} from "@/_components/features/sidebar/SidebarActions";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 type CreateDialogProps = {
@@ -172,22 +172,25 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
           fileName,
           categories
         );
-        setExpenseDate(analyzedReceiptDateRes.date); // 解析された日付をセット
-        setStoreName(analyzedReceiptDateRes.storeName); // 解析された店名をセット
-        setAmount(analyzedReceiptDateRes.amount); // 解析された金額をセット
-        setCategoryId(analyzedReceiptDateRes.category); // 解析されたカテゴリをセット
+        if (!analyzedReceiptDateRes.success) {
+          setErrorMessage(analyzedReceiptDateRes.error);
+        }
+        if (analyzedReceiptDateRes.success) {
+          setExpenseDate(analyzedReceiptDateRes.data.date); // 解析された日付をセット
+          setStoreName(analyzedReceiptDateRes.data.storeName); // 解析された店名をセット
+          setAmount(analyzedReceiptDateRes.data.amount); // 解析された金額をセット
+          setCategoryId(analyzedReceiptDateRes.data.category); // 解析されたカテゴリをセット
 
-        // 解析できなかった場合の警告メッセージ
-        if (!analyzedReceiptDateRes.isAnalyzed) {
-          setErrorMessage(
-            "画像からレシート情報を取得できませんでした。鮮明な写真でお試しください。"
-          );
+          // 解析できなかった場合の警告メッセージ
+          if (!analyzedReceiptDateRes.data.isAnalyzed) {
+            setErrorMessage(
+              "画像からレシート情報を取得できませんでした。鮮明な写真でお試しください。"
+            );
+          }
         }
       } catch (error) {
         setErrorMessage(
-          error instanceof Error
-            ? error.message
-            : "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。"
+          "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。"
         );
       } finally {
         setIsAnalyzing(false);

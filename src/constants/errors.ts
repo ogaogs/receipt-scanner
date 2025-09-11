@@ -7,3 +7,10 @@ export const PYTHON_API_ERROR_CODES = {
 
 export type PythonAPIErrorCode =
   (typeof PYTHON_API_ERROR_CODES)[keyof typeof PYTHON_API_ERROR_CODES];
+
+export class ReceiptAnalysisError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ReceiptAnalysisError";
+  }
+}

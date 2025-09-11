@@ -3,6 +3,7 @@
 import {
   PYTHON_API_ERROR_CODES,
   type PythonAPIErrorCode,
+  ReceiptAnalysisError,
 } from "@/constants/errors";
 
 type RequestBody = {
@@ -45,7 +46,7 @@ export const getReceiptDetailFromModel = async (
         fileName,
       }
     );
-    throw new Error(
+    throw new ReceiptAnalysisError(
       "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。"
     );
   });
@@ -94,7 +95,7 @@ export const getReceiptDetailFromModel = async (
         break;
     }
 
-    throw new Error(userMessage);
+    throw new ReceiptAnalysisError(userMessage);
   }
 
   const receiptDetail: AnalyzedReceiptDetail = await response.json();
