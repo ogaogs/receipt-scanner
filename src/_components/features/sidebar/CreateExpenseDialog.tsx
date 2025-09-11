@@ -7,6 +7,8 @@ import {
   DialogActions,
   Box,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Category } from "@/types";
 import { ExpenseDetail } from "@/_components/features/sidebar/type";
@@ -17,7 +19,7 @@ import {
 import {
   formatAndCreateExpense,
   getReceiptDetail,
-} from "@/_components/features/sidebar/SidebarServer";
+} from "@/_components/features/sidebar/SidebarActions";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 type CreateDialogProps = {
@@ -73,7 +75,6 @@ const validateFileType = async (file: File): Promise<boolean> => {
       resolve(false);
     };
     reader.onerror = () => {
-      console.error("ファイルアップロード時のエラー:", reader.error);
       resolve(false);
     };
     reader.readAsArrayBuffer(file.slice(0, 8));
@@ -105,6 +106,8 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     setFileName,
   } = expenseDetailUseState;
   const [isCreateDisabled, setIsCreateDisabled] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -112,10 +115,12 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     const file = event.target.files?.[0];
 
     if (file) {
-      // ファイルサイズチェック (5MB制限)
+      // ファイルサイズチェック
       if (file.size > MAX_SIZE_IN_BYTES) {
-        alert(
-          "ファイルサイズが大きすぎます。5MB以下のファイルを選択してください。"
+        setErrorMessage(
+          `ファイルサイズが大きすぎます。${
+            MAX_SIZE_IN_BYTES / (1024 * 1024)
+          }MB以下のファイルを選択してください。`
         );
         return;
       }
@@ -123,7 +128,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
       // ファイルタイプチェック（マジックナンバーでの検証）
       const isValidFileType = await validateFileType(file);
       if (!isValidFileType) {
-        alert("PNG または JPEG ファイルのみアップロード可能です。");
+        setErrorMessage("PNG または JPEG ファイルのみアップロード可能です。");
         return;
       }
       const fileNameUUID = crypto.randomUUID();
@@ -159,15 +164,37 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
   const handleAnalyze = async () => {
     if (selectedImage && fileName) {
-      const analyzedReceiptDate = await getReceiptDetail(
-        selectedImage,
-        fileName,
-        categories
-      );
-      setExpenseDate(analyzedReceiptDate.date); // 解析された日付をセット
-      setStoreName(analyzedReceiptDate.storeName); // 解析された店名をセット
-      setAmount(analyzedReceiptDate.amount); // 解析された金額をセット
-      setCategoryId(analyzedReceiptDate.category); // 解析されたカテゴリをセット
+      try {
+        setErrorMessage(null);
+        setIsAnalyzing(true);
+        const analyzedReceiptDateRes = await getReceiptDetail(
+          selectedImage,
+          fileName,
+          categories
+        );
+        if (!analyzedReceiptDateRes.success) {
+          setErrorMessage(analyzedReceiptDateRes.error);
+        }
+        if (analyzedReceiptDateRes.success) {
+          setExpenseDate(analyzedReceiptDateRes.data.date); // 解析された日付をセット
+          setStoreName(analyzedReceiptDateRes.data.storeName); // 解析された店名をセット
+          setAmount(analyzedReceiptDateRes.data.amount); // 解析された金額をセット
+          setCategoryId(analyzedReceiptDateRes.data.category); // 解析されたカテゴリをセット
+
+          // 解析できなかった場合の警告メッセージ
+          if (!analyzedReceiptDateRes.data.isAnalyzed) {
+            setErrorMessage(
+              "画像からレシート情報を取得できませんでした。鮮明な写真でお試しください。"
+            );
+          }
+        }
+      } catch (error) {
+        setErrorMessage(
+          "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。"
+        );
+      } finally {
+        setIsAnalyzing(false);
+      }
     }
   };
 
@@ -232,8 +259,9 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
                 variant="contained"
                 sx={{ fontWeight: "bold" }}
                 onClick={handleAnalyze}
+                disabled={isAnalyzing}
               >
-                レシート解析
+                {isAnalyzing ? "解析中..." : "レシート解析"}
               </Button>
             ) : null}
           </Box>
@@ -247,6 +275,20 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
           </Button>
         </Box>
       </DialogActions>
+      <Snackbar
+        open={!!errorMessage}
+        autoHideDuration={6000}
+        onClose={() => setErrorMessage(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setErrorMessage(null)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Dialog>
   );
 };

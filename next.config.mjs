@@ -5,6 +5,11 @@ const nextConfig = {
     remotePatterns: [{ hostname: "lh3.googleusercontent.com" }],
   },
   trailingSlash: false,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '5mb',
+    },
+  },
 };
 
 export default nextConfig;

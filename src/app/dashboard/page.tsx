@@ -13,7 +13,7 @@ import { Sidebar } from "@/_components/features/sidebar/Sidebar";
 import {
   getDatesInRange,
   makeDateElements,
-} from "@/_components/features/sidebar/SidebarServer";
+} from "@/_components/features/sidebar/SidebarUtils";
 
 import { getFirstExpenseDate } from "@/lib/db/index";
 
