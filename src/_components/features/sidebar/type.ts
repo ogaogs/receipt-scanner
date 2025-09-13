@@ -21,6 +21,10 @@ export type AnalyzeResult =
       error: string;
     };
 
+export type UploadResult = {
+  success: boolean;
+};
+
 export type ExpenseDetail = {
   expenseDate: Date;
   setExpenseDate: React.Dispatch<React.SetStateAction<Date>>;

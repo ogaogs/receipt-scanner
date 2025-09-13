@@ -1,6 +1,9 @@
 "use server";
 
-import { AnalyzeResult } from "@/_components/features/sidebar/type";
+import {
+  AnalyzeResult,
+  UploadResult,
+} from "@/_components/features/sidebar/type";
 import { formatStrDate } from "@/utils/time";
 import { createExpense } from "@/lib/db";
 import { uploadFileToS3, generatePreSignedURL } from "@/lib/s3";
@@ -8,15 +11,25 @@ import { getReceiptDetailFromModel } from "@/utils/analyzeReceipt";
 import { Category } from "@/types";
 import { ReceiptAnalysisError } from "@/constants/errors";
 
+export const uploadImageToS3 = async (
+  fileName: string,
+  selectedImage: string
+): Promise<UploadResult> => {
+  try {
+    const putPreSignedURL = await generatePreSignedURL(fileName, "put");
+    await uploadFileToS3(selectedImage, putPreSignedURL);
+    return { success: true };
+  } catch (error) {
+    console.error("S3への画像をアップロードに失敗しました:", error);
+    return { success: false };
+  }
+};
+
 export const getReceiptDetail = async (
-  selectedImage: string,
   fileName: string,
   categories: Category[]
 ): Promise<AnalyzeResult> => {
   try {
-    const putPreSignedURL = await generatePreSignedURL(fileName, "put");
-    await uploadFileToS3(selectedImage, putPreSignedURL);
-
     const receiptDetail = await getReceiptDetailFromModel(fileName);
 
     // 全ての項目がnullの場合のチェック

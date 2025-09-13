@@ -19,6 +19,7 @@ import {
 import {
   formatAndCreateExpense,
   getReceiptDetail,
+  uploadImageToS3,
 } from "@/_components/features/sidebar/SidebarActions";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
@@ -136,8 +137,20 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
       const fileName = `${fileNameUUID}.${fileExtension}`;
       setFileName(fileName); // UUIDファイル名を保存
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string); // base64をstringでセット
+      reader.onloadend = async () => {
+        const base64Image = reader.result as string;
+        setSelectedImage(base64Image); // base64をstringでセット
+
+        // S3へのアップロードを試行
+        const uploadResult = await uploadImageToS3(fileName, base64Image);
+        if (!uploadResult.success) {
+          // アップロードに失敗した場合は画像をリセット
+          setSelectedImage(null);
+          setFileName(null);
+          setErrorMessage(
+            "画像のアップロードに失敗しました。もう一度お試しください。"
+          );
+        }
       };
       reader.readAsDataURL(file); // base64に置き換え
     }
@@ -168,7 +181,6 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
         setErrorMessage(null);
         setIsAnalyzing(true);
         const analyzedReceiptDateRes = await getReceiptDetail(
-          selectedImage,
           fileName,
           categories
         );
