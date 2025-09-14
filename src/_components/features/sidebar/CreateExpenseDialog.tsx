@@ -37,6 +37,13 @@ type CreateDialogProps = {
 
 const MAX_SIZE_IN_BYTES = 5 * 1024 * 1024; // 5MB
 
+class ValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
 const validateFileType = async (file: File): Promise<boolean> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -142,19 +149,19 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
         // ファイルサイズチェック
         if (file.size > MAX_SIZE_IN_BYTES) {
-          setErrorMessage(
+          throw new ValidationError(
             `ファイルサイズが大きすぎます。${
               MAX_SIZE_IN_BYTES / (1024 * 1024)
             }MB以下のファイルを選択してください。`
           );
-          return;
         }
 
         // ファイルタイプチェック（マジックナンバーでの検証）
         const isValidFileType = await validateFileType(file);
         if (!isValidFileType) {
-          setErrorMessage("PNG または JPEG ファイルのみアップロード可能です。");
-          return;
+          throw new ValidationError(
+            "PNG または JPEG ファイルのみアップロード可能です。"
+          );
         }
         const fileNameUUID = crypto.randomUUID();
         const fileExtension = file.name.split(".").pop();
@@ -166,11 +173,11 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
             if (reader.result) {
               resolve(reader.result as string);
             } else {
-              reject(new Error("ファイル読み込みに失敗しました"));
+              reject(new Error("画像のアップロードに失敗しました。"));
             }
           };
           reader.onerror = () =>
-            reject(new Error("ファイル読み込みに失敗しました"));
+            reject(new Error("画像のアップロードに失敗しました。"));
           reader.readAsDataURL(file);
         });
 
@@ -179,15 +186,17 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
         if (!uploadResult.success) {
           // アップロードに失敗した場合は画像をリセット
           setFileName(null);
-          setErrorMessage(
-            "画像のアップロードに失敗しました。もう一度お試しください。"
-          );
-        } else {
-          // アップロード成功後に画像を表示
-          setSelectedImage(base64Image);
+          throw new Error("画像のアップロードに失敗しました。");
         }
-      } catch {
-        setErrorMessage("画像のアップロードに失敗しました。");
+
+        // アップロード成功後に画像を表示
+        setSelectedImage(base64Image);
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          setErrorMessage(error.message); // 詳細なバリデーションエラーメッセージを表示
+        } else {
+          setErrorMessage("画像のアップロードに失敗しました。"); // 汎用メッセージ
+        }
       } finally {
         setLoadingState("idle");
       }
