@@ -109,9 +109,20 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   } = expenseDetailUseState;
   const [isCreateDisabled, setIsCreateDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  type LoadingState =
+    | "idle"
+    | "uploading"
+    | "analyzing"
+    | "creating"
+    | "deleting";
+  const [loadingState, setLoadingState] = useState<LoadingState>("idle");
   const [isExpenseCreated, setIsExpenseCreated] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
+
+  const isUploading = loadingState === "uploading";
+  const isAnalyzing = loadingState === "analyzing";
+  const isCreating = loadingState === "creating";
+  const isDeleting = loadingState === "deleting";
+  const isBusy = loadingState !== "idle";
 
   useEffect(() => {
     if (isExpenseCreated) {
@@ -125,50 +136,71 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     const file = event.target.files?.[0];
 
     if (file) {
-      // ファイルサイズチェック
-      if (file.size > MAX_SIZE_IN_BYTES) {
-        setErrorMessage(
-          `ファイルサイズが大きすぎます。${
-            MAX_SIZE_IN_BYTES / (1024 * 1024)
-          }MB以下のファイルを選択してください。`
-        );
-        return;
-      }
+      try {
+        setLoadingState("uploading");
+        setErrorMessage(null);
 
-      // ファイルタイプチェック（マジックナンバーでの検証）
-      const isValidFileType = await validateFileType(file);
-      if (!isValidFileType) {
-        setErrorMessage("PNG または JPEG ファイルのみアップロード可能です。");
-        return;
-      }
-      const fileNameUUID = crypto.randomUUID();
-      const fileExtension = file.name.split(".").pop();
-      const fileName = `${fileNameUUID}.${fileExtension}`;
-      setFileName(fileName); // UUIDファイル名を保存
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64Image = reader.result as string;
-        setSelectedImage(base64Image); // base64をstringでセット
+        // ファイルサイズチェック
+        if (file.size > MAX_SIZE_IN_BYTES) {
+          setErrorMessage(
+            `ファイルサイズが大きすぎます。${
+              MAX_SIZE_IN_BYTES / (1024 * 1024)
+            }MB以下のファイルを選択してください。`
+          );
+          return;
+        }
+
+        // ファイルタイプチェック（マジックナンバーでの検証）
+        const isValidFileType = await validateFileType(file);
+        if (!isValidFileType) {
+          setErrorMessage("PNG または JPEG ファイルのみアップロード可能です。");
+          return;
+        }
+        const fileNameUUID = crypto.randomUUID();
+        const fileExtension = file.name.split(".").pop();
+        const fileName = `${fileNameUUID}.${fileExtension}`;
+        setFileName(fileName); // UUIDファイル名を保存
+        const base64Image = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (reader.result) {
+              resolve(reader.result as string);
+            } else {
+              reject(new Error("ファイル読み込みに失敗しました"));
+            }
+          };
+          reader.onerror = () =>
+            reject(new Error("ファイル読み込みに失敗しました"));
+          reader.readAsDataURL(file);
+        });
 
         // S3へのアップロードを試行
         const uploadResult = await uploadImageToS3(fileName, base64Image);
         if (!uploadResult.success) {
           // アップロードに失敗した場合は画像をリセット
-          setSelectedImage(null);
           setFileName(null);
           setErrorMessage(
             "画像のアップロードに失敗しました。もう一度お試しください。"
           );
+        } else {
+          // アップロード成功後に画像を表示
+          setSelectedImage(base64Image);
         }
-      };
-      reader.readAsDataURL(file); // base64に置き換え
+      } catch {
+        setErrorMessage("画像のアップロードに失敗しました。");
+      } finally {
+        setLoadingState("idle");
+      }
     }
+
+    // 同じファイルを再選択可能にするため、input値をクリア
+    event.target.value = "";
   };
 
   const handleCreateExpense = async () => {
     if (expenseDate && storeName && amount && categoryId) {
       try {
-        setIsCreating(true);
+        setLoadingState("creating");
         setErrorMessage(null);
 
         await formatAndCreateExpense(
@@ -182,10 +214,10 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
         setIsExpenseCreated(true);
         router.push(pathname + "?date=" + selectedDate + "&update=true");
-      } catch (error) {
+      } catch {
         setErrorMessage("支出の作成に失敗しました。もう一度お試しください。");
       } finally {
-        setIsCreating(false);
+        setLoadingState("idle");
       }
     } else {
       setErrorMessage("全ての必須項目を入力してください。");
@@ -196,7 +228,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     if (selectedImage && fileName) {
       try {
         setErrorMessage(null);
-        setIsAnalyzing(true);
+        setLoadingState("analyzing");
         const analyzedReceiptDateRes = await getReceiptDetail(
           fileName,
           categories
@@ -222,33 +254,36 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
           "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。"
         );
       } finally {
-        setIsAnalyzing(false);
+        setLoadingState("idle");
       }
     }
   };
 
   const handleImageRemove = async () => {
-    if (fileName) {
-      await deleteReceiptImage(fileName);
+    try {
+      setLoadingState("deleting");
+      if (fileName) {
+        await deleteReceiptImage(fileName);
+      }
+      setSelectedImage(null);
+      setFileName(null);
+    } finally {
+      setLoadingState("idle");
     }
-    setSelectedImage(null);
-    setFileName(null);
   };
 
   const handleDialogClose = async () => {
-    if (isCreating || isAnalyzing) {
-      // 作成中または解析中は閉じない
+    if (isBusy) {
       return;
     }
     // 作成されていない場合のみ画像を削除
     if (fileName && !isExpenseCreated) {
-      console.log("イメージ削除中");
       await deleteReceiptImage(fileName);
     }
 
     // 状態をリセット
     setIsExpenseCreated(false);
-    setIsCreating(false);
+    setLoadingState("idle");
     setErrorMessage(null);
 
     handleClose();
@@ -270,8 +305,8 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
         <Box display="flex" flexDirection="row" height={"100%"}>
           <ReceiptUpload
             selectedImage={selectedImage}
-            handleImageUpload={handleImageUpload}
             handleImageRemove={handleImageRemove}
+            disabled={isBusy}
           />
           <AddExpenseDetail
             categories={categories}
@@ -295,8 +330,9 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
               variant="contained"
               component="label"
               sx={{ fontWeight: "bold", marginRight: "24px" }}
+              disabled={isBusy}
             >
-              アップロード
+              {isUploading ? "アップロード中..." : "アップロード"}
               <input
                 type="file"
                 accept="image/png,image/jpeg" // MIMETypeを指定
@@ -310,7 +346,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
                 variant="contained"
                 sx={{ fontWeight: "bold" }}
                 onClick={handleAnalyze}
-                disabled={isAnalyzing}
+                disabled={isBusy}
               >
                 {isAnalyzing ? "解析中..." : "レシート解析"}
               </Button>
@@ -320,7 +356,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
             variant="contained"
             sx={{ fontWeight: "bold" }}
             onClick={handleCreateExpense}
-            disabled={isCreateDisabled || isCreating}
+            disabled={isCreateDisabled || isBusy}
           >
             {isCreating ? "作成中..." : "作成"}
           </Button>

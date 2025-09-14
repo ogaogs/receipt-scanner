@@ -4,13 +4,14 @@ import CloseIcon from "@mui/icons-material/Close";
 
 type ReceiptUploadProps = {
   selectedImage: string | null;
-  handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleImageRemove: () => void;
+  disabled?: boolean;
 };
 
 export const ReceiptUpload: FC<ReceiptUploadProps> = ({
   selectedImage,
   handleImageRemove,
+  disabled = false,
 }) => {
   return (
     <Box
@@ -41,6 +42,7 @@ export const ReceiptUpload: FC<ReceiptUploadProps> = ({
           </Avatar>
           <IconButton
             onClick={handleImageRemove}
+            disabled={disabled}
             sx={{
               position: "absolute",
               top: 1,
