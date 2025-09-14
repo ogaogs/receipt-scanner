@@ -276,17 +276,16 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     if (isBusy) {
       return;
     }
-    // 作成されていない場合のみ画像を削除
-    if (fileName && !isExpenseCreated) {
-      await deleteReceiptImage(fileName);
-    }
+    handleClose();
 
     // 状態をリセット
     setIsExpenseCreated(false);
     setLoadingState("idle");
     setErrorMessage(null);
 
-    handleClose();
+    if (fileName && !isExpenseCreated) {
+      deleteReceiptImage(fileName);
+    }
   };
 
   return (
