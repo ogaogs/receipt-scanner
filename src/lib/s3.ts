@@ -4,6 +4,7 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -79,4 +80,9 @@ export const uploadFileToS3 = async (
   if (!response.ok) {
     throw new Error("S3へのアップロードに失敗しました");
   }
+};
+
+export const deleteFileFromS3 = async (fileName: string) => {
+  const bucketParams = { Bucket: BUCKET_NAME, Key: fileName };
+  await s3.send(new DeleteObjectCommand(bucketParams));
 };
