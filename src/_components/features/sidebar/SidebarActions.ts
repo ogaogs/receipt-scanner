@@ -6,7 +6,11 @@ import {
 } from "@/_components/features/sidebar/type";
 import { formatStrDate } from "@/utils/time";
 import { createExpense } from "@/lib/db";
-import { uploadFileToS3, generatePreSignedURL } from "@/lib/s3";
+import {
+  uploadFileToS3,
+  generatePreSignedURL,
+  deleteFileFromS3,
+} from "@/lib/s3";
 import { getReceiptDetailFromModel } from "@/utils/analyzeReceipt";
 import { Category } from "@/types";
 import { ReceiptAnalysisError } from "@/constants/errors";
@@ -83,5 +87,13 @@ export const formatAndCreateExpense = async (
     await createExpense(userId, amount, storeName, date, categoryId, fileName);
   } catch (error) {
     throw error;
+  }
+};
+
+export const deleteReceiptImage = async (fileName: string) => {
+  try {
+    await deleteFileFromS3(fileName);
+  } catch (error) {
+    console.error("S3からの画像削除に失敗しました:", error);
   }
 };

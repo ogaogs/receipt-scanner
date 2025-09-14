@@ -20,6 +20,7 @@ import {
   formatAndCreateExpense,
   getReceiptDetail,
   uploadImageToS3,
+  deleteReceiptImage,
 } from "@/_components/features/sidebar/SidebarActions";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
@@ -200,7 +201,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
             );
           }
         }
-      } catch (error) {
+      } catch {
         setErrorMessage(
           "レシート解析中にエラーが発生しました。サポートまでお問い合わせください。"
         );
@@ -210,7 +211,10 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     }
   };
 
-  const handleImageRemove = () => {
+  const handleImageRemove = async () => {
+    if (fileName) {
+      deleteReceiptImage(fileName);
+    }
     setSelectedImage(null);
     setFileName(null);
   };
