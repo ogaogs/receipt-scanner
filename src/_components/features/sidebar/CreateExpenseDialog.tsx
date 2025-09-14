@@ -111,9 +111,12 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isExpenseCreated, setIsExpenseCreated] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
-    handleDialogClose();
+    if (isExpenseCreated) {
+      handleDialogClose();
+    }
   }, [isExpenseCreated]);
 
   const handleImageUpload = async (
@@ -162,18 +165,28 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
     }
   };
 
-  const handleCreateExpense = () => {
+  const handleCreateExpense = async () => {
     if (expenseDate && storeName && amount && categoryId) {
-      formatAndCreateExpense(
-        userId,
-        expenseDate,
-        storeName,
-        amount,
-        categoryId,
-        fileName
-      );
-      setIsExpenseCreated(true);
-      router.push(pathname + "?date=" + selectedDate + "&update=true");
+      try {
+        setIsCreating(true);
+        setErrorMessage(null);
+
+        await formatAndCreateExpense(
+          userId,
+          expenseDate,
+          storeName,
+          amount,
+          categoryId,
+          fileName
+        );
+
+        setIsExpenseCreated(true);
+        router.push(pathname + "?date=" + selectedDate + "&update=true");
+      } catch (error) {
+        setErrorMessage("支出の作成に失敗しました。もう一度お試しください。");
+      } finally {
+        setIsCreating(false);
+      }
     } else {
       setErrorMessage("全ての必須項目を入力してください。");
     }
@@ -223,6 +236,10 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   };
 
   const handleDialogClose = async () => {
+    if (isCreating || isAnalyzing) {
+      // 作成中または解析中は閉じない
+      return;
+    }
     // 作成されていない場合のみ画像を削除
     if (fileName && !isExpenseCreated) {
       console.log("イメージ削除中");
@@ -231,6 +248,7 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
     // 状態をリセット
     setIsExpenseCreated(false);
+    setIsCreating(false);
     setErrorMessage(null);
 
     handleClose();
@@ -302,9 +320,9 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
             variant="contained"
             sx={{ fontWeight: "bold" }}
             onClick={handleCreateExpense}
-            disabled={isCreateDisabled}
+            disabled={isCreateDisabled || isCreating}
           >
-            作成
+            {isCreating ? "作成中..." : "作成"}
           </Button>
         </Box>
       </DialogActions>
