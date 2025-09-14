@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -110,6 +110,11 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   const [isCreateDisabled, setIsCreateDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isExpenseCreated, setIsExpenseCreated] = useState(false);
+
+  useEffect(() => {
+    handleDialogClose();
+  }, [isExpenseCreated]);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -167,13 +172,11 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
         categoryId,
         fileName
       );
+      setIsExpenseCreated(true);
       router.push(pathname + "?date=" + selectedDate + "&update=true");
     } else {
-      // TODO: エラーの対応を考える
-      console.log("The selected values are invalid");
+      setErrorMessage("全ての必須項目を入力してください。");
     }
-
-    handleClose();
   };
 
   const handleAnalyze = async () => {
@@ -213,16 +216,30 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
 
   const handleImageRemove = async () => {
     if (fileName) {
-      deleteReceiptImage(fileName);
+      await deleteReceiptImage(fileName);
     }
     setSelectedImage(null);
     setFileName(null);
   };
 
+  const handleDialogClose = async () => {
+    // 作成されていない場合のみ画像を削除
+    if (fileName && !isExpenseCreated) {
+      console.log("イメージ削除中");
+      await deleteReceiptImage(fileName);
+    }
+
+    // 状態をリセット
+    setIsExpenseCreated(false);
+    setErrorMessage(null);
+
+    handleClose();
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={handleDialogClose}
       sx={{
         "& .MuiDialog-paper": {
           right: "10%",
