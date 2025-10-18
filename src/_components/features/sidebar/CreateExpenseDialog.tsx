@@ -128,7 +128,6 @@ export const CreateExpenseDialog: FC<CreateDialogProps> = ({
   const isUploading = loadingState === "uploading";
   const isAnalyzing = loadingState === "analyzing";
   const isCreating = loadingState === "creating";
-  const isDeleting = loadingState === "deleting";
   const isBusy = loadingState !== "idle";
 
   useEffect(() => {
