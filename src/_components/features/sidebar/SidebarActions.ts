@@ -14,6 +14,7 @@ import {
 import { getReceiptDetailFromModel } from "@/utils/analyzeReceipt";
 import { Category } from "@/types";
 import { ReceiptAnalysisError } from "@/constants/errors";
+import { revalidatePath } from "next/cache";
 
 export const uploadImageToS3 = async (
   fileName: string,
@@ -85,6 +86,9 @@ export const formatAndCreateExpense = async (
 ) => {
   try {
     await createExpense(userId, amount, storeName, date, categoryId, fileName);
+    // キャッシュを無効化してデータを再取得
+    revalidatePath("/dashboard");
+    revalidatePath("/expenses");
   } catch (error) {
     throw error;
   }
