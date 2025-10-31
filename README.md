@@ -48,18 +48,23 @@
       - 開発環境：http://localhost:3000/api/auth/callback/google
       - 本番環境：https://{YOUR_DOMAIN}/api/auth/callback/google
 - 環境変数の設定<br>
-  .env.default を参考に.env に設定する<br>
-  | 環境変数 | 用途 |
-  | ------------ | ------- |
-  | DATABASE_URL | prisma と DB との連携 |
-  | AWS_ACCESS_KEY_ID | IAM ユーザーの Access key ID |
-  | AWS_SECRET_ACCESS_KEY | IAM ユーザーの Secret access key |
-  | AUTH_GOOGLE_ID |　 OAuth 2.0 クライアントのクライアント ID |
-  | AUTH_GOOGLE_SECRET |　 OAuth 2.0 クライアントのクライアント シークレット|
-  | AUTH_SECRET |　 JWT をエンコードし、転送中のデータを暗号化するために使用される |
-  | AUTH_TRUST_HOST | Auth の信頼されたホスト |
-  | NEXTAUTH_URL | サイトの正規 URL|
-  | PYTHON_API_SERVER | receipt-scanner-model のデプロイ url |
+
+  環境ごとに異なる環境変数ファイルを使用します：
+
+  - **開発環境**: `.env` または `.env.development`
+  - **本番環境**: `.env.production`
+
+  | 環境変数              | 用途                                                                                                 |
+  | --------------------- | ---------------------------------------------------------------------------------------------------- |
+  | DATABASE_URL          | prisma と DB との連携                                                                                |
+  | AWS_ACCESS_KEY_ID     | IAM ユーザーの Access key ID                                                                         |
+  | AWS_SECRET_ACCESS_KEY | IAM ユーザーの Secret access key                                                                     |
+  | AUTH_GOOGLE_ID        | 　 OAuth 2.0 クライアントのクライアント ID                                                           |
+  | AUTH_GOOGLE_SECRET    | 　 OAuth 2.0 クライアントのクライアント シークレット                                                 |
+  | AUTH_SECRET           | 　 JWT をエンコードし、転送中のデータを暗号化するために使用される（`openssl rand -base64 32`で生成） |
+  | AUTH_TRUST_HOST       | Auth の信頼されたホスト                                                                              |
+  | NEXTAUTH_URL          | サイトの正規 URL                                                                                     |
+  | PYTHON_API_SERVER     | receipt-scanner-model のデプロイ url                                                                 |
 
 ## 実行方法
 
@@ -112,7 +117,26 @@
 
 ### Docker
 
-現在 Docker を使用したビルド・実行はできません。
+#### 開発環境（PostgreSQL のみ）
+
+```sh
+docker-compose -f docker/dev/compose.yml up
+```
+
+ローカル開発用の PostgreSQL コンテナが起動します（ポート 5432）。
+
+#### 本番環境（アプリケーション + PostgreSQL）
+
+```sh
+docker-compose -f docker/prod/compose.yml up
+```
+
+本番用のアプリケーションと PostgreSQL コンテナが起動します。
+
+- アプリケーション：ポート 3000
+- PostgreSQL：ポート 5433（開発環境との競合を避けるため）
+
+**注意**: 本番環境で起動する前に `.env.production` ファイルが正しく設定されていることを確認してください。
 
 ## ディレクトリ構成
 
